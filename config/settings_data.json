@@ -391,6 +391,49 @@
           "borderWidth": 2,
           "borderRadius": 10
         }
+      },
+      "custom_product_section_f4VHf7": {
+        "type": "custom-product-section",
+        "blocks": {
+          "feature_list_kKWhrx": {
+            "type": "feature_list",
+            "settings": {
+              "feature_1": "Free shipping over $50",
+              "feature_2": "30-day hassle-free returns",
+              "feature_3": "2-year warranty included",
+              "feature_4": "",
+              "feature_5": "",
+              "feature_6": ""
+            }
+          }
+        },
+        "block_order": [
+          "feature_list_kKWhrx"
+        ],
+        "name": "Custom Product Section",
+        "settings": {
+          "product": "carpenter-jeans-washed-grey",
+          "image_position": "left",
+          "section_padding": 64,
+          "max_width": 1200,
+          "image_radius": 8,
+          "bg_color": "#ffffff",
+          "text_color": "#111111",
+          "primary_color": "#111111",
+          "btn_text_color": "#ffffff",
+          "border_color": "#e5e5e5",
+          "show_vendor": true,
+          "show_sku": false,
+          "show_description": true,
+          "show_quantity": true,
+          "btn_text": "Add to Cart",
+          "adding_text": "Adding…",
+          "sold_out_text": "Sold Out",
+          "unavailable_text": "Unavailable",
+          "notification_text": "Added to your cart!",
+          "view_cart_text": "View Cart →",
+          "notification_duration": 3
+        }
       }
     },
     "content_for_index": [
@@ -402,7 +445,8 @@
       "sofia_article_header_20260227_r9hCzd",
       "sofia_simple_review_20260309_TcfB4j",
       "sofia_other_products_20260310_c4qNJm",
-      "sofia_simple_notice_20260316_Lyxq4A"
+      "sofia_simple_notice_20260316_Lyxq4A",
+      "custom_product_section_f4VHf7"
     ]
   },
   "presets": {
