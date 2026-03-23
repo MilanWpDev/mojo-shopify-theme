@@ -383,11 +383,17 @@
     display: block;
   }
 
-  /* ── Reviews ── */
+  /* ── Reviews — uvek van grida, puna sirina ── */
   .custom-product-section__reviews {
     margin-top: 48px;
     position: relative;
     width: 100%;
+    /* Probijamo padding od parent sekcije da bi bio full width */
+    margin-left: calc(-1 * 20px);
+    margin-right: calc(-1 * 20px);
+    width: calc(100% + 40px);
+    padding: 0 20px;
+    box-sizing: border-box;
   }
   .custom-product-section__reviews-header {
     display: flex;
@@ -422,6 +428,7 @@
   .custom-product-section__reviews-swiper .swiper-slide {
     width: 320px !important;
     height: auto;
+    box-sizing: border-box;
   }
   .custom-product-section__review-card {
     background: white;
@@ -651,9 +658,8 @@
     <!-- kraj __info -->
 
   </div>
-  <!-- kraj __inner -->
+  <!-- kraj __inner — reviews su OVDE, van grida -->
 
-  <!-- ── REVIEWS — van grida, puna širina ── -->
   {%- if section.settings.show_reviews -%}
     <div class="custom-product-section__reviews">
       <div class="custom-product-section__reviews-header">
