@@ -504,18 +504,24 @@
   }
 </style>
 
-<div class="custom-product-section" data-section-id="{{ section.id }}" data-product-id="{{ current_product.id }}">
+<div
+  class="custom-product-section"
+  data-section-id="{{ section.id }}"
+  data-product-id="{{ current_product.id }}"
+>
   {%- if current_product == empty -%}
     <div class="custom-product-section__empty">
       <p>Please select a product in the section settings.</p>
     </div>
   {%- else -%}
+
   <script>
     window.cpsProduct_{{ section.id }} = {{ current_product | json }};
   </script>
 
   <div class="custom-product-section__inner">
 
+    <!-- Gallery -->
     <div class="custom-product-section__gallery">
       <div class="swiper custom-product-section__main-swiper" id="mainSwiper-{{ section.id }}">
         <div class="swiper-wrapper">
@@ -546,6 +552,7 @@
       </div>
     </div>
 
+    <!-- Info -->
     <div class="custom-product-section__info">
 
       <h1 class="custom-product-section__title">{{ current_product.title }}</h1>
@@ -577,8 +584,8 @@
         </div>
       {%- endif -%}
 
-      <div class="custom-product-section__description">
-        {{ current_product.description }}
+      <div class="custom-product-section__description" data-cps="description">
+        {{ first_variant.metafields.custom.description | default: current_product.description }}
       </div>
 
       {%- unless current_product.has_only_default_variant -%}
@@ -594,6 +601,7 @@
                   class="custom-product-section__chip{% if value == option.selected_value %} custom-product-section__chip--active{% endif %}"
                   data-value="{{ value }}"
                   data-option-index="{{ opt_idx }}"
+                  type="button"
                 >
                   <span class="custom-product-section__chip-dot"></span>
                   {{ value }}
@@ -615,14 +623,15 @@
 
       <div class="custom-product-section__atc-row">
         <div class="custom-product-section__quantity">
-          <button class="custom-product-section__qty-btn" data-action="minus">−</button>
+          <button class="custom-product-section__qty-btn" data-action="minus" type="button">−</button>
           <input type="number" class="custom-product-section__qty-input" value="1" min="1" max="99">
-          <button class="custom-product-section__qty-btn" data-action="plus">+</button>
+          <button class="custom-product-section__qty-btn" data-action="plus" type="button">+</button>
         </div>
         <button
           class="custom-product-section__atc-btn"
           data-variant-id="{{ first_variant.id }}"
           data-cps="atc"
+          type="button"
         >
           {{ section.settings.atc_label | default: 'ADD TO CART' }} —
           <span data-cps="price">{{ first_variant.price | money }}</span>
@@ -660,7 +669,7 @@
         {%- assign acc_content = 'accordion_' | append: i | append: '_content' -%}
         {%- if section.settings[acc_title] != blank -%}
           <div class="custom-product-section__accordion">
-            <button class="custom-product-section__accordion-trigger">
+            <button class="custom-product-section__accordion-trigger" type="button">
               {{ section.settings[acc_title] }}
               <span class="custom-product-section__accordion-icon">+</span>
             </button>
@@ -674,8 +683,8 @@
       {%- if section.settings.show_reviews -%}
         <div class="custom-product-section__reviews">
           <div class="custom-product-section__reviews-header">
-            <button class="custom-product-section__reviews-nav" id="reviewsPrev-{{ section.id }}">&#8592;</button>
-            <button class="custom-product-section__reviews-nav" id="reviewsNext-{{ section.id }}">&#8594;</button>
+            <button class="custom-product-section__reviews-nav" id="reviewsPrev-{{ section.id }}" type="button">&#8592;</button>
+            <button class="custom-product-section__reviews-nav" id="reviewsNext-{{ section.id }}" type="button">&#8594;</button>
           </div>
           <div class="custom-product-section__reviews-clip">
             <div class="swiper custom-product-section__reviews-swiper" id="reviewsSwiper-{{ section.id }}">
@@ -704,6 +713,7 @@
 
     </div>
   </div>
+
   {%- endif -%}
 </div>
 
@@ -782,6 +792,22 @@
     return '$' + (cents / 100).toFixed(2);
   }
 
+  function getVariantDescriptionHtml(variant) {
+    if (
+      variant &&
+      variant.metafields &&
+      variant.metafields.custom &&
+      variant.metafields.custom.description
+    ) {
+      var desc = variant.metafields.custom.description;
+
+      if (typeof desc === 'string') return desc;
+      if (desc.value) return desc.value;
+    }
+
+    return {{ current_product.description | json }};
+  }
+
   function getVariantFromImage(imageId, imageAlt) {
     imageAlt = (imageAlt || '').toLowerCase().trim();
 
@@ -839,6 +865,11 @@
     if (metaDot) {
       var col = variantColors[variant.title] || variantColors[variant.option1] || '#f5a623';
       metaDot.style.background = col;
+    }
+
+    var descEl = sectionEl.querySelector('[data-cps="description"]');
+    if (descEl) {
+      descEl.innerHTML = getVariantDescriptionHtml(variant);
     }
 
     if (!skipImageSync && variant.featured_image) {
