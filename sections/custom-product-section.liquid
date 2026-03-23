@@ -223,6 +223,18 @@
   .custom-product-section__chip--active .custom-product-section__chip-dot::after {
     background: white;
   }
+  .custom-product-section__chip--active[data-value="Pineapple"],
+.custom-product-section__chip--active[data-value="Tropical"] {
+  color: #373737;
+}
+.custom-product-section__chip--active[data-value="Pineapple"] .custom-product-section__chip-dot,
+.custom-product-section__chip--active[data-value="Tropical"] .custom-product-section__chip-dot {
+  border-color: #373737;
+}
+.custom-product-section__chip--active[data-value="Pineapple"] .custom-product-section__chip-dot::after,
+.custom-product-section__chip--active[data-value="Tropical"] .custom-product-section__chip-dot::after {
+  background: #373737;
+}
   .custom-product-section__dropdown {
     display: none;
     margin-bottom: 16px;
@@ -720,13 +732,13 @@
   if (!product) return;
 
   var variantColors = {
-    'Mighty Mango':      '#f5a623',
-    'Pineapple':         '#c8d400',
-    'Black Currant':     '#6b2d8b',
-    'Tropical':          '#00c9b1',
-    'Blueberry Vanilla': '#7b5ea7',
-    'Chocolate':         '#5c3d1e'
-  };
+    'Mighty Mango':      '#F47B06',
+    'Pineapple':         '#E8E41D',
+    'Black Currant':     '#782077',
+    'Tropical':          '#90E6E5',
+    'Blueberry Vanilla': '#7637FF',
+    'Chocolate':         '#834936'
+};
 
   /* Set chip color CSS var + neaktivan dot boja */
   sectionEl.querySelectorAll('.custom-product-section__chip').forEach(function(chip) {
