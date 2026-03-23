@@ -187,6 +187,7 @@
     transition: all 0.2s;
     color: #333;
   }
+  /* Radio krugic — neaktivan */
   .custom-product-section__chip-dot {
     width: 18px;
     height: 18px;
@@ -208,11 +209,13 @@
     background: transparent;
     transition: background 0.2s;
   }
+  /* Aktivan chip — background = boja flavora */
   .custom-product-section__chip--active {
     border-color: var(--chip-color, #888);
     background: var(--chip-color, #888);
     color: white;
   }
+  /* Aktivan radio krugic — beli outline, bela tacka unutra */
   .custom-product-section__chip--active .custom-product-section__chip-dot {
     border-color: white;
     background: transparent;
@@ -221,17 +224,17 @@
     background: white;
   }
   .custom-product-section__chip--active[data-value="Pineapple"],
-  .custom-product-section__chip--active[data-value="Tropical"] {
-    color: #373737;
-  }
-  .custom-product-section__chip--active[data-value="Pineapple"] .custom-product-section__chip-dot,
-  .custom-product-section__chip--active[data-value="Tropical"] .custom-product-section__chip-dot {
-    border-color: #373737;
-  }
-  .custom-product-section__chip--active[data-value="Pineapple"] .custom-product-section__chip-dot::after,
-  .custom-product-section__chip--active[data-value="Tropical"] .custom-product-section__chip-dot::after {
-    background: #373737;
-  }
+.custom-product-section__chip--active[data-value="Tropical"] {
+  color: #373737;
+}
+.custom-product-section__chip--active[data-value="Pineapple"] .custom-product-section__chip-dot,
+.custom-product-section__chip--active[data-value="Tropical"] .custom-product-section__chip-dot {
+  border-color: #373737;
+}
+.custom-product-section__chip--active[data-value="Pineapple"] .custom-product-section__chip-dot::after,
+.custom-product-section__chip--active[data-value="Tropical"] .custom-product-section__chip-dot::after {
+  background: #373737;
+}
   .custom-product-section__dropdown {
     display: none;
     margin-bottom: 16px;
@@ -504,18 +507,25 @@
   }
 </style>
 
-<div class="custom-product-section" data-section-id="{{ section.id }}" data-product-id="{{ current_product.id }}">
+<div
+  class="custom-product-section"
+  data-section-id="{{ section.id }}"
+  data-product-id="{{ current_product.id }}"
+>
+
   {%- if current_product == empty -%}
     <div class="custom-product-section__empty">
       <p>Please select a product in the section settings.</p>
     </div>
   {%- else -%}
+
   <script>
     window.cpsProduct_{{ section.id }} = {{ current_product | json }};
   </script>
 
   <div class="custom-product-section__inner">
 
+    <!-- Gallery -->
     <div class="custom-product-section__gallery">
       <div class="swiper custom-product-section__main-swiper" id="mainSwiper-{{ section.id }}">
         <div class="swiper-wrapper">
@@ -526,7 +536,6 @@
                 alt="{{ image.alt | escape }}"
                 class="custom-product-section__main-image"
                 data-image-id="{{ image.id }}"
-                data-image-alt="{{ image.alt | escape | downcase }}"
               >
             </div>
           {%- endfor -%}
@@ -546,6 +555,7 @@
       </div>
     </div>
 
+    <!-- Info -->
     <div class="custom-product-section__info">
 
       <h1 class="custom-product-section__title">{{ current_product.title }}</h1>
@@ -671,6 +681,7 @@
         {%- endif -%}
       {%- endfor -%}
 
+      <!-- Reviews unutar info kolone -->
       {%- if section.settings.show_reviews -%}
         <div class="custom-product-section__reviews">
           <div class="custom-product-section__reviews-header">
@@ -703,7 +714,11 @@
       {%- endif -%}
 
     </div>
+    <!-- kraj __info -->
+
   </div>
+  <!-- kraj __inner -->
+
   {%- endif -%}
 </div>
 
@@ -717,14 +732,15 @@
   if (!product) return;
 
   var variantColors = {
-    'Mighty Mango': '#F47B06',
-    'Pineapple': '#E8E41D',
-    'Black Currant': '#782077',
-    'Tropical': '#90E6E5',
+    'Mighty Mango':      '#F47B06',
+    'Pineapple':         '#E8E41D',
+    'Black Currant':     '#782077',
+    'Tropical':          '#90E6E5',
     'Blueberry Vanilla': '#7637FF',
-    'Chocolate': '#834936'
-  };
+    'Chocolate':         '#834936'
+};
 
+  /* Set chip color CSS var + neaktivan dot boja */
   sectionEl.querySelectorAll('.custom-product-section__chip').forEach(function(chip) {
     var color = variantColors[chip.dataset.value];
     if (color) {
@@ -735,8 +751,8 @@
   var selectedOptions = product.variants[0].options.slice();
   var currentVariant  = product.variants[0];
   var notifTimer      = null;
-  var isSyncingFromImage = false;
 
+  /* ── Swiper ── */
   var thumbEl = document.getElementById('thumbSwiper-' + sectionId);
   var mainEl  = document.getElementById('mainSwiper-' + sectionId);
   var totalImages = {{ current_product.images.size }};
@@ -770,6 +786,7 @@
     });
   }
 
+  /* ── Helpers ── */
   function findVariant(options) {
     return product.variants.find(function(v) {
       return options.every(function(val, i) {
@@ -782,46 +799,7 @@
     return '$' + (cents / 100).toFixed(2);
   }
 
-  function getVariantFromImage(imageId, imageAlt) {
-    imageAlt = (imageAlt || '').toLowerCase().trim();
-
-    var byImage = product.variants.find(function(v) {
-      return v.featured_image && parseInt(v.featured_image.id) === imageId;
-    });
-    if (byImage) return byImage;
-
-    var byTitle = product.variants.find(function(v) {
-      return imageAlt && imageAlt.indexOf((v.title || '').toLowerCase().trim()) !== -1;
-    });
-    if (byTitle) return byTitle;
-
-    var byOption = product.variants.find(function(v) {
-      return v.options.some(function(opt) {
-        return imageAlt && imageAlt.indexOf((opt || '').toLowerCase().trim()) !== -1;
-      });
-    });
-    if (byOption) return byOption;
-
-    return null;
-  }
-
-  function syncSelectorsFromVariant(variant) {
-    if (!variant) return;
-
-    selectedOptions = variant.options.slice();
-
-    sectionEl.querySelectorAll('.custom-product-section__chip').forEach(function(chip) {
-      var idx = parseInt(chip.dataset.optionIndex);
-      chip.classList.toggle('custom-product-section__chip--active', selectedOptions[idx] === chip.dataset.value);
-    });
-
-    sectionEl.querySelectorAll('.custom-product-section__dropdown-select').forEach(function(select) {
-      var idx = parseInt(select.dataset.optionIndex);
-      select.value = selectedOptions[idx];
-    });
-  }
-
-  function updateUI(variant, skipImageSync) {
+  function updateUI(variant) {
     if (!variant) return;
     currentVariant = variant;
 
@@ -835,45 +813,22 @@
     var labelText = sectionEl.querySelector('[data-cps="variant-label-text"]');
     if (labelText) labelText.textContent = variant.title;
 
+    /* Update meta dot color */
     var metaDot = sectionEl.querySelector('[data-cps="dot"]');
     if (metaDot) {
       var col = variantColors[variant.title] || variantColors[variant.option1] || '#f5a623';
       metaDot.style.background = col;
     }
 
-    if (!skipImageSync && variant.featured_image) {
-      var imgId = parseInt(variant.featured_image.id);
+    if (variant.featured_image) {
+      var imgId = variant.featured_image.id;
       sectionEl.querySelectorAll('.custom-product-section__main-image').forEach(function(img, idx) {
-        if (parseInt(img.dataset.imageId) === imgId && mainSwiper.activeIndex !== idx) {
-          mainSwiper.slideTo(idx);
-        }
+        if (parseInt(img.dataset.imageId) === imgId) mainSwiper.slideTo(idx);
       });
     }
   }
 
-  mainSwiper.on('slideChange', function() {
-    if (isSyncingFromImage) return;
-
-    var activeSlide = mainSwiper.slides[mainSwiper.activeIndex];
-    if (!activeSlide) return;
-
-    var img = activeSlide.querySelector('.custom-product-section__main-image');
-    if (!img) return;
-
-    var imageId = parseInt(img.dataset.imageId);
-    var imageAlt = img.dataset.imageAlt || '';
-    var matchedVariant = getVariantFromImage(imageId, imageAlt);
-
-    if (!matchedVariant) return;
-
-    isSyncingFromImage = true;
-    syncSelectorsFromVariant(matchedVariant);
-    updateUI(matchedVariant, true);
-    setTimeout(function() {
-      isSyncingFromImage = false;
-    }, 0);
-  });
-
+  /* ── Chips ── */
   sectionEl.querySelectorAll('.custom-product-section__chip').forEach(function(chip) {
     chip.addEventListener('click', function() {
       var idx = parseInt(this.dataset.optionIndex);
@@ -887,10 +842,11 @@
       var sel = sectionEl.querySelector('.custom-product-section__dropdown-select[data-option-index="' + idx + '"]');
       if (sel) sel.value = val;
 
-      updateUI(findVariant(selectedOptions), false);
+      updateUI(findVariant(selectedOptions));
     });
   });
 
+  /* ── Dropdown ── */
   sectionEl.querySelectorAll('.custom-product-section__dropdown-select').forEach(function(select) {
     select.addEventListener('change', function() {
       var idx = parseInt(this.dataset.optionIndex);
@@ -902,20 +858,21 @@
           c.classList.toggle('custom-product-section__chip--active', c.dataset.value === val);
         });
 
-      updateUI(findVariant(selectedOptions), false);
+      updateUI(findVariant(selectedOptions));
     });
   });
 
+  /* ── Quantity ── */
   sectionEl.querySelector('[data-action="minus"]').addEventListener('click', function() {
     var input = sectionEl.querySelector('.custom-product-section__qty-input');
     if (parseInt(input.value) > 1) input.value = parseInt(input.value) - 1;
   });
-
   sectionEl.querySelector('[data-action="plus"]').addEventListener('click', function() {
     var input = sectionEl.querySelector('.custom-product-section__qty-input');
     input.value = parseInt(input.value) + 1;
   });
 
+  /* ── ATC ── */
   sectionEl.querySelector('[data-cps="atc"]').addEventListener('click', function() {
     var btn       = this;
     var variantId = parseInt(btn.dataset.variantId);
@@ -937,21 +894,13 @@
       var notifTitle   = sectionEl.querySelector('[data-cps="notif-title"]');
       var notifVariant = sectionEl.querySelector('[data-cps="notif-variant"]');
 
-      if (notifImg) {
-        notifImg.src = currentVariant.featured_image ? currentVariant.featured_image.src : product.featured_image;
-      }
-      if (notifTitle) {
-        notifTitle.textContent = product.title;
-      }
-      if (notifVariant) {
-        notifVariant.textContent = currentVariant.title;
-      }
+      if (notifImg) notifImg.src = currentVariant.featured_image ? currentVariant.featured_image.src : product.featured_image;
+      if (notifTitle)   notifTitle.textContent  = product.title;
+      if (notifVariant) notifVariant.textContent = currentVariant.title;
 
       notif.style.display = 'block';
       if (notifTimer) clearTimeout(notifTimer);
-      notifTimer = setTimeout(function() {
-        notif.style.display = 'none';
-      }, 3000);
+      notifTimer = setTimeout(function() { notif.style.display = 'none'; }, 3000);
     })
     .catch(function(err) {
       console.error('ATC error:', err);
@@ -963,16 +912,15 @@
     });
   });
 
+  /* ── Accordions ── */
   sectionEl.querySelectorAll('.custom-product-section__accordion-trigger').forEach(function(trigger) {
     trigger.addEventListener('click', function() {
       var acc    = this.closest('.custom-product-section__accordion');
       var isOpen = acc.classList.contains('custom-product-section__accordion--open');
-
       sectionEl.querySelectorAll('.custom-product-section__accordion').forEach(function(a) {
         a.classList.remove('custom-product-section__accordion--open');
         a.querySelector('.custom-product-section__accordion-icon').textContent = '+';
       });
-
       if (!isOpen) {
         acc.classList.add('custom-product-section__accordion--open');
         trigger.querySelector('.custom-product-section__accordion-icon').textContent = '-';
@@ -980,8 +928,6 @@
     });
   });
 
-  syncSelectorsFromVariant(currentVariant);
-  updateUI(currentVariant, false);
 })();
 </script>
 
