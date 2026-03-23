@@ -1,0 +1,873 @@
+<style>
+  .sofia-video-carousel {
+    width: 100%;
+    background: var(--sofia-video-carousel-background-color, #FFFFFF);
+    padding:
+      var(--sofia-video-carousel-padding-top-mobile, 40px)
+      var(--sofia-video-carousel-padding-left-right-mobile, 16px)
+      var(--sofia-video-carousel-padding-bottom-mobile, 25px)
+      var(--sofia-video-carousel-padding-left-right-mobile, 16px);
+  }
+
+  @media (min-width: 768px) {
+    .sofia-video-carousel {
+      padding:
+        var(--sofia-video-carousel-padding-top-tablet, 60px)
+        var(--sofia-video-carousel-padding-left-right-tablet, 30px)
+        var(--sofia-video-carousel-padding-bottom-tablet, 60px)
+        var(--sofia-video-carousel-padding-left-right-tablet, 30px);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .sofia-video-carousel {
+      padding:
+        var(--sofia-video-carousel-padding-top-desktop, 80px)
+        var(--sofia-video-carousel-padding-left-right-desktop, 30px)
+        var(--sofia-video-carousel-padding-bottom-desktop, 80px)
+        var(--sofia-video-carousel-padding-left-right-desktop, 30px);
+    }
+  }
+
+  .sofia-video-carousel__body {
+    max-width: var(--sofia-section-max-width, 1400px);
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  .sofia-video-carousel__frame {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  @media (min-width: 768px) {
+    .sofia-video-carousel__frame {
+      max-width: var(--sofia-video-carousel-viewport-max-width-tablet, 100%);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .sofia-video-carousel__frame {
+      max-width: var(--sofia-video-carousel-viewport-max-width-desktop, 1210px);
+    }
+  }
+
+  .sofia-video-carousel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 0 0 var(--sofia-video-carousel-header-margin-bottom, 40px) 0;
+    padding: 0;
+
+    /* Keep navigation in the same vertical position even when the Title block is removed */
+    min-height: var(--sofia-video-carousel-header-min-height-mobile, 68px);
+  }
+
+  @media (min-width: 1024px) {
+    .sofia-video-carousel__header {
+      min-height: var(--sofia-video-carousel-header-min-height-desktop, 86px);
+    }
+  }
+
+  .sofia-video-carousel__title {
+    margin: 0;
+    padding: 0;
+    text-transform: unset;
+    line-height: 1.2;
+    color: var(--sofia-video-carousel-title-color, #000000);
+    font-size: var(--sofia-video-carousel-title-font-size-mobile, 28px);
+    font-weight: var(--sofia-video-carousel-title-font-weight, 600);
+    max-width: var(--sofia-video-carousel-title-max-width, 100%);
+  }
+
+  @media (min-width: 1024px) {
+    .sofia-video-carousel__title {
+      font-size: var(--sofia-video-carousel-title-font-size-desktop, 36px);
+    }
+  }
+
+  .sofia-video-carousel__title--placeholder {
+    visibility: hidden;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .sofia-video-carousel__navigation {
+    display: flex;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    flex: 0 0 auto;
+  }
+
+  .sofia-video-carousel__navigation--desktop {
+    display: none;
+  }
+
+  .sofia-video-carousel__navigation--mobile {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin: 20px 0 0 0;
+    padding: 0;
+  }
+
+  @media (min-width: 768px) {
+    .sofia-video-carousel__navigation--desktop {
+      display: flex;
+    }
+
+    .sofia-video-carousel__navigation--mobile {
+      display: none;
+    }
+  }
+
+  .sofia-video-carousel__navigation-button {
+    width: var(--sofia-video-carousel-navigation-button-size, 38px);
+    height: var(--sofia-video-carousel-navigation-button-size, 38px);
+    border-radius: 999px;
+    border: 2px solid var(--sofia-video-carousel-navigation-button-border-color, #000000);
+    background: var(--sofia-video-carousel-navigation-button-background-color, transparent);
+    color: var(--sofia-video-carousel-navigation-button-icon-color, #000000);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    text-decoration: none;
+    transition: border-color .15s ease, background-color .15s ease, color .15s ease;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .sofia-video-carousel__navigation-button svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+  }
+
+  .sofia-video-carousel__navigation-button svg,
+  .sofia-video-carousel__navigation-button svg * {
+    fill: currentColor;
+  }
+
+  .sofia-video-carousel__navigation-button[aria-disabled="true"] {
+    cursor: default;
+    border-color: var(--sofia-video-carousel-navigation-button-border-color-disabled, #B8B8B8);
+    color: var(--sofia-video-carousel-navigation-button-icon-color-disabled, #7A7A7A);
+    opacity: 1;
+    pointer-events: none;
+  }
+
+  .sofia-video-carousel__viewport {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+  }
+
+  .sofia-video-carousel__track {
+    display: flex;
+    gap: var(--sofia-video-carousel-gap-between-slides, 30px);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 0 0 6px 0;
+    margin: 0;
+  }
+
+  .sofia-video-carousel__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sofia-video-carousel__slide {
+    scroll-snap-align: start;
+    flex: 0 0 clamp(
+      var(--sofia-video-carousel-slide-min-width-mobile, 280px),
+      calc(
+        (100% - (var(--sofia-video-carousel-gap-between-slides, 30px) * (var(--sofia-video-carousel-slides-per-view-mobile, 1.2) - 1)))
+        / var(--sofia-video-carousel-slides-per-view-mobile, 1.2)
+      ),
+      var(--sofia-video-carousel-slide-max-width-mobile, 280px)
+    );
+    margin: 0;
+    padding: 0;
+  }
+
+  @media (min-width: 768px) {
+    .sofia-video-carousel__slide {
+      flex-basis: clamp(
+        var(--sofia-video-carousel-slide-min-width-tablet, 280px),
+        calc(
+          (100% - (var(--sofia-video-carousel-gap-between-slides, 30px) * (var(--sofia-video-carousel-slides-per-view-tablet, 3) - 1)))
+          / var(--sofia-video-carousel-slides-per-view-tablet, 3)
+        ),
+        var(--sofia-video-carousel-slide-max-width-tablet, 280px)
+      );
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .sofia-video-carousel__slide {
+      flex-basis: clamp(
+        var(--sofia-video-carousel-slide-min-width-desktop, 280px),
+        calc(
+          (100% - (var(--sofia-video-carousel-gap-between-slides, 30px) * (var(--sofia-video-carousel-slides-per-view-desktop, 4) - 1)))
+          / var(--sofia-video-carousel-slides-per-view-desktop, 4)
+        ),
+        var(--sofia-video-carousel-slide-max-width-desktop, 280px)
+      );
+    }
+  }
+
+  .sofia-video-carousel__media {
+    position: relative;
+    width: 100%;
+    height: var(--sofia-video-carousel-slide-height-mobile, 508px);
+    border-radius: var(--sofia-video-carousel-slide-border-radius, 0px);
+    overflow: hidden;
+    background: #EAEAEA;
+    margin: 0;
+    padding: 0;
+  }
+
+  @media (min-width: 1024px) {
+    .sofia-video-carousel__media {
+      height: var(--sofia-video-carousel-slide-height-desktop, 508px);
+    }
+  }
+
+  .sofia-video-carousel__video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    margin: 0;
+    padding: 0;
+  }
+
+  .sofia-video-carousel__controls {
+    position: absolute;
+    right: 10px;
+    left: auto;
+    bottom: 10px;
+    display: flex;
+    gap: 10px;
+    z-index: 2;
+    margin: 0;
+    padding: 0;
+  }
+
+  .sofia-video-carousel__control-button {
+    width: var(--sofia-video-carousel-control-button-size, 40px);
+    height: var(--sofia-video-carousel-control-button-size, 40px);
+    border: 0;
+    border-radius: var(--sofia-video-carousel-control-button-border-radius, 8px);
+    background: var(--sofia-video-carousel-control-button-background-color, #000000);
+    color: var(--sofia-video-carousel-control-button-icon-color, #FFFFFF);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    text-decoration: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .sofia-video-carousel__control-button svg {
+    width: var(--sofia-video-carousel-control-icon-size, 24px);
+    height: var(--sofia-video-carousel-control-icon-size, 24px);
+    display: block;
+    max-height: none;
+  }
+
+  .sofia-video-carousel__control-button svg,
+  .sofia-video-carousel__control-button svg * {
+    fill: currentColor;
+  }
+
+  .sofia-video-carousel__icon-templates {
+    display: none;
+  }
+</style>
+
+{%- liquid
+  assign default_play_svg = '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393"></path></svg>'
+  assign default_pause_svg = '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path d="M5.5 3.5A1.5 1.5 0 0 1 7 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5m5 0A1.5 1.5 0 0 1 12 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5"></path></svg>'
+
+  assign default_muted_svg = '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path d="M6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06m7.137 2.096a.5.5 0 0 1 0 .708L12.207 8l1.647 1.646a.5.5 0 0 1-.708.708L11.5 8.707l-1.646 1.647a.5.5 0 0 1-.708-.708L10.793 8 9.146 6.354a.5.5 0 1 1 .708-.708L11.5 7.293l1.646-1.647a.5.5 0 0 1 .708 0"></path></svg>'
+  assign default_unmuted_svg = '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path d="M11.536 14.01A8.47 8.47 0 0 0 14.026 8a8.47 8.47 0 0 0-2.49-6.01l-.708.707A7.48 7.48 0 0 1 13.025 8c0 2.071-.84 3.946-2.197 5.303z"></path><path d="M10.121 12.596A6.48 6.48 0 0 0 12.025 8a6.48 6.48 0 0 0-1.904-4.596l-.707.707A5.48 5.48 0 0 1 11.025 8a5.48 5.0 0 0 1-1.61 3.89z"></path><path d="M8.707 11.182A4.5 4.5 0 0 0 10.025 8a4.5 4.5 0 0 0-1.318-3.182L8 5.525A3.5 3.5 0 0 1 9.025 8 3.5 3.5 0 0 1 8 10.475zM6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06"></path></svg>'
+
+  assign default_previous_arrow_svg = '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"></path></svg>'
+  assign default_next_arrow_svg = '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 1 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"></path></svg>'
+
+  assign play_icon_svg = section.settings.playIconSvg
+  if play_icon_svg == blank
+    assign play_icon_svg = default_play_svg
+  endif
+
+  assign pause_icon_svg = section.settings.pauseIconSvg
+  if pause_icon_svg == blank
+    assign pause_icon_svg = default_pause_svg
+  endif
+
+  assign muted_icon_svg = section.settings.mutedIconSvg
+  if muted_icon_svg == blank
+    assign muted_icon_svg = default_muted_svg
+  endif
+
+  assign unmuted_icon_svg = section.settings.unmutedIconSvg
+  if unmuted_icon_svg == blank
+    assign unmuted_icon_svg = default_unmuted_svg
+  endif
+
+  assign previous_arrow_svg = section.settings.previousArrowSvg
+  if previous_arrow_svg == blank
+    assign previous_arrow_svg = default_previous_arrow_svg
+  endif
+
+  assign next_arrow_svg = section.settings.nextArrowSvg
+  if next_arrow_svg == blank
+    assign next_arrow_svg = default_next_arrow_svg
+  endif
+
+  assign gap_between_slides_pixels = section.settings.gapBetweenSlidesPixels | default: 30 | plus: 0
+
+  assign slides_per_view_desktop = section.settings.slidesPerViewDesktop | default: '4' | plus: 0
+  if slides_per_view_desktop > 4
+    assign slides_per_view_desktop = 4
+  endif
+  if slides_per_view_desktop < 1
+    assign slides_per_view_desktop = 1
+  endif
+
+  assign slides_per_view_tablet = section.settings.slidesPerViewTablet | default: '3' | plus: 0
+  if slides_per_view_tablet > 4
+    assign slides_per_view_tablet = 4
+  endif
+  if slides_per_view_tablet < 1
+    assign slides_per_view_tablet = 1
+  endif
+
+  assign slide_max_width_desktop_pixels = section.settings.slideMaxWidthDesktopPixels | default: 280 | plus: 0
+  assign viewport_max_width_desktop_pixels = slide_max_width_desktop_pixels | times: slides_per_view_desktop
+  assign viewport_gap_width_desktop_pixels = gap_between_slides_pixels | times: slides_per_view_desktop | minus: gap_between_slides_pixels
+  assign viewport_max_width_desktop_pixels = viewport_max_width_desktop_pixels | plus: viewport_gap_width_desktop_pixels
+
+  assign slide_max_width_tablet_pixels = section.settings.slideMaxWidthTabletPixels | default: 280 | plus: 0
+  assign viewport_max_width_tablet_pixels = slide_max_width_tablet_pixels | times: slides_per_view_tablet
+  assign viewport_gap_width_tablet_pixels = gap_between_slides_pixels | times: slides_per_view_tablet | minus: gap_between_slides_pixels
+  assign viewport_max_width_tablet_pixels = viewport_max_width_tablet_pixels | plus: viewport_gap_width_tablet_pixels
+
+  assign section_padding_top_desktop_pixels = section.settings.sectionPaddingTopDesktopPixels | default: 80 | plus: 0
+  assign section_padding_bottom_desktop_pixels = section.settings.sectionPaddingBottomDesktopPixels | default: 80 | plus: 0
+  assign section_padding_left_right_desktop_pixels = section.settings.sectionPaddingLeftRightDesktopPixels | default: 30 | plus: 0
+
+  assign section_padding_top_tablet_pixels = section.settings.sectionPaddingTopTabletPixels | default: 60 | plus: 0
+  assign section_padding_bottom_tablet_pixels = section.settings.sectionPaddingBottomTabletPixels | default: 60 | plus: 0
+  assign section_padding_left_right_tablet_pixels = section.settings.sectionPaddingLeftRightTabletPixels | default: 30 | plus: 0
+
+  assign section_padding_top_mobile_pixels = section.settings.sectionPaddingTopMobilePixels | default: 40 | plus: 0
+  assign section_padding_bottom_mobile_pixels = section.settings.sectionPaddingBottomMobilePixels | default: 25 | plus: 0
+  assign section_padding_left_right_mobile_pixels = section.settings.sectionPaddingLeftRightMobilePixels | default: 16 | plus: 0
+
+  assign slide_border_radius_pixels = section.settings.slideBorderRadiusPixels | default: 0 | plus: 0
+  assign slide_height_desktop_pixels = section.settings.slideHeightDesktopPixels | default: 508 | plus: 0
+  assign slide_height_mobile_pixels = section.settings.slideHeightMobilePixels | default: 508 | plus: 0
+
+  assign slide_min_width_desktop_pixels = section.settings.slideMinWidthDesktopPixels | default: 280 | plus: 0
+  assign slide_min_width_tablet_pixels = section.settings.slideMinWidthTabletPixels | default: 280 | plus: 0
+  assign slide_min_width_mobile_pixels = section.settings.slideMinWidthMobilePixels | default: 280 | plus: 0
+
+  assign slide_max_width_mobile_pixels = section.settings.slideMaxWidthMobilePixels | default: 280 | plus: 0
+
+  assign header_margin_bottom_pixels = section.settings.headerMarginBottomPixels | default: 40 | plus: 0
+  assign navigation_button_size_pixels = section.settings.navigationButtonSizePixels | default: 38 | plus: 0
+-%}
+
+{%- assign sofia_video_carousel_title = '' -%}
+{%- assign has_title_block = false -%}
+
+{%- for block in section.blocks -%}
+  {%- case block.type -%}
+    {%- when 'sofia-title' -%}
+      {%- assign title_settings = block.settings -%}
+      {%- if title_settings.title != blank -%}
+        {%- assign has_title_block = true -%}
+        {%- assign title_font_size_desktop_pixels = title_settings.titleFontSizeDesktopPixels | default: 36 | plus: 0 -%}
+        {%- assign title_font_size_mobile_pixels = title_settings.titleFontSizeMobilePixels | default: 28 | plus: 0 -%}
+        {%- assign title_max_width_percentage = title_settings.titleMaxWidthPercentage | default: 100 | plus: 0 -%}
+        {%- assign title_font_weight_value = title_settings.titleFontWeight | default: '600' -%}
+        {%- capture sofia_video_carousel_title -%}
+          <span
+            class="sofia-block sofia-video-carousel__title"
+            style="
+              --sofia-video-carousel-title-color: {{ title_settings.titleColor | default: '#000000' }};
+              --sofia-video-carousel-title-font-size-desktop: {{ title_font_size_desktop_pixels }}px;
+              --sofia-video-carousel-title-font-size-mobile: {{ title_font_size_mobile_pixels }}px;
+              --sofia-video-carousel-title-font-weight: {{ title_font_weight_value }};
+              --sofia-video-carousel-title-max-width: {{ title_max_width_percentage }}%;
+            "
+          >
+            {{- title_settings.title -}}
+          </span>
+        {%- endcapture -%}
+      {%- endif -%}
+  {%- endcase -%}
+{%- endfor -%}
+
+<div
+  class="sofia-section sofia-video-carousel"
+  style="
+    --sofia-video-carousel-background-color: {{ section.settings.backgroundColor | default: '#FFFFFF' }};
+
+    --sofia-video-carousel-padding-top-desktop: {{ section_padding_top_desktop_pixels }}px;
+    --sofia-video-carousel-padding-bottom-desktop: {{ section_padding_bottom_desktop_pixels }}px;
+    --sofia-video-carousel-padding-left-right-desktop: {{ section_padding_left_right_desktop_pixels }}px;
+
+    --sofia-video-carousel-padding-top-tablet: {{ section_padding_top_tablet_pixels }}px;
+    --sofia-video-carousel-padding-bottom-tablet: {{ section_padding_bottom_tablet_pixels }}px;
+    --sofia-video-carousel-padding-left-right-tablet: {{ section_padding_left_right_tablet_pixels }}px;
+
+    --sofia-video-carousel-padding-top-mobile: {{ section_padding_top_mobile_pixels }}px;
+    --sofia-video-carousel-padding-bottom-mobile: {{ section_padding_bottom_mobile_pixels }}px;
+    --sofia-video-carousel-padding-left-right-mobile: {{ section_padding_left_right_mobile_pixels }}px;
+
+    --sofia-video-carousel-gap-between-slides: {{ gap_between_slides_pixels }}px;
+
+    --sofia-video-carousel-slide-border-radius: {{ slide_border_radius_pixels }}px;
+
+    --sofia-video-carousel-slide-height-desktop: {{ slide_height_desktop_pixels }}px;
+    --sofia-video-carousel-slide-height-mobile: {{ slide_height_mobile_pixels }}px;
+
+    --sofia-video-carousel-slide-min-width-desktop: {{ slide_min_width_desktop_pixels }}px;
+    --sofia-video-carousel-slide-max-width-desktop: {{ slide_max_width_desktop_pixels }}px;
+
+    --sofia-video-carousel-slide-min-width-tablet: {{ slide_min_width_tablet_pixels }}px;
+    --sofia-video-carousel-slide-max-width-tablet: {{ slide_max_width_tablet_pixels }}px;
+
+    --sofia-video-carousel-slide-min-width-mobile: {{ slide_min_width_mobile_pixels }}px;
+    --sofia-video-carousel-slide-max-width-mobile: {{ slide_max_width_mobile_pixels }}px;
+
+    --sofia-video-carousel-slides-per-view-desktop: {{ slides_per_view_desktop }};
+    --sofia-video-carousel-slides-per-view-tablet: {{ slides_per_view_tablet }};
+    --sofia-video-carousel-slides-per-view-mobile: {{ section.settings.slidesPerViewMobile | default: '1.2' }};
+
+    --sofia-video-carousel-header-margin-bottom: {{ header_margin_bottom_pixels }}px;
+
+    --sofia-video-carousel-navigation-button-size: {{ navigation_button_size_pixels }}px;
+    --sofia-video-carousel-navigation-button-border-color: {{ section.settings.navigationBorderColor | default: '#000000' }};
+    --sofia-video-carousel-navigation-button-background-color: {{ section.settings.navigationBackgroundColor | default: 'transparent' }};
+    --sofia-video-carousel-navigation-button-icon-color: {{ section.settings.navigationIconColor | default: '#000000' }};
+
+    --sofia-video-carousel-navigation-button-border-color-disabled: {{ section.settings.navigationBorderColorDisabled | default: '#B8B8B8' }};
+    --sofia-video-carousel-navigation-button-icon-color-disabled: {{ section.settings.navigationIconColorDisabled | default: '#7A7A7A' }};
+
+    --sofia-video-carousel-viewport-max-width-desktop: {{ viewport_max_width_desktop_pixels }}px;
+    --sofia-video-carousel-viewport-max-width-tablet: {{ viewport_max_width_tablet_pixels }}px;
+  "
+>
+  <div class="sofia-video-carousel__body">
+    <div class="sofia-video-carousel__icon-templates" aria-hidden="true">
+      <template data-sofia-icon="play">{{- play_icon_svg -}}</template>
+      <template data-sofia-icon="pause">{{- pause_icon_svg -}}</template>
+      <template data-sofia-icon="muted">{{- muted_icon_svg -}}</template>
+      <template data-sofia-icon="unmuted">{{- unmuted_icon_svg -}}</template>
+    </div>
+
+    <div class="sofia-video-carousel__frame">
+      <div class="sofia-video-carousel__header">
+        {%- if has_title_block and sofia_video_carousel_title != blank -%}
+          {{- sofia_video_carousel_title -}}
+        {%- else -%}
+          <span class="sofia-video-carousel__title sofia-video-carousel__title--placeholder" aria-hidden="true">&nbsp;</span>
+        {%- endif -%}
+
+        <div class="sofia-video-carousel__navigation sofia-video-carousel__navigation--desktop">
+          <a
+            href="#"
+            class="sofia-video-carousel__navigation-button"
+            data-sofia-direction="previous"
+            role="button"
+            aria-label="Previous"
+            aria-disabled="false"
+          >
+            {{- previous_arrow_svg -}}
+          </a>
+          <a
+            href="#"
+            class="sofia-video-carousel__navigation-button"
+            data-sofia-direction="next"
+            role="button"
+            aria-label="Next"
+            aria-disabled="false"
+          >
+            {{- next_arrow_svg -}}
+          </a>
+        </div>
+      </div>
+
+      <div class="sofia-video-carousel__viewport">
+        <div class="sofia-video-carousel__track" data-sofia-track>
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'sofia-video' -%}
+              {%- assign video_settings = block.settings -%}
+              {%- assign video_media = video_settings.videoFile -%}
+              {%- assign video_url = video_settings.mp4Url -%}
+
+              {%- if video_media != blank or video_url != blank -%}
+                {%- assign control_button_size_pixels = video_settings.controlButtonSizePixels | default: 40 | plus: 0 -%}
+                {%- assign control_icon_size_pixels = video_settings.controlIconSizePixels | default: 24 | plus: 0 -%}
+                {%- assign control_button_border_radius_pixels = video_settings.controlButtonBorderRadiusPixels | default: 8 | plus: 0 -%}
+
+                <div class="sofia-block sofia-video-carousel__slide" {{ block.shopify_attributes }}>
+                  <div
+                    class="sofia-video-carousel__media"
+                    style="
+                      --sofia-video-carousel-control-button-size: {{ control_button_size_pixels }}px;
+                      --sofia-video-carousel-control-button-border-radius: {{ control_button_border_radius_pixels }}px;
+                      --sofia-video-carousel-control-button-background-color: {{ video_settings.controlButtonBackgroundColor | default: '#000000' }};
+                      --sofia-video-carousel-control-button-icon-color: {{ video_settings.controlButtonIconColor | default: '#FFFFFF' }};
+                      --sofia-video-carousel-control-icon-size: {{ control_icon_size_pixels }}px;
+                    "
+                  >
+                    <video
+                      class="sofia-video-carousel__video"
+                      data-sofia-video
+                      playsinline
+                      webkit-playsinline
+                      muted
+                      preload="metadata"
+                      {%- if video_settings.posterImage != blank -%}
+                        poster="{{ video_settings.posterImage | image_url: width: 1200 }}"
+                      {%- elsif video_media != blank and video_media.preview_image != blank -%}
+                        poster="{{ video_media.preview_image | image_url: width: 1200 }}"
+                      {%- endif -%}
+                    >
+                      {%- if video_media != blank -%}
+                        {%- for source in video_media.sources -%}
+                          {%- if source.mime_type == 'video/mp4' -%}
+                            <source src="{{ source.url }}" type="{{ source.mime_type }}">
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- else -%}
+                        <source src="{{ video_url }}" type="video/mp4">
+                      {%- endif -%}
+                    </video>
+
+                    <div class="sofia-video-carousel__controls">
+                      <a
+                        href="#"
+                        class="sofia-video-carousel__control-button"
+                        data-sofia-action="toggle-play"
+                        role="button"
+                        aria-label="Play"
+                      >
+                        {{- play_icon_svg -}}
+                      </a>
+                      <a
+                        href="#"
+                        class="sofia-video-carousel__control-button"
+                        data-sofia-action="toggle-mute"
+                        role="button"
+                        aria-label="Muted"
+                      >
+                        {{- muted_icon_svg -}}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+
+      <div class="sofia-video-carousel__navigation sofia-video-carousel__navigation--mobile">
+        <a
+          href="#"
+          class="sofia-video-carousel__navigation-button"
+          data-sofia-direction="previous"
+          role="button"
+          aria-label="Previous"
+          aria-disabled="false"
+        >
+          {{- previous_arrow_svg -}}
+        </a>
+        <a
+          href="#"
+          class="sofia-video-carousel__navigation-button"
+          data-sofia-direction="next"
+          role="button"
+          aria-label="Next"
+          aria-disabled="false"
+        >
+          {{- next_arrow_svg -}}
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const section = document.currentScript.closest('.sofia-video-carousel');
+      if (!section) return;
+
+      const track = section.querySelector('[data-sofia-track]');
+      const previousButtons = Array.from(section.querySelectorAll('[data-sofia-direction="previous"]'));
+      const nextButtons = Array.from(section.querySelectorAll('[data-sofia-direction="next"]'));
+
+      const getIconMarkup = (name) => {
+        const template = section.querySelector(`template[data-sofia-icon="${name}"]`);
+        return template ? template.innerHTML.trim() : '';
+      };
+
+      const getGapPixels = () => {
+        if (!track) return 0;
+        const styles = window.getComputedStyle(track);
+        const gap = parseFloat(styles.columnGap || styles.gap || '0');
+        return Number.isFinite(gap) ? gap : 0;
+      };
+
+      const getScrollStepPixels = () => {
+        if (!track) return 0;
+        const slide = section.querySelector('.sofia-video-carousel__slide');
+        if (!slide) return track.clientWidth;
+        return slide.getBoundingClientRect().width + getGapPixels();
+      };
+
+      const setDisabledState = (buttons, state) => {
+        buttons.forEach((button) => {
+          if (!button) return;
+          const isDisabled = !!state;
+          button.setAttribute('aria-disabled', isDisabled ? 'true' : 'false');
+
+          if (isDisabled) button.setAttribute('tabindex', '-1');
+          else button.removeAttribute('tabindex');
+        });
+      };
+
+      const updateNavigationState = () => {
+        if (!track) return;
+        const maximumScrollLeft = track.scrollWidth - track.clientWidth - 2;
+        setDisabledState(previousButtons, track.scrollLeft <= 1);
+        setDisabledState(nextButtons, track.scrollLeft >= maximumScrollLeft);
+      };
+
+      const handleNavigationClick = (event, direction) => {
+        event.preventDefault();
+        const target = event.currentTarget;
+        if (!track) return;
+        if (target && target.getAttribute('aria-disabled') === 'true') return;
+
+        const delta = direction === 'previous' ? -getScrollStepPixels() : getScrollStepPixels();
+        track.scrollBy({ left: delta, behavior: 'smooth' });
+      };
+
+      if (track) {
+        previousButtons.forEach((button) => {
+          button.addEventListener('click', (event) => handleNavigationClick(event, 'previous'));
+        });
+
+        nextButtons.forEach((button) => {
+          button.addEventListener('click', (event) => handleNavigationClick(event, 'next'));
+        });
+
+        track.addEventListener('scroll', () => window.requestAnimationFrame(updateNavigationState));
+        window.addEventListener('resize', updateNavigationState);
+        updateNavigationState();
+      }
+
+      const setPlayButtonState = (video, button) => {
+        const isPaused = video.paused;
+        button.innerHTML = isPaused ? getIconMarkup('play') : getIconMarkup('pause');
+        button.setAttribute('aria-label', isPaused ? 'Play' : 'Pause');
+      };
+
+      const setMuteButtonState = (video, button) => {
+        button.innerHTML = video.muted ? getIconMarkup('muted') : getIconMarkup('unmuted');
+        button.setAttribute('aria-label', video.muted ? 'Muted' : 'Unmuted');
+      };
+
+      section.querySelectorAll('[data-sofia-video]').forEach((video) => {
+        const media = video.closest('.sofia-video-carousel__media');
+        if (!media) return;
+
+        const playButton = media.querySelector('[data-sofia-action="toggle-play"]');
+        const muteButton = media.querySelector('[data-sofia-action="toggle-mute"]');
+
+        if (playButton) setPlayButtonState(video, playButton);
+        if (muteButton) setMuteButtonState(video, muteButton);
+
+        video.addEventListener('play', () => playButton && setPlayButtonState(video, playButton));
+        video.addEventListener('pause', () => playButton && setPlayButtonState(video, playButton));
+        video.addEventListener('volumechange', () => muteButton && setMuteButtonState(video, muteButton));
+      });
+
+      section.addEventListener('click', (event) => {
+        const actionLink = event.target.closest('[data-sofia-action]');
+        if (!actionLink) return;
+
+        event.preventDefault();
+
+        const media = actionLink.closest('.sofia-video-carousel__media');
+        const video = media ? media.querySelector('[data-sofia-video]') : null;
+        if (!video) return;
+
+        const action = actionLink.getAttribute('data-sofia-action');
+
+        if (action === 'toggle-play') {
+          section.querySelectorAll('[data-sofia-video]').forEach((otherVideo) => {
+            if (otherVideo !== video) otherVideo.pause();
+          });
+
+          if (video.paused) video.play().catch(() => {});
+          else video.pause();
+        }
+
+        if (action === 'toggle-mute') {
+          video.muted = !video.muted;
+        }
+      });
+    })();
+  </script>
+</div>
+
+{% schema %}
+{
+  "name": "Sofia - Video Carousel",
+  "settings": [
+    { "type": "color", "id": "backgroundColor", "label": "Background color" },
+
+    { "type": "number", "id": "sectionPaddingTopDesktopPixels", "label": "Section padding top (desktop) (px)" },
+    { "type": "number", "id": "sectionPaddingBottomDesktopPixels", "label": "Section padding bottom (desktop) (px)" },
+    { "type": "number", "id": "sectionPaddingLeftRightDesktopPixels", "label": "Section padding left/right (desktop) (px)" },
+
+    { "type": "number", "id": "sectionPaddingTopTabletPixels", "label": "Section padding top (tablet) (px)" },
+    { "type": "number", "id": "sectionPaddingBottomTabletPixels", "label": "Section padding bottom (tablet) (px)" },
+    { "type": "number", "id": "sectionPaddingLeftRightTabletPixels", "label": "Section padding left/right (tablet) (px)" },
+
+    { "type": "number", "id": "sectionPaddingTopMobilePixels", "label": "Section padding top (mobile) (px)" },
+    { "type": "number", "id": "sectionPaddingBottomMobilePixels", "label": "Section padding bottom (mobile) (px)" },
+    { "type": "number", "id": "sectionPaddingLeftRightMobilePixels", "label": "Section padding left/right (mobile) (px)" },
+
+    { "type": "number", "id": "headerMarginBottomPixels", "label": "Header margin bottom (px)" },
+    { "type": "number", "id": "gapBetweenSlidesPixels", "label": "Gap between slides (px)" },
+
+    {
+      "type": "select",
+      "id": "slidesPerViewDesktop",
+      "label": "Slides per view (desktop)",
+      "default": "4",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "slidesPerViewTablet",
+      "label": "Slides per view (tablet)",
+      "default": "3",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "slidesPerViewMobile",
+      "label": "Slides per view (mobile)",
+      "default": "1.2",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "1.2", "label": "1.2" },
+        { "value": "1.5", "label": "1.5" }
+      ]
+    },
+
+    { "type": "number", "id": "slideMinWidthDesktopPixels", "label": "Slide min width (desktop) (px)" },
+    { "type": "number", "id": "slideMaxWidthDesktopPixels", "label": "Slide max width (desktop) (px)" },
+
+    { "type": "number", "id": "slideMinWidthTabletPixels", "label": "Slide min width (tablet) (px)" },
+    { "type": "number", "id": "slideMaxWidthTabletPixels", "label": "Slide max width (tablet) (px)" },
+
+    { "type": "number", "id": "slideMinWidthMobilePixels", "label": "Slide min width (mobile) (px)" },
+    { "type": "number", "id": "slideMaxWidthMobilePixels", "label": "Slide max width (mobile) (px)" },
+
+    { "type": "number", "id": "slideHeightDesktopPixels", "label": "Slide height (desktop) (px)" },
+    { "type": "number", "id": "slideHeightMobilePixels", "label": "Slide height (mobile) (px)" },
+
+    { "type": "number", "id": "slideBorderRadiusPixels", "label": "Slide border radius (px)" },
+
+    { "type": "number", "id": "navigationButtonSizePixels", "label": "Navigation button size (px)" },
+    { "type": "color", "id": "navigationBorderColor", "label": "Navigation border color" },
+    { "type": "color", "id": "navigationBackgroundColor", "label": "Navigation background color" },
+    { "type": "color", "id": "navigationIconColor", "label": "Navigation icon color" },
+
+    { "type": "color", "id": "navigationBorderColorDisabled", "label": "Navigation disabled border color" },
+    { "type": "color", "id": "navigationIconColorDisabled", "label": "Navigation disabled icon color" },
+
+    { "type": "textarea", "id": "playIconSvg", "label": "Play icon SVG" },
+    { "type": "textarea", "id": "pauseIconSvg", "label": "Pause icon SVG" },
+    { "type": "textarea", "id": "mutedIconSvg", "label": "Muted icon SVG" },
+    { "type": "textarea", "id": "unmutedIconSvg", "label": "Unmuted icon SVG" },
+
+    { "type": "textarea", "id": "previousArrowSvg", "label": "Previous arrow SVG" },
+    { "type": "textarea", "id": "nextArrowSvg", "label": "Next arrow SVG" }
+  ],
+  "blocks": [
+    {
+      "type": "sofia-title",
+      "name": "Title",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "color", "id": "titleColor", "label": "Title color" },
+
+        { "type": "number", "id": "titleFontSizeDesktopPixels", "label": "Title font size (desktop) (px)" },
+        { "type": "number", "id": "titleFontSizeMobilePixels", "label": "Title font size (mobile) (px)" },
+
+        {
+          "type": "select",
+          "id": "titleFontWeight",
+          "label": "Title font weight",
+          "default": "600",
+          "options": [
+            { "value": "400", "label": "400" },
+            { "value": "500", "label": "500" },
+            { "value": "600", "label": "600" },
+            { "value": "700", "label": "700" },
+            { "value": "800", "label": "800" }
+          ]
+        },
+
+        { "type": "number", "id": "titleMaxWidthPercentage", "label": "Title max width (%)" }
+      ]
+    },
+    {
+      "type": "sofia-video",
+      "name": "Video",
+      "limit": 6,
+      "settings": [
+        { "type": "video", "id": "videoFile", "label": "Video file (recommended)" },
+        { "type": "text", "id": "mp4Url", "label": "MP4 URL (fallback)" },
+        { "type": "image_picker", "id": "posterImage", "label": "Poster image (optional)" },
+
+        { "type": "number", "id": "controlButtonSizePixels", "label": "Control button size (px)" },
+        { "type": "number", "id": "controlIconSizePixels", "label": "Control icon size (px)" },
+        { "type": "number", "id": "controlButtonBorderRadiusPixels", "label": "Control button border radius (px)" },
+        { "type": "color", "id": "controlButtonBackgroundColor", "label": "Control button background color" },
+        { "type": "color", "id": "controlButtonIconColor", "label": "Control button icon color" }
+      ]
+    }
+  ]
+}
+{% endschema %}

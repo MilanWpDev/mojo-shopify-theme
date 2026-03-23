@@ -1,0 +1,435 @@
+<style>
+  .sofia-image-with-text {
+    width: 100%;
+    padding: 15px 10px;
+  }
+
+  .sofia-image-with-text__body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    /* --sofia-section-max-width is defined in sofia-template-data section */
+    max-width: var(--sofia-section-max-width, 1400px);
+    margin: 0 auto;
+  }
+
+  .sofia-image-with-text__image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    aspect-ratio: 1/1;
+  }
+  .sofia-image-with-text__image.sofia-image-with-text__image--cover img {
+    object-fit: cover;
+  }
+  .sofia-image-with-text__svg-mask {
+    display: block !important; /* Shopify themes sometimes hide empty DIVs */
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+    -webkit-mask: var(--svg-mask-url) no-repeat center / contain;
+    mask: var(--svg-mask-url) no-repeat center / contain;
+  }
+  .sofia-image-with-text__image.sofia-image-with-text__image--cover .sofia-image-with-text__svg-mask {
+    -webkit-mask: var(--svg-mask-url) no-repeat center / cover;
+    mask: var(--svg-mask-url) no-repeat center / cover;
+  }
+
+  .sofia-image-with-text__content {
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .sofia-image-with-text__content-title {
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .sofia-image-with-text__content-text * {
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 0;
+    text-transform: unset;
+  }
+
+  .sofia-image-with-text__content-text a {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--sofia-image-with-text-link-color);
+    text-decoration: var(--sofia-image-with-text-link-text-decoration);
+  }
+
+  .sofia-image-with-text__content-button {
+    margin: 0;
+    padding: 12px 30px;
+    font-size: 13px;
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    max-width: fit-content;
+    text-align: center;
+    text-transform: unset;
+    text-decoration: none;
+    position: relative;
+    font-weight: 700;
+    z-index: 2;
+  }
+
+  @media (min-width: 1024px) {
+    .sofia-image-with-text {
+      padding: 25px 20px;
+    }
+
+    .sofia-image-with-text__body {
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+    .sofia-image-with-text__body:has(.sofia-image-with-text__image--small) {
+      grid-template-columns: 3fr 4fr;
+    }
+    .sofia-image-with-text__body:has(.sofia-image-with-text__image--right.sofia-image-with-text__image--small) {
+      grid-template-columns: 4fr 3fr;
+    }
+
+    .sofia-image-with-text__image.sofia-image-with-text__image--right {
+      order: 2;
+    }
+
+    .sofia-image-with-text__content {
+      position: relative;
+      justify-content: center;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      gap: 30px;
+    }
+
+    .sofia-image-with-text__content-title {
+      font-size: 36px;
+    }
+  }
+</style>
+
+{%- for block in section.blocks -%}
+  {%- case block.type -%}
+    {%- when 'sofia-image' -%}
+      {% # Image block %}
+      {%- capture sofia_image -%}
+        {%- assign image_settings = block.settings -%}
+        {%- if image_settings.image != blank -%}
+          <div
+            class="
+              sofia-block
+              sofia-image-with-text__image
+              sofia-image-with-text__image--{{ image_settings.imagePosition }}
+              sofia-image-with-text__image--{{ image_settings.imageCover }}
+              sofia-image-with-text__image--{{ image_settings.imageSize }}
+            "
+          >
+            <!-- NOTE: If image is a Sofia vector image then we mask it so it matches content color -->
+            {%- if image_settings.image contains 'sofia-' and image_settings.image contains 'vector' and image_settings.image contains '.svg' -%}
+              <div
+                class="sofia-image-with-text__svg-mask"
+                style="
+                  --svg-mask-url: url({{ image_settings.image | image_url }});
+                  background: {{ image_settings.vectorColor | default: "#000000" }};
+                "
+              ></div>
+            {%- else -%}
+              <img
+                src="{{ image_settings.image | image_url }}"
+                alt="Section image"
+                {% # We need to assign width/height so that Shopify does not complain %}
+                width="1000"
+                height="1000"
+                style="border-radius: {{ image_settings.imageBorderRadius | default: 0 -}}px;"
+              >
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endcapture -%}
+    {%- when 'sofia-title' -%}
+      {% # Title block %}
+      {%- capture sofia_title -%}
+        {%- assign title_settings = block.settings -%}
+        {%- if title_settings.title != blank -%}
+          <span
+            class="sofia-block sofia-image-with-text__content-title"
+            style="
+              color: {{ title_settings.titleColor | default: "#000000" }};
+              {% if title_settings.titleFontSize %}
+                font-size: {{ title_settings.titleFontSize -}}px;
+              {% endif %}
+            "
+          >
+            {{- title_settings.title -}}
+          </span>
+        {%- endif -%}
+      {%- endcapture -%}
+    {%- when 'sofia-content' -%}
+      {% # Content block %}
+      {%- capture sofia_content -%}
+        {%- assign content_settings = block.settings -%}
+        {%- if content_settings.content != blank -%}
+          <div
+            class="sofia-block sofia-image-with-text__content-text"
+            style="
+              color: {{ content_settings.contentColor | default: "#000000" }};
+              --sofia-image-with-text-link-color: {{ content_settings.linkColor | default: content_settings.contentColor | default: "#000000" }};
+              --sofia-image-with-text-link-text-decoration: {% if content_settings.underlineLinks %}underline{% else %}none{% endif %};
+            "
+          >
+            {{- content_settings.content -}}
+          </div>
+        {%- endif -%}
+      {%- endcapture -%}
+    {%- when 'sofia-button' -%}
+      {% # Button block %}
+      {%- capture sofia_button -%}
+        {%- assign button_settings = block.settings -%}
+        {%- if button_settings.buttonLabel != blank -%}
+          <a
+            class="sofia-block sofia-image-with-text__content-button"
+            href="#"
+            style="
+              color: {{ button_settings.buttonLabelColor | default: "#FFFFFF" }};
+              background: {{ button_settings.buttonColor | default: "#000000" }};
+              {% if button_settings.buttonBorderColor != blank %}
+                border: 2px solid {{ button_settings.buttonBorderColor | default: "color-mix(in srgb, #FFFFFF 80%, #000000)" }};
+              {% endif %}
+              border-radius: {{ button_settings.buttonBorderRadius | default: 0 }}px;
+            "
+          >
+            {{- button_settings.buttonLabel | default: 'Button label' -}}
+          </a>
+        {%- endif -%}
+      {%- endcapture -%}
+  {%- endcase -%}
+{%- endfor -%}
+
+<div
+  class="sofia-section sofia-image-with-text"
+  style="background: {{ section.settings.backgroundColor | default: "#FFFFFF" }};"
+>
+  <div
+    class="sofia-image-with-text__body"
+    style="
+      {% if section.settings.contentBackgroundColor != blank or section.settings.borderColor != blank %}
+        padding: 20px;
+      {% endif %}
+      {% if section.settings.contentBackgroundColor != blank %}
+        background-color: {{ section.settings.contentBackgroundColor }};
+      {% endif %}
+      {% if section.settings.borderColor != blank %}
+        border: 3px solid {{ section.settings.borderColor | default: "#000000" }};
+      {% endif %}
+      border-radius: {{ section.settings.borderRadius | default: 0 -}}px;
+    "
+  >
+    <!-- Image -->
+    {{ sofia_image }}
+
+    <!-- Content -->
+    {%- if sofia_title or sofia_content or sofia_button -%}
+      <div class="sofia-image-with-text__content">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'sofia-title' -%}
+              {{ sofia_title }}
+            {%- when 'sofia-content' -%}
+              {{ sofia_content }}
+            {%- when 'sofia-button' -%}
+              {{ sofia_button }}
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Sofia - Image with Text",
+  "settings": [
+    {
+      "type": "color",
+      "id": "backgroundColor",
+      "label": "Background color"
+    },
+    {
+      "type": "color",
+      "id": "contentBackgroundColor",
+      "label": "Content background color"
+    },
+    {
+      "type": "color",
+      "id": "borderColor",
+      "label": "Border color"
+    },
+    {
+      "type": "number",
+      "id": "borderRadius",
+      "label": "Border radius (px)"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "sofia-image",
+      "name": "Image",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "select",
+          "id": "imagePosition",
+          "label": "Image position",
+          "default": "left",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "imageCover",
+          "label": "Image cover",
+          "default": "contain",
+          "options": [
+            {
+              "value": "contain",
+              "label": "Contain"
+            },
+            {
+              "value": "cover",
+              "label": "Cover"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "imageSize",
+          "label": "Image size",
+          "default": "default",
+          "options": [
+            { "value": "small", "label": "Small" },
+            { "value": "default", "label": "Default" }
+          ]
+        },
+        {
+          "type": "number",
+          "id": "imageBorderRadius",
+          "label": "Image border radius (px)"
+        },
+        {
+          "type": "header",
+          "content": "Other settings"
+        },
+        {
+          "type": "color",
+          "id": "vectorColor",
+          "label": "Vector color"
+        }
+      ]
+    },
+    {
+      "type": "sofia-title",
+      "name": "Title",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "color",
+          "id": "titleColor",
+          "label": "Title color"
+        },
+        {
+          "type": "number",
+          "id": "titleFontSize",
+          "label": "Title font size (px)"
+        }
+      ]
+    },
+    {
+      "type": "sofia-content",
+      "name": "Content",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content"
+        },
+        {
+          "type": "color",
+          "id": "contentColor",
+          "label": "Content color"
+        },
+        {
+          "type": "color",
+          "id": "linkColor",
+          "label": "Link color"
+        },
+        {
+          "type": "checkbox",
+          "id": "underlineLinks",
+          "label": "Underline links"
+        }
+      ]
+    },
+    {
+      "type": "sofia-button",
+      "name": "Call to Action",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "buttonLabel",
+          "label": "Button label"
+        },
+        {
+          "type": "color",
+          "id": "buttonLabelColor",
+          "label": "Button label color"
+        },
+        {
+          "type": "color",
+          "id": "buttonColor",
+          "label": "Button background color"
+        },
+        {
+          "type": "color",
+          "id": "buttonBorderColor",
+          "label": "Button border color"
+        },
+        {
+          "type": "number",
+          "id": "buttonBorderRadius",
+          "label": "Button border radius (px)"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

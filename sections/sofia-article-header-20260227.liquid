@@ -1,0 +1,479 @@
+<style>
+  .sofia-article-header {
+    width: 100%;
+    padding: 40px 16px 25px 16px;
+  }
+
+  @media (min-width: 768px) {
+    .sofia-article-header {
+      padding: 60px 30px 60px 30px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .sofia-article-header {
+      padding: 80px 30px 80px 30px;
+    }
+  }
+
+  .sofia-article-header__body {
+    max-width: var(--sofia-section-max-width, 1400px);
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  /* Breadcrumb */
+
+  .sofia-article-header__breadcrumb {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    list-style: none;
+    margin: 0 0 16px 0;
+    padding: 0;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.96px;
+    line-height: 1.4;
+    text-transform: unset;
+  }
+
+  /* Title */
+
+  .sofia-article-header__title {
+    display: block;
+    font-size: 26px;
+    font-weight: var(--sofia-article-header-title-font-weight);
+    line-height: 1.25;
+    margin: 0 0 16px 0;
+    padding: 0;
+    text-transform: unset;
+  }
+
+  .sofia-article-header__title * {
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    color: inherit;
+    margin: 0;
+    padding: 0;
+    text-transform: unset;
+    display: inline;
+  }
+
+  .sofia-article-header__title strong {
+    font-weight: calc(var(--sofia-article-header-title-font-weight) + 200);
+  }
+
+  @media (min-width: 1024px) {
+    .sofia-article-header__title {
+      font-size: 38px;
+    }
+  }
+
+  /* Intro text */
+
+  .sofia-article-header__intro {
+    display: block;
+    font-size: 18px;
+    font-weight: var(--sofia-article-header-intro-font-weight);
+    line-height: 1.6;
+    margin: 0 0 16px 0;
+    padding: 0;
+    text-transform: unset;
+  }
+
+  .sofia-article-header__intro * {
+    font-weight: inherit;
+    color: inherit;
+    font-size: inherit;
+    margin: 0;
+    padding: 0;
+    text-transform: unset;
+    display: inline;
+  }
+
+  .sofia-article-header__intro strong {
+    font-weight: calc(var(--sofia-article-header-intro-font-weight) + 200);
+  }
+
+  .sofia-article-header__intro p {
+    display: block;
+    margin: 0;
+    padding: 0;
+  }
+
+  @media (min-width: 1024px) {
+    .sofia-article-header__intro {
+      font-size: 22px;
+    }
+  }
+
+  /* Star rating */
+
+  .sofia-article-header__rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 20px 0;
+    padding: 0;
+  }
+
+  .sofia-article-header__stars {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+  }
+
+  .sofia-article-header__star {
+    width: 18px;
+    height: 18px;
+    display: block;
+    margin: 0;
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  .sofia-article-header__star svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    fill: currentColor;
+  }
+
+  .sofia-article-header__rating-count {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.96px;
+    margin: 0;
+    padding: 0;
+    text-transform: unset;
+  }
+
+  /* Hero image */
+
+  .sofia-article-header__image {
+    width: 100%;
+    margin: 0 0 20px 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .sofia-article-header__image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    margin: 0;
+    padding: 0;
+    aspect-ratio: 16/9;
+  }
+
+  /* Author byline */
+
+  .sofia-article-header__author {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+  }
+
+  .sofia-article-header__author-avatar {
+    object-fit: cover;
+    display: block;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+  }
+
+  .sofia-article-header__author-details {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+  }
+
+  .sofia-article-header__author-text {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+    padding: 0;
+    text-transform: unset;
+  }
+
+  .sofia-article-header__author-verified-icon {
+    width: 16px;
+    height: 16px;
+    display: block;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  .sofia-article-header__author-verified-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    fill: currentColor;
+  }
+</style>
+
+{%- for block in section.blocks -%}
+  {%- case block.type -%}
+    {%- when 'sofia-breadcrumb' -%}
+      {%- capture sofia_article_header_breadcrumb -%}
+        {%- assign breadcrumb_settings = block.settings -%}
+        {%- if breadcrumb_settings.breadcrumbText != blank -%}
+            <span 
+              class="sofia-block sofia-article-header__breadcrumb"
+              style="color: {{ breadcrumb_settings.breadcrumbColor | default: '#000000' }};"
+            >
+              {{- breadcrumb_settings.breadcrumbText -}}
+            </span>
+        {%- endif -%}
+      {%- endcapture -%}
+
+    {%- when 'sofia-title' -%}
+      {%- capture sofia_article_header_title -%}
+        {%- assign title_settings = block.settings -%}
+        {%- if title_settings.titleText != blank -%}
+          <div
+            class="sofia-block sofia-article-header__title"
+            style="
+              color: {{ title_settings.titleColor | default: '#000000' }};
+              {% if title_settings.titleFontSize != blank %} font-size: {{ title_settings.titleFontSize }}px; {% endif %}
+              --sofia-article-header-title-font-weight: {{ title_settings.titleFontWeight }};
+            "
+          >
+            {{- title_settings.titleText -}}
+          </div>
+        {%- endif -%}
+      {%- endcapture -%}
+
+    {%- when 'sofia-intro' -%}
+      {%- capture sofia_article_header_intro -%}
+      {%- assign intro_settings = block.settings -%}
+      {%- if intro_settings.introText != blank -%}
+          <div
+            class="sofia-block sofia-article-header__intro"
+            style="
+              color: {{ intro_settings.introColor | default: '#000000' }};
+              {% if intro_settings.introFontSize != blank %} font-size: {{ intro_settings.introFontSize }}px; {% endif %}
+              --sofia-article-header-intro-font-weight: {{ intro_settings.introFontWeight }};
+            "
+          >
+            {{- intro_settings.introText -}}
+          </div>
+        {%- endif -%}
+      {%- endcapture -%}
+
+    {%- when 'sofia-rating' -%}
+      {%- capture sofia_article_header_rating -%}
+      {%- assign rating_settings = block.settings -%}
+        <div class="sofia-block sofia-article-header__rating">
+          <div class="sofia-article-header__stars">
+            {%- for i in (1..5) -%}
+              <span 
+                class="sofia-article-header__star"
+                style="color: {{ rating_settings.starColor | default: '#FFB800' }};"
+              >
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              </span>
+            {%- endfor -%}
+          </div>
+          {%- if rating_settings.ratingCount != blank -%}
+            <span 
+              class="sofia-article-header__rating-count"
+              style="color: {{ rating_settings.ratingCountColor | default: '#000000' }};"
+            >
+              {{- rating_settings.ratingCount -}}
+            </span>
+          {%- endif -%}
+        </div>
+      {%- endcapture -%}
+
+    {%- when 'sofia-image' -%}
+      {%- capture sofia_article_header_image -%}
+      {%- assign image_settings = block.settings -%}
+      {%- if image_settings.image != blank -%}
+        <div
+          class="sofia-block sofia-article-header__image"
+          style="border-radius: {{ image_settings.imageBorderRadius | default: 0 }}px;"
+          >
+            <img
+              src="{{ image_settings.image | image_url: width: 1600 }}"
+              alt="Article image"
+              width="1600"
+              height="900"
+              loading="lazy"
+          >
+        </div>
+      {%- endif -%}
+      {%- endcapture -%}
+
+    {%- when 'sofia-author' -%}
+      {%- capture sofia_article_header_author -%}
+        {%- assign author_settings = block.settings -%}
+        {%- if author_settings.authorAvatar != blank or author_settings.authorText != blank -%}
+          <div class="sofia-block sofia-article-header__author">
+            {%- if author_settings.authorAvatar != blank -%}
+              <img
+                src="{{ author_settings.authorAvatar | image_url: width: 160 }}"
+                alt="Author image"
+                width="160"
+                height="160"
+                style="border-radius: {{ author_settings.authorAvatarBorderRadius | default: 999 }}px;"
+                class="sofia-article-header__author-avatar"
+              >
+            {%- endif -%}
+            <div class="sofia-article-header__author-details">
+              {%- if author_settings.authorText != blank -%}
+                  <span
+                    class="sofia-article-header__author-text"
+                    style="color: {{ author_settings.authorTextColor | default: '#000000' }};"
+                  >
+                    {{- author_settings.authorText -}}
+                  </span>
+                  {%- if author_settings.showVerifiedIcon == true -%}
+                    <span 
+                      class="sofia-article-header__author-verified-icon"
+                      style="color: {{ author_settings.verifiedIconColor | default: '#000000' }};"
+                    >
+                      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                        <path d="M12 1L3 5v6c0 5.25 3.75 10.15 9 11.25C17.25 21.15 21 16.25 21 11V5l-9-4zm-1 14l-4-4 1.41-1.41L11 12.17l6.59-6.59L19 7l-8 8z"/>
+                      </svg>
+                    </span>
+                  {%- endif -%}
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endcapture -%}
+  {%- endcase -%}
+{%- endfor -%}
+
+<div
+  class="sofia-section sofia-article-header"
+  style="background: {{ section.settings.backgroundColor | default: '#FFFFFF' }};"
+>
+  <div class="sofia-article-header__body">
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'sofia-breadcrumb' -%}
+          {{- sofia_article_header_breadcrumb -}}
+        {%- when 'sofia-title' -%}
+          {{- sofia_article_header_title -}}
+        {%- when 'sofia-intro' -%}
+          {{- sofia_article_header_intro -}}
+        {%- when 'sofia-rating' -%}
+          {{- sofia_article_header_rating -}}
+        {%- when 'sofia-image' -%}
+          {{- sofia_article_header_image -}}
+        {%- when 'sofia-author' -%}
+          {{- sofia_article_header_author -}}
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Sofia - Article Header",
+  "settings": [{ "type": "color", "id": "backgroundColor", "label": "Background color" }],
+  "blocks": [
+    {
+      "type": "sofia-breadcrumb",
+      "name": "Breadcrumb",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "breadcrumbText", "label": "Text" },
+        { "type": "color", "id": "breadcrumbColor", "label": "Color" }
+      ]
+    },
+    {
+      "type": "sofia-title",
+      "name": "Title",
+      "limit": 1,
+      "settings": [
+        { "type": "richtext", "id": "titleText", "label": "Text" },
+        { "type": "color", "id": "titleColor", "label": "Color" },
+        { "type": "number", "id": "titleFontSize", "label": "Font size (px)" },
+        {
+          "type": "select",
+          "id": "titleFontWeight",
+          "label": "Font weight",
+          "default": "700",
+          "options": [
+            { "value": "500", "label": "Light" },
+            { "value": "600", "label": "Medium" },
+            { "value": "700", "label": "Bold" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sofia-intro",
+      "name": "Intro Text",
+      "limit": 1,
+      "settings": [
+        { "type": "richtext", "id": "introText", "label": "Text" },
+        { "type": "color", "id": "introColor", "label": "Color" },
+        { "type": "number", "id": "introFontSize", "label": "Font size (px)" },
+        {
+          "type": "select",
+          "id": "introFontWeight",
+          "label": "Font weight",
+          "default": "400",
+          "options": [
+            { "value": "400", "label": "Light" },
+            { "value": "500", "label": "Medium" },
+            { "value": "600", "label": "Bold" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sofia-rating",
+      "name": "Star Rating",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "ratingCount", "label": "Rating count" },
+        { "type": "color", "id": "starColor", "label": "Star color" },
+        { "type": "color", "id": "ratingCountColor", "label": "Rating count color" }
+      ]
+    },
+    {
+      "type": "sofia-image",
+      "name": "Image",
+      "limit": 1,
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "number", "id": "imageBorderRadius", "label": "Border radius (px)" }
+      ]
+    },
+    {
+      "type": "sofia-author",
+      "name": "Author",
+      "limit": 1,
+      "settings": [
+        { "type": "image_picker", "id": "authorAvatar", "label": "Avatar" },
+        { "type": "number", "id": "authorAvatarBorderRadius", "label": "Border radius (px)" },
+        { "type": "text", "id": "authorText", "label": "Text" },
+        { "type": "color", "id": "authorTextColor", "label": "Text color" },
+        { "type": "checkbox", "id": "showVerifiedIcon", "label": "Show verified icon" },
+        { "type": "color", "id": "verifiedIconColor", "label": "Verified icon color" }
+      ]
+    }
+  ]
+}
+{% endschema %}

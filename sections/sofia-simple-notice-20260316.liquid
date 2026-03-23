@@ -1,0 +1,245 @@
+<style>
+  .sofia-simple-notice {
+    width: 100%;
+    padding: 40px 16px 25px 16px;
+  }
+
+  @media (min-width: 768px) {
+    .sofia-simple-notice {
+      padding: 60px 30px 60px 30px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .sofia-simple-notice {
+      padding: 80px 30px 80px 30px;
+    }
+  }
+
+  .sofia-simple-notice:not(:has(.sofia-simple-notice__title, .sofia-simple-notice__description)) {
+    display: none;
+  }
+
+  .sofia-simple-notice__body {
+    max-width: var(--sofia-section-max-width, 1400px);
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  /* Notice box */
+
+  .sofia-simple-notice__box {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 0;
+    padding: 17px 30px;
+    width: 100%;
+    text-transform: unset;
+  }
+
+  /* Icon */
+
+  .sofia-simple-notice__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 10px;
+    padding: 0;
+  }
+
+  .sofia-simple-notice__icon svg {
+    display: block;
+    fill: currentColor;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Content */
+
+  .sofia-simple-notice__content {
+    display: block;
+    margin: 0;
+    padding: 8px 0 10px 0;
+    flex: 1;
+    text-transform: unset;
+  }
+
+  /* Title */
+
+  .sofia-simple-notice__title {
+    display: inline;
+    font-size: 20px;
+    margin: 0;
+    padding: 0;
+    text-transform: unset;
+  }
+
+  /* Description */
+
+  .sofia-simple-notice__description {
+    display: inline;
+    font-size: 20px;
+    font-weight: var(--sofia-simple-notice-description-font-weight);
+    margin: 0;
+    padding: 0;
+    text-transform: unset;
+  }
+
+  .sofia-simple-notice__description * {
+    font-weight: inherit;
+    color: inherit;
+    font-size: inherit;
+    margin: 0;
+    padding: 0;
+    text-transform: unset;
+    display: inline;
+  }
+
+  .sofia-simple-notice__description strong {
+    font-weight: calc(var(--sofia-simple-notice-description-font-weight) + 200);
+  }
+
+  .sofia-simple-notice__description p {
+    display: inline;
+    margin: 0;
+    padding: 0;
+  }
+</style>
+
+{%- for block in section.blocks -%}
+  {%- if block.type == 'sofia-description' -%}
+    {%- capture sofia_simple_notice_description -%}
+      {%- assign description_settings = block.settings -%}
+      {%- if description_settings.descriptionText != blank -%}
+        <span
+          class="sofia-block sofia-simple-notice__description"
+          style="
+            color: {{ description_settings.descriptionColor | default: '#000000' }};
+            {% if description_settings.descriptionFontSize != blank %}font-size: {{ description_settings.descriptionFontSize }}px;{% endif %}
+            --sofia-simple-notice-description-font-weight: {{ description_settings.descriptionFontWeight }};
+          "
+        >
+          {{- description_settings.descriptionText -}}
+        </span>
+      {%- endif -%}
+    {%- endcapture -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- for block in section.blocks -%}
+  {%- if block.type == 'sofia-title' -%}
+    {%- capture sofia_simple_notice_title -%}
+      {%- assign title_settings = block.settings -%}
+      {%- if title_settings.titleText != blank -%}
+        <span
+          class="sofia-block sofia-simple-notice__icon"
+          style="color: {{ title_settings.iconColor | default: '#000000' }}; width: {{ title_settings.iconSize | default: 25 }}px; height: {{ title_settings.iconSize | default: 25 }}px; min-width: {{ title_settings.iconSize | default: 25 }}px; min-height: {{ title_settings.iconSize | default: 25 }}px;"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4m.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2"/>
+          </svg>
+        </span>
+        <div class="sofia-block sofia-simple-notice__content">
+          <span
+            class="sofia-simple-notice__title"
+            style="{% if title_settings.titleFontSize != blank %}font-size: {{ title_settings.titleFontSize }}px;{% endif %} font-weight: {{ title_settings.titleFontWeight }}; color: {{ title_settings.titleColor | default: '#000000' }};"
+          >
+            {{- title_settings.titleText -}}
+          </span>
+          {{- ' ' -}}
+          {{- sofia_simple_notice_description -}}
+        </div>
+      {%- endif -%}
+    {%- endcapture -%}
+  {%- endif -%}
+{%- endfor -%}
+
+<div
+  class="sofia-section sofia-simple-notice"
+  style="background: {{ section.settings.backgroundColor | default: '#FFFFFF' }};"
+>
+  {%- if sofia_simple_notice_title != blank or sofia_simple_notice_description != blank -%}
+    <div class="sofia-simple-notice__body">
+      <div
+        class="sofia-simple-notice__box"
+        style="
+          background: {{ section.settings.boxBackgroundColor | default: '#FFFFFF' }};
+          border: {{ section.settings.borderWidth | default: 0 }}px solid {{ section.settings.borderColor | default: '#000000' }};
+          border-radius: {{ section.settings.borderRadius | default: 0 }}px;
+        "
+      >
+        {%- if sofia_simple_notice_title != blank -%}
+          {{- sofia_simple_notice_title -}}
+        {%- else -%}
+          <div class="sofia-simple-notice__content">
+            {{- sofia_simple_notice_description -}}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Sofia - Simple Notice",
+  "settings": [
+    { "type": "color", "id": "backgroundColor", "label": "Background color" },
+    { "type": "header", "content": "Box" },
+    { "type": "color", "id": "boxBackgroundColor", "label": "Background color" },
+    { "type": "color", "id": "borderColor", "label": "Border color" },
+    { "type": "number", "id": "borderWidth", "label": "Border width (px)" },
+    { "type": "number", "id": "borderRadius", "label": "Border radius (px)" }
+  ],
+  "blocks": [
+    {
+      "type": "sofia-title",
+      "name": "Title",
+      "limit": 1,
+      "settings": [
+        { "type": "header", "content": "Icon" },
+        { "type": "color", "id": "iconColor", "label": "Color" },
+        { "type": "number", "id": "iconSize", "label": "Size (px)" },
+        { "type": "header", "content": "Title" },
+        { "type": "text", "id": "titleText", "label": "Text" },
+        { "type": "color", "id": "titleColor", "label": "Color" },
+        { "type": "number", "id": "titleFontSize", "label": "Font size (px)" },
+        {
+          "type": "select",
+          "id": "titleFontWeight",
+          "label": "Font weight",
+          "default": "700",
+          "options": [
+            { "value": "400", "label": "Light" },
+            { "value": "500", "label": "Medium" },
+            { "value": "700", "label": "Bold" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "sofia-description",
+      "name": "Description",
+      "limit": 1,
+      "settings": [
+        { "type": "richtext", "id": "descriptionText", "label": "Text" },
+        { "type": "color", "id": "descriptionColor", "label": "Color" },
+        { "type": "number", "id": "descriptionFontSize", "label": "Font size (px)" },
+        {
+          "type": "select",
+          "id": "descriptionFontWeight",
+          "label": "Font weight",
+          "default": "400",
+          "options": [
+            { "value": "400", "label": "Light" },
+            { "value": "500", "label": "Medium" },
+            { "value": "600", "label": "Bold" }
+          ]
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
