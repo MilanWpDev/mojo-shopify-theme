@@ -61,19 +61,23 @@
     display: block;
   }
 
-  /* Thumbnails desktop */
+  /* Thumbnails — uvek svi vidljivi, jednake sirine */
   .custom-product-section__thumb-swiper {
     width: 100%;
   }
   .custom-product-section__thumb-swiper .swiper-wrapper {
     display: flex;
+    flex-wrap: nowrap;
     gap: 8px;
+    transform: none !important;
+    width: 100% !important;
   }
   .custom-product-section__thumb-swiper .swiper-slide {
-    flex-shrink: 0;
-    width: 89px !important;
-    height: 89px !important;
-    aspect-ratio: unset;
+    flex: 1 1 0 !important;
+    width: 0 !important;
+    min-width: 0;
+    height: auto !important;
+    aspect-ratio: 1 / 1;
     border-radius: 8px;
     border: 1px solid #EBEBEB;
     background: #FEFEFE;
@@ -81,7 +85,7 @@
     cursor: pointer;
     transition: all 0.2s;
     box-sizing: border-box;
-    display: flex;
+    display: flex !important;
     align-items: center;
     justify-content: center;
     padding: 8px;
@@ -527,9 +531,9 @@
       max-width: 85%;
       object-fit: contain;
     }
+    /* Thumbnails mob — svi vidljivi, jednake sirine */
     .custom-product-section__thumb-swiper .swiper-slide {
-      width: 65px !important;
-      height: 80px !important;
+      border-radius: 4.071px;
       padding: 6px;
     }
     .custom-product-section__thumb-swiper .swiper-slide img {
@@ -584,7 +588,7 @@
         <div class="swiper-button-next"></div>
       </div>
 
-      <div class="swiper custom-product-section__thumb-swiper" id="thumbSwiper-{{ section.id }}">
+      <div class="custom-product-section__thumb-swiper" id="thumbSwiper-{{ section.id }}">
         <div class="swiper-wrapper">
           {%- for image in current_product.images -%}
             <div class="swiper-slide">
@@ -814,19 +818,17 @@
   var thumbEl = document.getElementById('thumbSwiper-' + sectionId);
   var mainEl  = document.getElementById('mainSwiper-' + sectionId);
 
-  var thumbSwiper = new Swiper(thumbEl, {
-    spaceBetween: 8,
-    slidesPerView: 'auto',
-    watchSlidesProgress: true,
-    watchSlidesVisibility: true,
-    slideToClickedSlide: true,
-    allowTouchMove: false,
-    on: {
-      click: function (swiper) {
-        mainSwiper.slideTo(swiper.clickedIndex);
-      }
-    }
+  /* Thumbnails — bez Swipera, direktni klik */
+  var thumbSlides = thumbEl.querySelectorAll('.swiper-slide');
+  thumbSlides.forEach(function(slide, idx) {
+    slide.addEventListener('click', function() {
+      mainSwiper.slideTo(idx);
+      thumbSlides.forEach(function(s) { s.classList.remove('swiper-slide-thumb-active'); });
+      slide.classList.add('swiper-slide-thumb-active');
+    });
   });
+  /* Postavi prvi kao aktivan */
+  if (thumbSlides.length > 0) thumbSlides[0].classList.add('swiper-slide-thumb-active');
 
   var mainSwiper = new Swiper(mainEl, {
     spaceBetween: 10,
@@ -834,7 +836,14 @@
       nextEl: mainEl.querySelector('.swiper-button-next'),
       prevEl: mainEl.querySelector('.swiper-button-prev')
     },
-    thumbs: { swiper: thumbSwiper }
+    on: {
+      slideChange: function() {
+        thumbSlides.forEach(function(s) { s.classList.remove('swiper-slide-thumb-active'); });
+        if (thumbSlides[mainSwiper.activeIndex]) {
+          thumbSlides[mainSwiper.activeIndex].classList.add('swiper-slide-thumb-active');
+        }
+      }
+    }
   });
 
   var reviewsEl = document.getElementById('reviewsSwiper-' + sectionId);
