@@ -55,8 +55,6 @@
     object-fit: contain;
     display: block;
   }
-
-  /* Thumbs — show all, no scroll */
   .custom-product-section__thumb-swiper {
     margin-top: 12px;
     width: 100%;
@@ -92,7 +90,6 @@
     border-color: {{ section.settings.accent_color | default: '#5B4FE9' }};
     opacity: 1;
   }
-
   .custom-product-section__main-swiper .swiper-button-prev,
   .custom-product-section__main-swiper .swiper-button-next {
     color: {{ section.settings.accent_color | default: '#5B4FE9' }} !important;
@@ -389,8 +386,33 @@
   /* ── Reviews ── */
   .custom-product-section__reviews {
     margin-top: 48px;
-    padding-bottom: 60px;
     position: relative;
+  }
+  .custom-product-section__reviews-header {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .custom-product-section__reviews-nav {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: white;
+    border: 1.5px solid #ddd;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    font-size: 16px;
+    color: #333;
+    line-height: 1;
+  }
+  .custom-product-section__reviews-nav:hover { background: #f5f5f5; }
+  .custom-product-section__reviews-nav.swiper-button-disabled {
+    opacity: 0.35;
+    cursor: default;
   }
   .custom-product-section__reviews-swiper {
     overflow: hidden;
@@ -398,24 +420,6 @@
   .custom-product-section__reviews-swiper .swiper-slide {
     width: 320px !important;
     height: auto;
-  }
-  .custom-product-section__reviews-swiper .swiper-button-prev,
-  .custom-product-section__reviews-swiper .swiper-button-next {
-    color: #333 !important;
-    background: white;
-    width: 36px !important;
-    height: 36px !important;
-    border-radius: 50%;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    top: auto;
-    bottom: 0;
-  }
-  .custom-product-section__reviews-swiper .swiper-button-prev { left: auto; right: 52px; }
-  .custom-product-section__reviews-swiper .swiper-button-next { right: 0; }
-  .custom-product-section__reviews-swiper .swiper-button-prev::after,
-  .custom-product-section__reviews-swiper .swiper-button-next::after {
-    font-size: 14px !important;
-    font-weight: bold;
   }
   .custom-product-section__review-card {
     background: white;
@@ -645,9 +649,13 @@
 
   {%- if section.settings.show_reviews -%}
     <div class="custom-product-section__reviews">
+      <div class="custom-product-section__reviews-header">
+        <button class="custom-product-section__reviews-nav" id="reviewsPrev-{{ section.id }}">&#8592;</button>
+        <button class="custom-product-section__reviews-nav" id="reviewsNext-{{ section.id }}">&#8594;</button>
+      </div>
       <div class="swiper custom-product-section__reviews-swiper" id="reviewsSwiper-{{ section.id }}">
         <div class="swiper-wrapper">
-          {%- for i in (1..4) -%}
+          {%- for i in (1..6) -%}
             {%- assign rev_text   = 'review_' | append: i | append: '_text' -%}
             {%- assign rev_author = 'review_' | append: i | append: '_author' -%}
             {%- if section.settings[rev_text] != blank -%}
@@ -664,8 +672,6 @@
             {%- endif -%}
           {%- endfor -%}
         </div>
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-button-next"></div>
       </div>
     </div>
   {%- endif -%}
@@ -704,7 +710,6 @@
   /* ── Swiper ── */
   var thumbEl = document.getElementById('thumbSwiper-' + sectionId);
   var mainEl  = document.getElementById('mainSwiper-' + sectionId);
-
   var totalImages = {{ current_product.images.size }};
 
   var thumbSwiper = new Swiper(thumbEl, {
@@ -730,8 +735,8 @@
       spaceBetween: 16,
       slidesPerView: 'auto',
       navigation: {
-        nextEl: reviewsEl.querySelector('.swiper-button-next'),
-        prevEl: reviewsEl.querySelector('.swiper-button-prev')
+        nextEl: document.getElementById('reviewsNext-' + sectionId),
+        prevEl: document.getElementById('reviewsPrev-' + sectionId)
       }
     });
   }
@@ -1030,22 +1035,50 @@
     {
       "type": "text",
       "id": "review_3_text",
-      "label": "Review 3 Text"
+      "label": "Review 3 Text",
+      "default": "Amazing product, I feel more focused and energized every single day."
     },
     {
       "type": "text",
       "id": "review_3_author",
-      "label": "Review 3 Author"
+      "label": "Review 3 Author",
+      "default": "Mike R."
     },
     {
       "type": "text",
       "id": "review_4_text",
-      "label": "Review 4 Text"
+      "label": "Review 4 Text",
+      "default": "Best supplement I have tried. Highly recommend to anyone looking for a natural boost."
     },
     {
       "type": "text",
       "id": "review_4_author",
-      "label": "Review 4 Author"
+      "label": "Review 4 Author",
+      "default": "Sarah K."
+    },
+    {
+      "type": "text",
+      "id": "review_5_text",
+      "label": "Review 5 Text",
+      "default": "Incredible results within the first two weeks. My energy levels are through the roof."
+    },
+    {
+      "type": "text",
+      "id": "review_5_author",
+      "label": "Review 5 Author",
+      "default": "Tom B."
+    },
+    {
+      "type": "text",
+      "id": "review_6_text",
+      "label": "Review 6 Text",
+      "default": "I was skeptical at first but this product genuinely changed my daily routine."
+    },
+    {
+      "type": "text",
+      "id": "review_6_author",
+      "label": "Review 6 Author",
+      "default": "Anna P."
     },
     {
       "type": "range",
