@@ -383,17 +383,12 @@
     display: block;
   }
 
-  /* ── Reviews — uvek van grida, puna sirina ── */
+  /* ── Reviews — unutar info kolone, overflow hidden da ne izlazi ── */
   .custom-product-section__reviews {
-    margin-top: 48px;
+    margin-top: 24px;
     position: relative;
-    width: 100%;
-    /* Probijamo padding od parent sekcije da bi bio full width */
-    margin-left: calc(-1 * 20px);
-    margin-right: calc(-1 * 20px);
-    width: calc(100% + 40px);
-    padding: 0 20px;
-    box-sizing: border-box;
+    /* Probijamo desnu ivicu info kolone da slider ide do ruba */
+    overflow: visible;
   }
   .custom-product-section__reviews-header {
     display: flex;
@@ -421,7 +416,8 @@
     opacity: 0.35;
     cursor: default;
   }
-  .custom-product-section__reviews-swiper {
+  /* Clip slider da ne izlazi iz info kolone */
+  .custom-product-section__reviews-clip {
     overflow: hidden;
     width: 100%;
   }
@@ -495,7 +491,6 @@
     window.cpsProduct_{{ section.id }} = {{ current_product | json }};
   </script>
 
-  <!-- ── INNER GRID ── -->
   <div class="custom-product-section__inner">
 
     <!-- Gallery -->
@@ -654,40 +649,43 @@
         {%- endif -%}
       {%- endfor -%}
 
+      <!-- ── Reviews — unutar info kolone ── -->
+      {%- if section.settings.show_reviews -%}
+        <div class="custom-product-section__reviews">
+          <div class="custom-product-section__reviews-header">
+            <button class="custom-product-section__reviews-nav" id="reviewsPrev-{{ section.id }}">&#8592;</button>
+            <button class="custom-product-section__reviews-nav" id="reviewsNext-{{ section.id }}">&#8594;</button>
+          </div>
+          <div class="custom-product-section__reviews-clip">
+            <div class="swiper custom-product-section__reviews-swiper" id="reviewsSwiper-{{ section.id }}">
+              <div class="swiper-wrapper">
+                {%- for i in (1..6) -%}
+                  {%- assign rev_text   = 'review_' | append: i | append: '_text' -%}
+                  {%- assign rev_author = 'review_' | append: i | append: '_author' -%}
+                  {%- if section.settings[rev_text] != blank -%}
+                    <div class="swiper-slide">
+                      <div class="custom-product-section__review-card">
+                        <div class="custom-product-section__review-stars">★★★★★</div>
+                        <p class="custom-product-section__review-text">{{ section.settings[rev_text] }}</p>
+                        <div class="custom-product-section__review-author">
+                          {{ section.settings[rev_author] }}
+                          <span>✓ Verified customer</span>
+                        </div>
+                      </div>
+                    </div>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+
     </div>
     <!-- kraj __info -->
 
   </div>
-  <!-- kraj __inner — reviews su OVDE, van grida -->
-
-  {%- if section.settings.show_reviews -%}
-    <div class="custom-product-section__reviews">
-      <div class="custom-product-section__reviews-header">
-        <button class="custom-product-section__reviews-nav" id="reviewsPrev-{{ section.id }}">&#8592;</button>
-        <button class="custom-product-section__reviews-nav" id="reviewsNext-{{ section.id }}">&#8594;</button>
-      </div>
-      <div class="swiper custom-product-section__reviews-swiper" id="reviewsSwiper-{{ section.id }}">
-        <div class="swiper-wrapper">
-          {%- for i in (1..6) -%}
-            {%- assign rev_text   = 'review_' | append: i | append: '_text' -%}
-            {%- assign rev_author = 'review_' | append: i | append: '_author' -%}
-            {%- if section.settings[rev_text] != blank -%}
-              <div class="swiper-slide">
-                <div class="custom-product-section__review-card">
-                  <div class="custom-product-section__review-stars">★★★★★</div>
-                  <p class="custom-product-section__review-text">{{ section.settings[rev_text] }}</p>
-                  <div class="custom-product-section__review-author">
-                    {{ section.settings[rev_author] }}
-                    <span>✓ Verified customer</span>
-                  </div>
-                </div>
-              </div>
-            {%- endif -%}
-          {%- endfor -%}
-        </div>
-      </div>
-    </div>
-  {%- endif -%}
+  <!-- kraj __inner -->
 
   {%- endif -%}
 </div>
