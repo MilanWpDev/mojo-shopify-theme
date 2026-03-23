@@ -1,1168 +1,1041 @@
-{%- liquid
-  assign current_product = section.settings.product
-  if current_product == blank and template.name == 'product'
-    assign current_product = product
-  endif
-  assign first_variant = current_product.selected_or_first_available_variant
--%}
+{% comment %} custom-product-section.liquid {% endcomment %}
 
-{%- style -%}
-#cps-{{ section.id }} {
-  --cps-primary:    {{ section.settings.primary_color }};
-  --cps-btn-text:   {{ section.settings.btn_text_color }};
-  --cps-bg:         {{ section.settings.bg_color }};
-  --cps-text:       {{ section.settings.text_color }};
-  --cps-border:     {{ section.settings.border_color }};
-  --cps-radius:     {{ section.settings.image_radius }}px;
-  --cps-padding:    {{ section.settings.section_padding }}px;
-  background: var(--cps-bg);
-  color: var(--cps-text);
-  padding: var(--cps-padding) 0;
-  font-family: inherit;
-  box-sizing: border-box;
-}
-*, *::before, *::after { box-sizing: inherit; }
+{%- assign current_product = all_products[section.settings.product] -%}
+{%- assign first_variant = current_product.selected_or_first_available_variant -%}
 
-/* ── Inner ── */
-#cps-{{ section.id }} .cps-inner {
-  max-width: {{ section.settings.max_width }}px;
-  margin: 0 auto;
-  padding: 0 20px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 56px;
-  align-items: start;
-}
-#cps-{{ section.id }} .cps-inner.img-right { direction: rtl; }
-#cps-{{ section.id }} .cps-inner.img-right > * { direction: ltr; }
-@media (max-width: 860px) {
-  #cps-{{ section.id }} .cps-inner {
-    grid-template-columns: 1fr;
-    gap: 28px;
-    direction: ltr !important;
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
+
+<style>
+  .custom-product-section {
+    max-width: {{ section.settings.max_width | default: 1200 }}px;
+    margin: 0 auto;
+    padding: {{ section.settings.section_padding | default: 40 }}px 20px;
+    font-family: inherit;
   }
-}
+  .custom-product-section__empty {
+    text-align: center;
+    padding: 60px;
+    background: #f5f5f5;
+    border-radius: 12px;
+  }
 
-/* ── Gallery ── */
-#cps-{{ section.id }} .cps-main-swiper {
-  border-radius: var(--cps-radius);
-  overflow: hidden;
-  background: #f4f4f4;
-  position: relative;
-}
-#cps-{{ section.id }} .cps-main-swiper .swiper-slide img {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  display: block;
-}
-#cps-{{ section.id }} .swiper-button-prev,
-#cps-{{ section.id }} .swiper-button-next {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgba(0,0,0,.55);
-  color: #fff;
-  backdrop-filter: blur(4px);
-}
-#cps-{{ section.id }} .swiper-button-prev::after,
-#cps-{{ section.id }} .swiper-button-next::after { font-size: 13px; font-weight: 800; }
+  /* ── Gallery ── */
+  .custom-product-section__inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+  .custom-product-section__gallery {}
+  .custom-product-section__main-swiper {
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f8f8f8;
+  }
+  .custom-product-section__main-image {
+    width: 100%;
+    height: 500px;
+    object-fit: contain;
+  }
+  .custom-product-section__thumb-swiper {
+    margin-top: 12px;
+  }
+  .custom-product-section__thumb-swiper .swiper-slide {
+    width: 80px !important;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    opacity: 0.6;
+    transition: all 0.2s;
+  }
+  .custom-product-section__thumb-swiper .swiper-slide-thumb-active {
+    border-color: {{ section.settings.accent_color | default: '#5B4FE9' }};
+    opacity: 1;
+  }
+  .custom-product-section__thumb-swiper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .custom-product-section__main-swiper .swiper-button-prev,
+  .custom-product-section__main-swiper .swiper-button-next {
+    color: {{ section.settings.accent_color | default: '#5B4FE9' }} !important;
+    background: white;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .custom-product-section__main-swiper .swiper-button-prev::after,
+  .custom-product-section__main-swiper .swiper-button-next::after {
+    font-size: 14px !important;
+    font-weight: bold;
+  }
 
-/* ── Thumbnails ── */
-#cps-{{ section.id }} .cps-thumbs-swiper {
-  margin-top: 10px;
-  padding-bottom: 2px;
-}
-#cps-{{ section.id }} .cps-thumbs-swiper .swiper-slide {
-  width: 68px !important;
-  height: 68px;
-  border-radius: 8px;
-  overflow: hidden;
-  cursor: pointer;
-  border: 2px solid transparent;
-  opacity: .55;
-  transition: opacity .2s, border-color .2s;
-}
-#cps-{{ section.id }} .cps-thumbs-swiper .swiper-slide-thumb-active {
-  opacity: 1;
-  border-color: var(--cps-primary);
-}
-#cps-{{ section.id }} .cps-thumbs-swiper .swiper-slide img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
+  /* ── Info ── */
+  .custom-product-section__info {}
+  .custom-product-section__title {
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0 0 12px;
+    color: {{ section.settings.title_color | default: '#1a1a1a' }};
+  }
+  .custom-product-section__meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #666;
+    flex-wrap: wrap;
+  }
+  .custom-product-section__type {
+    color: #666;
+  }
+  .custom-product-section__variant-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .custom-product-section__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #f5a623;
+    display: inline-block;
+    flex-shrink: 0;
+  }
 
-/* ── Info column ── */
-#cps-{{ section.id }} .cps-info {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
+  /* ── Badges ── */
+  .custom-product-section__badges {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .custom-product-section__badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #555;
+  }
 
-/* ── Vendor ── */
-#cps-{{ section.id }} .cps-vendor {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  opacity: .5;
-  margin: 0;
-}
+  /* ── Description ── */
+  .custom-product-section__description {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #444;
+    margin-bottom: 24px;
+  }
 
-/* ── Title ── */
-#cps-{{ section.id }} .cps-title {
-  font-size: clamp(24px, 3.5vw, 38px);
-  font-weight: 700;
-  line-height: 1.15;
-  margin: 0;
-}
+  /* ── Variants ── */
+  .custom-product-section__variants {
+    margin-bottom: 20px;
+  }
+  .custom-product-section__variants-label {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 12px;
+    margin-top: 0;
+  }
+  .custom-product-section__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .custom-product-section__chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border: 1.5px solid #ddd;
+    border-radius: 100px;
+    background: white;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+  .custom-product-section__chip-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--chip-color, #888);
+    flex-shrink: 0;
+  }
+  .custom-product-section__chip--active {
+    border-color: {{ section.settings.accent_color | default: '#5B4FE9' }};
+    background: {{ section.settings.accent_color | default: '#5B4FE9' }};
+    color: white;
+  }
+  .custom-product-section__chip--active .custom-product-section__chip-dot {
+    border: 2px solid white;
+  }
+  .custom-product-section__dropdown {
+    display: none;
+    margin-bottom: 16px;
+  }
+  .custom-product-section__dropdown-select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    appearance: none;
+    -webkit-appearance: none;
+    background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='1.5' fill='none'/%3E%3C/svg%3E") no-repeat right 16px center;
+    cursor: pointer;
+  }
 
-/* ── Variant subtitle ── */
-#cps-{{ section.id }} .cps-variant-subtitle {
-  font-size: 14px;
-  opacity: .6;
-  margin: -10px 0 0;
-}
+  /* ── ATC Row ── */
+  .custom-product-section__atc-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .custom-product-section__quantity {
+    display: flex;
+    align-items: center;
+    border: 1.5px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .custom-product-section__qty-btn {
+    width: 36px;
+    height: 44px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #333;
+    transition: background 0.2s;
+    line-height: 1;
+  }
+  .custom-product-section__qty-btn:hover { background: #f5f5f5; }
+  .custom-product-section__qty-input {
+    width: 40px;
+    text-align: center;
+    border: none;
+    font-size: 15px;
+    outline: none;
+    -moz-appearance: textfield;
+  }
+  .custom-product-section__qty-input::-webkit-inner-spin-button,
+  .custom-product-section__qty-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+  .custom-product-section__atc-btn {
+    flex: 1;
+    padding: 14px 24px;
+    background: {{ section.settings.accent_color | default: '#5B4FE9' }};
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+  .custom-product-section__atc-btn:hover { opacity: 0.9; }
+  .custom-product-section__atc-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* ── Price ── */
-#cps-{{ section.id }} .cps-price-wrap {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-#cps-{{ section.id }} .cps-price-current {
-  font-size: 28px;
-  font-weight: 700;
-}
-#cps-{{ section.id }} .cps-price-compare {
-  font-size: 18px;
-  text-decoration: line-through;
-  opacity: .4;
-}
-#cps-{{ section.id }} .cps-price-badge {
-  font-size: 12px;
-  font-weight: 700;
-  padding: 3px 9px;
-  background: #e53e3e;
-  color: #fff;
-  border-radius: 4px;
-}
+  /* ── Guarantee ── */
+  .custom-product-section__guarantee {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 20px;
+  }
 
-/* ── Description ── */
-#cps-{{ section.id }} .cps-desc {
-  font-size: 14px;
-  line-height: 1.65;
-  opacity: .75;
-}
-#cps-{{ section.id }} .cps-desc p { margin: 0 0 8px; }
-#cps-{{ section.id }} .cps-desc p:last-child { margin: 0; }
+  /* ── Notification ── */
+  .custom-product-section__notification {
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    animation: cpsSlideIn 0.3s ease;
+  }
+  @keyframes cpsSlideIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .custom-product-section__notification-header {
+    background: #e8f5e9;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #2e7d32;
+  }
+  .custom-product-section__notification-body {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+  }
+  .custom-product-section__notification-img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+  .custom-product-section__notification-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .custom-product-section__notification-variant {
+    font-size: 13px;
+    color: #888;
+    font-weight: 400;
+  }
+  .custom-product-section__notification-variant::before {
+    content: '● ';
+    color: #f5a623;
+  }
+  .custom-product-section__notification-cart-btn {
+    display: block;
+    text-align: center;
+    padding: 12px;
+    background: #f3f0ff;
+    color: {{ section.settings.accent_color | default: '#5B4FE9' }};
+    font-weight: 600;
+    font-size: 13px;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: background 0.2s;
+  }
+  .custom-product-section__notification-cart-btn:hover { background: #ebe5ff; }
 
-/* ── Divider ── */
-#cps-{{ section.id }} hr.cps-divider {
-  border: none;
-  border-top: 1px solid var(--cps-border);
-  margin: 0;
-}
+  /* ── Accordion ── */
+  .custom-product-section__accordion {
+    border-top: 1px solid #eee;
+  }
+  .custom-product-section__accordion:last-of-type {
+    border-bottom: 1px solid #eee;
+    margin-bottom: 24px;
+  }
+  .custom-product-section__accordion-trigger {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    background: none;
+    border: none;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+    color: inherit;
+  }
+  .custom-product-section__accordion-icon {
+    font-size: 20px;
+    color: #666;
+    flex-shrink: 0;
+  }
+  .custom-product-section__accordion-content {
+    display: none;
+    padding-bottom: 16px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #555;
+  }
+  .custom-product-section__accordion--open .custom-product-section__accordion-content {
+    display: block;
+  }
 
-/* ── Option group ── */
-#cps-{{ section.id }} .cps-option-group { display: flex; flex-direction: column; gap: 10px; }
-#cps-{{ section.id }} .cps-option-label {
-  font-size: 13px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .07em;
-}
-#cps-{{ section.id }} .cps-option-label span {
-  font-weight: 400;
-  text-transform: none;
-  opacity: .6;
-}
+  /* ── Reviews ── */
+  .custom-product-section__reviews {
+    margin-top: 48px;
+    position: relative;
+  }
+  .custom-product-section__reviews-swiper .swiper-button-prev,
+  .custom-product-section__reviews-swiper .swiper-button-next {
+    color: #333 !important;
+    background: white;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    top: auto;
+    bottom: -48px;
+  }
+  .custom-product-section__reviews-swiper .swiper-button-prev { left: auto; right: 52px; }
+  .custom-product-section__reviews-swiper .swiper-button-next { right: 0; }
+  .custom-product-section__reviews-swiper .swiper-button-prev::after,
+  .custom-product-section__reviews-swiper .swiper-button-next::after { font-size: 14px !important; font-weight: bold; }
+  .custom-product-section__review-card {
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .custom-product-section__review-stars {
+    color: #f5a623;
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+  .custom-product-section__review-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 16px;
+  }
+  .custom-product-section__review-author {
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .custom-product-section__review-author span {
+    font-weight: 400;
+    font-size: 12px;
+    color: #888;
+  }
 
-/* Radio-pill buttons */
-#cps-{{ section.id }} .cps-option-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-#cps-{{ section.id }} .cps-opt-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 8px 16px;
-  border: 1.5px solid var(--cps-border);
-  border-radius: 50px;
-  background: transparent;
-  color: var(--cps-text);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: border-color .15s, background .15s, color .15s;
-  line-height: 1;
-  font-family: inherit;
-}
-#cps-{{ section.id }} .cps-opt-btn .cps-radio {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  border: 2px solid currentColor;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: border-color .15s;
-}
-#cps-{{ section.id }} .cps-opt-btn .cps-radio::after {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: currentColor;
-  opacity: 0;
-  transition: opacity .15s;
-}
-#cps-{{ section.id }} .cps-opt-btn:hover {
-  border-color: var(--cps-primary);
-}
-#cps-{{ section.id }} .cps-opt-btn.is-active {
-  background: var(--cps-primary);
-  border-color: var(--cps-primary);
-  color: var(--cps-btn-text);
-}
-#cps-{{ section.id }} .cps-opt-btn.is-active .cps-radio {
-  border-color: var(--cps-btn-text);
-}
-#cps-{{ section.id }} .cps-opt-btn.is-active .cps-radio::after {
-  opacity: 1;
-  background: var(--cps-btn-text);
-}
-#cps-{{ section.id }} .cps-opt-btn.is-unavailable {
-  opacity: .3;
-  text-decoration: line-through;
-  cursor: not-allowed;
-  pointer-events: none;
-}
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .custom-product-section__inner { grid-template-columns: 1fr; gap: 24px; }
+    .custom-product-section__main-image { height: 320px; }
+    .custom-product-section__chips { display: none; }
+    .custom-product-section__dropdown { display: block; }
+    .custom-product-section__title { font-size: 24px; }
+    .custom-product-section__atc-btn { font-size: 13px; padding: 14px 16px; }
+  }
+</style>
 
-/* Mobile dropdown */
-#cps-{{ section.id }} .cps-mobile-select {
-  display: none;
-  width: 100%;
-  padding: 12px 16px;
-  border: 1.5px solid var(--cps-border);
-  border-radius: 8px;
-  background: var(--cps-bg);
-  color: var(--cps-text);
-  font-size: 15px;
-  font-family: inherit;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 16px center;
-  cursor: pointer;
-}
-@media (max-width: 600px) {
-  #cps-{{ section.id }} .cps-option-buttons { display: none; }
-  #cps-{{ section.id }} .cps-mobile-select { display: block; }
-}
+{%- comment -%} ── HTML / LIQUID ── {%- endcomment -%}
 
-/* ── Quantity + ATC ── */
-#cps-{{ section.id }} .cps-atc-row {
-  display: flex;
-  gap: 10px;
-  align-items: stretch;
-}
-#cps-{{ section.id }} .cps-quantity {
-  display: flex;
-  align-items: center;
-  border: 1.5px solid var(--cps-border);
-  border-radius: 8px;
-  overflow: hidden;
-  min-width: 112px;
-}
-#cps-{{ section.id }} .cps-qty-btn {
-  width: 38px;
-  min-height: 48px;
-  border: none;
-  background: transparent;
-  color: var(--cps-text);
-  font-size: 20px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background .15s;
-  padding: 0;
-  line-height: 1;
-  font-family: inherit;
-}
-#cps-{{ section.id }} .cps-qty-btn:hover { background: rgba(0,0,0,.06); }
-#cps-{{ section.id }} .cps-qty-input {
-  width: 36px;
-  border: none;
-  text-align: center;
-  font-size: 15px;
-  color: var(--cps-text);
-  background: transparent;
-  -moz-appearance: textfield;
-  outline: none;
-  font-family: inherit;
-}
-#cps-{{ section.id }} .cps-qty-input::-webkit-inner-spin-button,
-#cps-{{ section.id }} .cps-qty-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+<div
+  class="custom-product-section"
+  data-section-id="{{ section.id }}"
+  data-product-id="{{ current_product.id }}"
+>
 
-#cps-{{ section.id }} .cps-atc-btn {
-  flex: 1;
-  padding: 14px 20px;
-  background: var(--cps-primary);
-  color: var(--cps-btn-text);
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: opacity .15s, transform .1s;
-  font-family: inherit;
-}
-#cps-{{ section.id }} .cps-atc-btn:hover:not(:disabled) { opacity: .88; }
-#cps-{{ section.id }} .cps-atc-btn:active:not(:disabled) { transform: scale(.98); }
-#cps-{{ section.id }} .cps-atc-btn:disabled { opacity: .4; cursor: not-allowed; }
-
-/* ── Blocks ── */
-#cps-{{ section.id }} .cps-features {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-#cps-{{ section.id }} .cps-features li {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
-}
-#cps-{{ section.id }} .cps-features li::before {
-  content: '';
-  width: 20px;
-  height: 20px;
-  min-width: 20px;
-  border-radius: 50%;
-  background: var(--cps-primary);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M2 6l3 3 5-5' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-size: 12px;
-  background-repeat: no-repeat;
-  background-position: center;
-}
-#cps-{{ section.id }} .cps-custom-text {
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-/* ── ATC Notification popup ── */
-#cps-notif-{{ section.id }} {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  width: 300px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0,0,0,.18);
-  overflow: hidden;
-  z-index: 99999;
-  opacity: 0;
-  transform: translateY(-12px);
-  pointer-events: none;
-  transition: opacity .25s, transform .25s;
-}
-#cps-notif-{{ section.id }}.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-#cps-notif-{{ section.id }} .cps-notif-header {
-  background: #dcfce7;
-  color: #15803d;
-  padding: 10px 16px;
-  font-size: 14px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-#cps-notif-{{ section.id }} .cps-notif-check {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #16a34a;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  font-weight: 800;
-  flex-shrink: 0;
-}
-#cps-notif-{{ section.id }} .cps-notif-body {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-}
-#cps-notif-{{ section.id }} .cps-notif-img {
-  width: 56px;
-  height: 56px;
-  object-fit: cover;
-  border-radius: 8px;
-  flex-shrink: 0;
-  background: #f4f4f4;
-}
-#cps-notif-{{ section.id }} .cps-notif-name {
-  font-size: 14px;
-  font-weight: 600;
-  color: #111;
-  margin: 0 0 4px;
-  line-height: 1.3;
-}
-#cps-notif-{{ section.id }} .cps-notif-variant {
-  font-size: 12px;
-  color: #666;
-  margin: 0;
-}
-#cps-notif-{{ section.id }} .cps-notif-footer {
-  padding: 0 16px 16px;
-}
-#cps-notif-{{ section.id }} .cps-notif-cart-btn {
-  display: block;
-  width: 100%;
-  padding: 11px;
-  background: var(--cps-primary);
-  color: var(--cps-btn-text);
-  text-align: center;
-  text-decoration: none;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  border-radius: 8px;
-  transition: opacity .15s;
-}
-#cps-notif-{{ section.id }} .cps-notif-cart-btn:hover { opacity: .88; }
-#cps-notif-{{ section.id }} .cps-notif-close {
-  position: absolute;
-  top: 8px;
-  right: 10px;
-  background: none;
-  border: none;
-  color: #888;
-  font-size: 18px;
-  cursor: pointer;
-  line-height: 1;
-  padding: 2px 6px;
-  font-family: inherit;
-}
-#cps-notif-{{ section.id }} .cps-notif-close:hover { color: #111; }
-
-/* ── Placeholder ── */
-#cps-{{ section.id }} .cps-placeholder {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 60px 20px;
-  text-align: center;
-  opacity: .4;
-  font-size: 15px;
-  border: 2px dashed currentColor;
-  border-radius: 12px;
-}
-{%- endstyle -%}
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
-
-<div id="cps-{{ section.id }}" data-section-id="{{ section.id }}">
-  {%- if current_product != blank -%}
-
-    <div class="cps-inner{% if section.settings.image_position == 'right' %} img-right{% endif %}">
-
-      {%- comment -%}── GALLERY ──{%- endcomment -%}
-      <div class="cps-gallery">
-        <div class="swiper cps-main-swiper" id="cps-main-{{ section.id }}">
-          <div class="swiper-wrapper">
-            {%- for image in current_product.images -%}
-              <div class="swiper-slide" data-image-id="{{ image.id }}">
-                <img
-                  src="{{ image | image_url: width: 900 }}"
-                  alt="{{ image.alt | default: current_product.title | escape }}"
-                  loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
-                  width="900"
-                >
-              </div>
-            {%- else -%}
-              <div class="swiper-slide">
-                {{ 'product-1' | placeholder_svg_tag }}
-              </div>
-            {%- endfor -%}
-          </div>
-          {%- if current_product.images.size > 1 -%}
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-button-next"></div>
-          {%- endif -%}
-        </div>
-
-        {%- if current_product.images.size > 1 -%}
-          <div class="swiper cps-thumbs-swiper" id="cps-thumbs-{{ section.id }}">
-            <div class="swiper-wrapper">
-              {%- for image in current_product.images -%}
-                <div class="swiper-slide" data-image-id="{{ image.id }}">
-                  <img
-                    src="{{ image | image_url: width: 160 }}"
-                    alt="{{ image.alt | default: current_product.title | escape }}"
-                    loading="lazy"
-                    width="80"
-                  >
-                </div>
-              {%- endfor -%}
-            </div>
-          </div>
-        {%- endif -%}
-      </div>
-
-      {%- comment -%}── INFO ──{%- endcomment -%}
-      <div class="cps-info">
-
-        {%- if section.settings.show_vendor and current_product.vendor != blank -%}
-          <p class="cps-vendor">{{ current_product.vendor }}</p>
-        {%- endif -%}
-
-        <h2 class="cps-title" id="cps-title-{{ section.id }}">{{ current_product.title }}</h2>
-
-        {%- unless current_product.has_only_default_variant -%}
-          <p class="cps-variant-subtitle" id="cps-var-sub-{{ section.id }}">{{ first_variant.title }}</p>
-        {%- endunless -%}
-
-        <div class="cps-price-wrap" id="cps-price-{{ section.id }}">
-          {%- if first_variant.compare_at_price > first_variant.price -%}
-            <span class="cps-price-compare">{{ first_variant.compare_at_price | money }}</span>
-            {%- assign pct = first_variant.compare_at_price | minus: first_variant.price | times: 100 | divided_by: first_variant.compare_at_price -%}
-            <span class="cps-price-badge">-{{ pct }}%</span>
-          {%- endif -%}
-          <span class="cps-price-current">{{ first_variant.price | money }}</span>
-        </div>
-
-        {%- if section.settings.show_description and current_product.description != blank -%}
-          <div class="cps-desc">{{ current_product.description }}</div>
-        {%- endif -%}
-
-        <hr class="cps-divider">
-
-        {%- comment -%}── VARIANT OPTIONS ──{%- endcomment -%}
-        {%- unless current_product.has_only_default_variant -%}
-          <div id="cps-options-{{ section.id }}">
-            {%- for option in current_product.options_with_values -%}
-              <div class="cps-option-group">
-                <p class="cps-option-label">
-                  {{ option.name }}:
-                  <span id="cps-opt-val-{{ section.id }}-{{ forloop.index }}">{{ option.selected_value }}</span>
-                </p>
-
-                {{- '<!-- desktop pill buttons -->' -}}
-                <div class="cps-option-buttons">
-                  {%- for value in option.values -%}
-                    <button
-                      class="cps-opt-btn{% if option.selected_value == value %} is-active{% endif %}"
-                      type="button"
-                      data-option-index="{{ forloop.parentloop.index0 }}"
-                      data-value="{{ value | escape }}"
-                    >
-                      <span class="cps-radio"></span>
-                      {{ value }}
-                    </button>
-                  {%- endfor -%}
-                </div>
-
-                {{- '<!-- mobile dropdown -->' -}}
-                <select
-                  class="cps-mobile-select"
-                  data-option-index="{{ forloop.index0 }}"
-                  aria-label="{{ option.name }}"
-                >
-                  {%- for value in option.values -%}
-                    <option
-                      value="{{ value | escape }}"
-                      {% if option.selected_value == value %}selected{% endif %}
-                    >{{ value }}</option>
-                  {%- endfor -%}
-                </select>
-              </div>
-            {%- endfor -%}
-          </div>
-        {%- endunless -%}
-
-        {%- comment -%}── BLOCKS ──{%- endcomment -%}
-        {%- for block in section.blocks -%}
-          {%- case block.type -%}
-            {%- when 'feature_list' -%}
-              {%- assign has_feat = false -%}
-              {%- for i in (1..6) -%}
-                {%- assign fk = 'feature_' | append: i -%}
-                {%- if block.settings[fk] != blank -%}{%- assign has_feat = true -%}{%- endif -%}
-              {%- endfor -%}
-              {%- if has_feat -%}
-                <ul class="cps-features" {{ block.shopify_attributes }}>
-                  {%- for i in (1..6) -%}
-                    {%- assign fk = 'feature_' | append: i -%}
-                    {%- if block.settings[fk] != blank -%}
-                      <li>{{ block.settings[fk] }}</li>
-                    {%- endif -%}
-                  {%- endfor -%}
-                </ul>
-              {%- endif -%}
-            {%- when 'custom_text' -%}
-              {%- if block.settings.text != blank -%}
-                <div class="cps-custom-text" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
-              {%- endif -%}
-          {%- endcase -%}
-        {%- endfor -%}
-
-        <hr class="cps-divider">
-
-        {%- comment -%}── QUANTITY + ATC ──{%- endcomment -%}
-        <div class="cps-atc-row">
-          {%- if section.settings.show_quantity -%}
-            <div class="cps-quantity">
-              <button class="cps-qty-btn" type="button" data-action="minus" aria-label="Decrease">−</button>
-              <input class="cps-qty-input" id="cps-qty-{{ section.id }}" type="number" value="1" min="1" max="99" aria-label="Quantity">
-              <button class="cps-qty-btn" type="button" data-action="plus" aria-label="Increase">+</button>
-            </div>
-          {%- endif -%}
-          <button
-            class="cps-atc-btn"
-            id="cps-atc-{{ section.id }}"
-            type="button"
-            data-variant-id="{{ first_variant.id }}"
-            {%- unless first_variant.available -%}disabled{%- endunless -%}
-          >
-            {%- if first_variant.available -%}
-              {{ section.settings.btn_text }}
-            {%- else -%}
-              {{ section.settings.sold_out_text }}
-            {%- endif -%}
-          </button>
-        </div>
-
-        {%- if section.settings.show_sku -%}
-          <p class="cps-sku" id="cps-sku-{{ section.id }}" style="font-size:12px;opacity:.5;margin:0;">
-            SKU: <span>{{ first_variant.sku | default: '—' }}</span>
-          </p>
-        {%- endif -%}
-
-      </div>
+  {%- if current_product == empty -%}
+    <div class="custom-product-section__empty">
+      <p>Please select a product in the section settings.</p>
     </div>
-
-    {%- comment -%}── NOTIFICATION POPUP ──{%- endcomment -%}
-    <div id="cps-notif-{{ section.id }}" role="status" aria-live="polite">
-      <button class="cps-notif-close" type="button" aria-label="Close">×</button>
-      <div class="cps-notif-header">
-        <span class="cps-notif-check">✓</span>
-        {{ section.settings.notification_text }}
-      </div>
-      <div class="cps-notif-body">
-        <img
-          class="cps-notif-img"
-          id="cps-notif-img-{{ section.id }}"
-          src="{{ current_product.featured_image | image_url: width: 120 }}"
-          alt="{{ current_product.title | escape }}"
-          width="56"
-          height="56"
-        >
-        <div>
-          <p class="cps-notif-name">{{ current_product.title }}</p>
-          <p class="cps-notif-variant" id="cps-notif-var-{{ section.id }}">{{ first_variant.title }}</p>
-        </div>
-      </div>
-      <div class="cps-notif-footer">
-        <a class="cps-notif-cart-btn" href="/cart">{{ section.settings.view_cart_text }}</a>
-      </div>
-    </div>
-
-    {%- comment -%}── PRODUCT DATA FOR JS ──{%- endcomment -%}
-    <script type="application/json" id="cps-data-{{ section.id }}">
-      {
-        "variants":         {{ current_product.variants | json }},
-        "images":           {{ current_product.images | json }},
-        "initialVariantId": {{ first_variant.id }},
-        "productTitle":     {{ current_product.title | json }}
-      }
-    </script>
-
   {%- else -%}
-    <div class="cps-placeholder">
-      <p>Select a product in the section settings, or place this section on a product template.</p>
+
+  <script>
+    window.cpsProduct_{{ section.id }} = {{ current_product | json }};
+  </script>
+
+  <div class="custom-product-section__inner">
+
+    {%- comment -%} ── Gallery ── {%- endcomment -%}
+    <div class="custom-product-section__gallery">
+
+      <div class="swiper custom-product-section__main-swiper">
+        <div class="swiper-wrapper">
+          {%- for image in current_product.images -%}
+            <div class="swiper-slide">
+              <img
+                src="{{ image | image_url: width: 800 }}"
+                alt="{{ image.alt | escape }}"
+                class="custom-product-section__main-image"
+                data-image-id="{{ image.id }}"
+              >
+            </div>
+          {%- endfor -%}
+        </div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+      </div>
+
+      <div class="swiper custom-product-section__thumb-swiper">
+        <div class="swiper-wrapper">
+          {%- for image in current_product.images -%}
+            <div class="swiper-slide">
+              <img src="{{ image | image_url: width: 120 }}" alt="{{ image.alt | escape }}">
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+
     </div>
+
+    {%- comment -%} ── Product Info ── {%- endcomment -%}
+    <div class="custom-product-section__info">
+
+      <h1 class="custom-product-section__title" data-cps="title">
+        {{ current_product.title }}
+      </h1>
+
+      <div class="custom-product-section__meta">
+        {%- if section.settings.show_product_type and current_product.type != blank -%}
+          <span class="custom-product-section__type">{{ current_product.type }}</span>
+        {%- endif -%}
+        <span class="custom-product-section__variant-label" data-cps="variant-label">
+          <span class="custom-product-section__dot" data-cps="dot"></span>
+          <span data-cps="variant-label-text">{{ first_variant.title }}</span>
+        </span>
+      </div>
+
+      {%- if section.settings.show_badges -%}
+        <div class="custom-product-section__badges">
+          {%- for i in (1..3) -%}
+            {%- assign badge_text = 'badge_' | append: i | append: '_text' -%}
+            {%- assign badge_icon = 'badge_' | append: i | append: '_icon' -%}
+            {%- if section.settings[badge_text] != blank -%}
+              <div class="custom-product-section__badge">
+                {%- if section.settings[badge_icon] != blank -%}
+                  <span>{{ section.settings[badge_icon] }}</span>
+                {%- endif -%}
+                <span>{{ section.settings[badge_text] }}</span>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      <div class="custom-product-section__description" data-cps="description">
+        {{ current_product.description }}
+      </div>
+
+      {%- comment -%} ── Variant Selectors ── {%- endcomment -%}
+      {%- unless current_product.has_only_default_variant -%}
+        <div class="custom-product-section__variants">
+          <p class="custom-product-section__variants-label">
+            {{ section.settings.flavor_label | default: 'Choose your flavor:' }}
+          </p>
+
+          {%- for option in current_product.options_with_values -%}
+            {%- assign opt_idx = forloop.index0 -%}
+
+            <div class="custom-product-section__chips" data-option-index="{{ opt_idx }}">
+              {%- for value in option.values -%}
+                <button
+                  class="custom-product-section__chip{% if value == option.selected_value %} custom-product-section__chip--active{% endif %}"
+                  data-value="{{ value }}"
+                  data-option-index="{{ opt_idx }}"
+                >
+                  <span class="custom-product-section__chip-dot"></span>
+                  {{ value }}
+                </button>
+              {%- endfor -%}
+            </div>
+
+            <div class="custom-product-section__dropdown" data-option-index="{{ opt_idx }}">
+              <select
+                class="custom-product-section__dropdown-select"
+                data-option-index="{{ opt_idx }}"
+              >
+                {%- for value in option.values -%}
+                  <option value="{{ value }}"{% if value == option.selected_value %} selected{% endif %}>
+                    {{ value }}
+                  </option>
+                {%- endfor -%}
+              </select>
+            </div>
+
+          {%- endfor -%}
+        </div>
+      {%- endunless -%}
+
+      {%- comment -%} ── ATC ── {%- endcomment -%}
+      <div class="custom-product-section__atc-row">
+        <div class="custom-product-section__quantity">
+          <button class="custom-product-section__qty-btn" data-action="minus">−</button>
+          <input type="number" class="custom-product-section__qty-input" value="1" min="1" max="99">
+          <button class="custom-product-section__qty-btn" data-action="plus">+</button>
+        </div>
+        <button
+          class="custom-product-section__atc-btn"
+          data-variant-id="{{ first_variant.id }}"
+          data-cps="atc"
+        >
+          {{ section.settings.atc_label | default: 'ADD TO CART' }} —
+          <span data-cps="price">{{ first_variant.price | money }}</span>
+        </button>
+      </div>
+
+      {%- if section.settings.show_guarantee -%}
+        <p class="custom-product-section__guarantee">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          {{ section.settings.guarantee_text | default: '30-Day Money-Back Guarantee' }}
+        </p>
+      {%- endif -%}
+
+      {%- comment -%} ── Notification ── {%- endcomment -%}
+      <div class="custom-product-section__notification" data-cps="notification" style="display:none;">
+        <div class="custom-product-section__notification-header">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Added!
+        </div>
+        <div class="custom-product-section__notification-body">
+          <img class="custom-product-section__notification-img" data-cps="notif-img" src="" alt="">
+          <div class="custom-product-section__notification-details">
+            <span data-cps="notif-title"></span>
+            <span class="custom-product-section__notification-variant" data-cps="notif-variant"></span>
+          </div>
+        </div>
+        <a href="/cart" class="custom-product-section__notification-cart-btn">VIEW YOUR CART</a>
+      </div>
+
+      {%- comment -%} ── Accordions ── {%- endcomment -%}
+      {%- for i in (1..3) -%}
+        {%- assign acc_title   = 'accordion_' | append: i | append: '_title' -%}
+        {%- assign acc_content = 'accordion_' | append: i | append: '_content' -%}
+        {%- if section.settings[acc_title] != blank -%}
+          <div class="custom-product-section__accordion">
+            <button class="custom-product-section__accordion-trigger">
+              {{ section.settings[acc_title] }}
+              <span class="custom-product-section__accordion-icon">+</span>
+            </button>
+            <div class="custom-product-section__accordion-content">
+              {{ section.settings[acc_content] }}
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+
+    </div>
+  </div>
+
+  {%- comment -%} ── Reviews ── {%- endcomment -%}
+  {%- if section.settings.show_reviews -%}
+    <div class="custom-product-section__reviews">
+      <div class="swiper custom-product-section__reviews-swiper">
+        <div class="swiper-wrapper">
+          {%- for i in (1..4) -%}
+            {%- assign rev_text   = 'review_' | append: i | append: '_text' -%}
+            {%- assign rev_author = 'review_' | append: i | append: '_author' -%}
+            {%- if section.settings[rev_text] != blank -%}
+              <div class="swiper-slide">
+                <div class="custom-product-section__review-card">
+                  <div class="custom-product-section__review-stars">★★★★★</div>
+                  <p class="custom-product-section__review-text">{{ section.settings[rev_text] }}</p>
+                  <div class="custom-product-section__review-author">
+                    {{ section.settings[rev_author] }}
+                    <span>✓ Verified customer</span>
+                  </div>
+                </div>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+      </div>
+    </div>
+  {%- endif -%}
+
   {%- endif -%}
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
 (function () {
-  'use strict';
+  const sectionEl = document.querySelector(
+    '.custom-product-section[data-section-id="{{ section.id }}"]'
+  );
+  if (!sectionEl) return;
 
-  var sid = '{{ section.id }}';
+  const product = window.cpsProduct_{{ section.id }};
+  if (!product) return;
 
-  function waitForSwiper(cb) {
-    if (typeof Swiper !== 'undefined') { cb(); return; }
-    var t = setInterval(function () { if (typeof Swiper !== 'undefined') { clearInterval(t); cb(); } }, 50);
+  let selectedOptions = [...product.variants[0].options];
+  let currentVariant  = product.variants[0];
+  let notifTimer      = null;
+
+  /* ── Swiper init ── */
+  const thumbSwiper = new Swiper(
+    sectionEl.querySelector('.custom-product-section__thumb-swiper'),
+    {
+      spaceBetween: 8,
+      slidesPerView: 'auto',
+      freeMode: true,
+      watchSlidesProgress: true,
+    }
+  );
+
+  const mainSwiper = new Swiper(
+    sectionEl.querySelector('.custom-product-section__main-swiper'),
+    {
+      spaceBetween: 10,
+      navigation: {
+        nextEl: sectionEl.querySelector('.custom-product-section__main-swiper .swiper-button-next'),
+        prevEl: sectionEl.querySelector('.custom-product-section__main-swiper .swiper-button-prev'),
+      },
+      thumbs: { swiper: thumbSwiper },
+    }
+  );
+
+  const reviewsEl = sectionEl.querySelector('.custom-product-section__reviews-swiper');
+  if (reviewsEl) {
+    new Swiper(reviewsEl, {
+      spaceBetween: 16,
+      slidesPerView: 2,
+      navigation: {
+        nextEl: reviewsEl.querySelector('.swiper-button-next'),
+        prevEl: reviewsEl.querySelector('.swiper-button-prev'),
+      },
+      breakpoints: { 0: { slidesPerView: 1 }, 600: { slidesPerView: 2 } },
+    });
+  }
+
+  /* ── Helpers ── */
+  function findVariant(options) {
+    return product.variants.find(v =>
+      options.every((val, i) => v[`option${i + 1}`] === val)
+    ) || null;
   }
 
   function formatMoney(cents) {
-    var fmt = (window.Shopify && window.Shopify.money_format) || '${{amount}}';
-    var amount = (cents / 100).toFixed(2);
-    return fmt
-      .replace(/\{\{\s*amount\s*\}\}/g, amount)
-      .replace(/\{\{\s*amount_no_decimals\s*\}\}/g, Math.round(cents / 100))
-      .replace(/\{\{\s*amount_with_comma_separator\s*\}\}/g, amount.replace('.', ','));
+    return (cents / 100).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
   }
 
-  function init() {
-    var dataEl = document.getElementById('cps-data-' + sid);
-    if (!dataEl) return;
+  function updateUI(variant) {
+    if (!variant) return;
+    currentVariant = variant;
 
-    var data           = JSON.parse(dataEl.textContent);
-    var allVariants    = data.variants;
-    var allImages      = data.images;
-    var productTitle   = data.productTitle;
-    var sectionEl      = document.getElementById('cps-' + sid);
-    var atcBtn         = document.getElementById('cps-atc-' + sid);
-    var notifEl        = document.getElementById('cps-notif-' + sid);
-    var notifImg       = document.getElementById('cps-notif-img-' + sid);
-    var notifVar       = document.getElementById('cps-notif-var-' + sid);
-    var qtyInput       = document.getElementById('cps-qty-' + sid);
-    var priceEl        = document.getElementById('cps-price-' + sid);
-    var varSubEl       = document.getElementById('cps-var-sub-' + sid);
-    var skuEl          = document.getElementById('cps-sku-' + sid);
-    var mainSwiper, thumbsSwiper, notifTimer;
+    /* price */
+    sectionEl.querySelectorAll('[data-cps="price"]').forEach(el => {
+      el.textContent = formatMoney(variant.price);
+    });
 
-    var currentVariant  = allVariants.find(function (v) { return v.id === data.initialVariantId; }) || allVariants[0];
-    var selectedOptions = currentVariant ? currentVariant.options.slice() : [];
+    /* atc variant id */
+    const atcBtn = sectionEl.querySelector('[data-cps="atc"]');
+    if (atcBtn) atcBtn.dataset.variantId = variant.id;
 
-    /* ── SWIPER ── */
-    waitForSwiper(function () {
-      var multi = allImages.length > 1;
-      if (multi) {
-        thumbsSwiper = new Swiper('#cps-thumbs-' + sid, {
-          spaceBetween: 8,
-          slidesPerView: 'auto',
-          watchSlidesProgress: true,
-          freeMode: true,
+    /* variant label text */
+    const labelText = sectionEl.querySelector('[data-cps="variant-label-text"]');
+    if (labelText) labelText.textContent = variant.title;
+
+    /* slide to variant image */
+    if (variant.featured_image) {
+      const id = variant.featured_image.id;
+      sectionEl.querySelectorAll('.custom-product-section__main-image').forEach((img, idx) => {
+        if (parseInt(img.dataset.imageId) === id) mainSwiper.slideTo(idx);
+      });
+    }
+  }
+
+  /* ── Chip clicks ── */
+  sectionEl.querySelectorAll('.custom-product-section__chip').forEach(chip => {
+    chip.addEventListener('click', function () {
+      const idx = parseInt(this.dataset.optionIndex);
+      const val = this.dataset.value;
+      selectedOptions[idx] = val;
+
+      sectionEl.querySelectorAll(`.custom-product-section__chip[data-option-index="${idx}"]`)
+        .forEach(c => c.classList.remove('custom-product-section__chip--active'));
+      this.classList.add('custom-product-section__chip--active');
+
+      const sel = sectionEl.querySelector(
+        `.custom-product-section__dropdown-select[data-option-index="${idx}"]`
+      );
+      if (sel) sel.value = val;
+
+      updateUI(findVariant(selectedOptions));
+    });
+  });
+
+  /* ── Dropdown change ── */
+  sectionEl.querySelectorAll('.custom-product-section__dropdown-select').forEach(select => {
+    select.addEventListener('change', function () {
+      const idx = parseInt(this.dataset.optionIndex);
+      const val = this.value;
+      selectedOptions[idx] = val;
+
+      sectionEl.querySelectorAll(`.custom-product-section__chip[data-option-index="${idx}"]`)
+        .forEach(c => c.classList.toggle('custom-product-section__chip--active', c.dataset.value === val));
+
+      updateUI(findVariant(selectedOptions));
+    });
+  });
+
+  /* ── Quantity ── */
+  sectionEl.querySelector('[data-action="minus"]').addEventListener('click', () => {
+    const input = sectionEl.querySelector('.custom-product-section__qty-input');
+    if (parseInt(input.value) > 1) input.value = parseInt(input.value) - 1;
+  });
+  sectionEl.querySelector('[data-action="plus"]').addEventListener('click', () => {
+    const input = sectionEl.querySelector('.custom-product-section__qty-input');
+    input.value = parseInt(input.value) + 1;
+  });
+
+  /* ── ATC ── */
+  sectionEl.querySelector('[data-cps="atc"]').addEventListener('click', async function () {
+    const btn       = this;
+    const variantId = parseInt(btn.dataset.variantId);
+    const qty       = parseInt(sectionEl.querySelector('.custom-product-section__qty-input').value);
+
+    btn.disabled    = true;
+    btn.textContent = 'Adding…';
+
+    try {
+      const res = await fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: variantId, quantity: qty }),
+      });
+      if (!res.ok) throw new Error('ATC failed');
+
+      /* notification */
+      const notif        = sectionEl.querySelector('[data-cps="notification"]');
+      const notifImg     = sectionEl.querySelector('[data-cps="notif-img"]');
+      const notifTitle   = sectionEl.querySelector('[data-cps="notif-title"]');
+      const notifVariant = sectionEl.querySelector('[data-cps="notif-variant"]');
+
+      if (notifImg) {
+        notifImg.src = currentVariant.featured_image
+          ? currentVariant.featured_image.src
+          : product.featured_image;
+      }
+      if (notifTitle)   notifTitle.textContent   = product.title;
+      if (notifVariant) notifVariant.textContent  = currentVariant.title;
+
+      notif.style.display = 'block';
+      if (notifTimer) clearTimeout(notifTimer);
+      notifTimer = setTimeout(() => { notif.style.display = 'none'; }, 3000);
+
+    } catch (err) {
+      console.error('ATC error:', err);
+    } finally {
+      btn.disabled = false;
+      const price  = sectionEl.querySelector('[data-cps="price"]');
+      btn.innerHTML = `{{ section.settings.atc_label | default: 'ADD TO CART' }} — <span data-cps="price">${price ? price.textContent : ''}</span>`;
+    }
+  });
+
+  /* ── Accordions ── */
+  sectionEl.querySelectorAll('.custom-product-section__accordion-trigger').forEach(trigger => {
+    trigger.addEventListener('click', function () {
+      const acc    = this.closest('.custom-product-section__accordion');
+      const isOpen = acc.classList.contains('custom-product-section__accordion--open');
+      sectionEl.querySelectorAll('.custom-product-section__accordion')
+        .forEach(a => {
+          a.classList.remove('custom-product-section__accordion--open');
+          a.querySelector('.custom-product-section__accordion-icon').textContent = '+';
         });
+      if (!isOpen) {
+        acc.classList.add('custom-product-section__accordion--open');
+        this.querySelector('.custom-product-section__accordion-icon').textContent = '−';
       }
-      mainSwiper = new Swiper('#cps-main-' + sid, {
-        spaceBetween: 0,
-        navigation: multi ? {
-          nextEl: '#cps-main-' + sid + ' .swiper-button-next',
-          prevEl: '#cps-main-' + sid + ' .swiper-button-prev',
-        } : false,
-        thumbs: multi ? { swiper: thumbsSwiper } : undefined,
-        keyboard: { enabled: true },
-      });
     });
+  });
 
-    /* ── HELPERS ── */
-    function findVariant(opts) {
-      return allVariants.find(function (v) {
-        return v.options.every(function (o, i) { return o === opts[i]; });
-      }) || null;
-    }
-
-    function updatePrice(v) {
-      if (!priceEl || !v) return;
-      var html = '';
-      if (v.compare_at_price && v.compare_at_price > v.price) {
-        var pct = Math.round((v.compare_at_price - v.price) / v.compare_at_price * 100);
-        html += '<span class="cps-price-compare">' + formatMoney(v.compare_at_price) + '</span>';
-        html += '<span class="cps-price-badge">-' + pct + '%</span>';
-      }
-      html += '<span class="cps-price-current">' + formatMoney(v.price) + '</span>';
-      priceEl.innerHTML = html;
-    }
-
-    function updateSubtitle(v) {
-      if (!varSubEl || !v) return;
-      varSubEl.textContent = v.title === 'Default Title' ? '' : v.title;
-    }
-
-    function updateSKU(v) {
-      if (!skuEl || !v) return;
-      var span = skuEl.querySelector('span');
-      if (span) span.textContent = v.sku || '—';
-    }
-
-    function updateATCBtn(v) {
-      if (!atcBtn) return;
-      if (!v) {
-        atcBtn.disabled = true;
-        atcBtn.textContent = '{{ section.settings.unavailable_text }}';
-        return;
-      }
-      atcBtn.dataset.variantId = v.id;
-      atcBtn.disabled = !v.available;
-      atcBtn.textContent = v.available ? '{{ section.settings.btn_text }}' : '{{ section.settings.sold_out_text }}';
-    }
-
-    function updateImage(v) {
-      if (!mainSwiper || !v || !v.featured_image) return;
-      var idx = allImages.findIndex(function (img) { return img.id === v.featured_image.id; });
-      if (idx !== -1) mainSwiper.slideTo(idx, 400);
-    }
-
-    function updateOptionUI() {
-      if (!sectionEl) return;
-      sectionEl.querySelectorAll('.cps-opt-btn').forEach(function (btn) {
-        var idx  = parseInt(btn.dataset.optionIndex, 10);
-        var val  = btn.dataset.value;
-        btn.classList.toggle('is-active', selectedOptions[idx] === val);
-        var test = selectedOptions.slice();
-        test[idx] = val;
-        var tv = findVariant(test);
-        btn.classList.toggle('is-unavailable', tv ? !tv.available : true);
-      });
-      selectedOptions.forEach(function (val, i) {
-        var span = document.getElementById('cps-opt-val-' + sid + '-' + (i + 1));
-        if (span) span.textContent = val;
-        var sel = sectionEl.querySelector('.cps-mobile-select[data-option-index="' + i + '"]');
-        if (sel) sel.value = val;
-      });
-    }
-
-    /* ── OPTION CLICK (desktop pills) ── */
-    if (sectionEl) {
-      sectionEl.addEventListener('click', function (e) {
-        var btn = e.target.closest('.cps-opt-btn');
-        if (!btn) return;
-        selectedOptions[parseInt(btn.dataset.optionIndex, 10)] = btn.dataset.value;
-        currentVariant = findVariant(selectedOptions);
-        updateOptionUI();
-        updatePrice(currentVariant);
-        updateSubtitle(currentVariant);
-        updateSKU(currentVariant);
-        updateATCBtn(currentVariant);
-        updateImage(currentVariant);
-      });
-
-      /* ── OPTION CHANGE (mobile dropdown) ── */
-      sectionEl.addEventListener('change', function (e) {
-        var sel = e.target.closest('.cps-mobile-select');
-        if (!sel) return;
-        selectedOptions[parseInt(sel.dataset.optionIndex, 10)] = sel.value;
-        currentVariant = findVariant(selectedOptions);
-        updateOptionUI();
-        updatePrice(currentVariant);
-        updateSubtitle(currentVariant);
-        updateSKU(currentVariant);
-        updateATCBtn(currentVariant);
-        updateImage(currentVariant);
-      });
-
-      /* ── QUANTITY ── */
-      sectionEl.addEventListener('click', function (e) {
-        var btn = e.target.closest('.cps-qty-btn');
-        if (!btn || !qtyInput) return;
-        var val = parseInt(qtyInput.value, 10) || 1;
-        qtyInput.value = btn.dataset.action === 'plus' ? Math.min(val + 1, 99) : Math.max(val - 1, 1);
-      });
-    }
-
-    /* ── ADD TO CART ── */
-    if (atcBtn) {
-      atcBtn.addEventListener('click', function () {
-        var varId = parseInt(atcBtn.dataset.variantId, 10);
-        var qty   = qtyInput ? parseInt(qtyInput.value, 10) || 1 : 1;
-        if (!varId) return;
-
-        atcBtn.disabled = true;
-        atcBtn.textContent = '{{ section.settings.adding_text }}';
-
-        fetch('/cart/add.js', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body: JSON.stringify({ id: varId, quantity: qty }),
-        })
-          .then(function (r) {
-            if (!r.ok) return r.json().then(function (e) { throw e; });
-            return r.json();
-          })
-          .then(function (item) {
-            updateNotifContent(item);
-            showNotif();
-            updateCartCount();
-          })
-          .catch(function (err) {
-            alert((err && err.description) || 'Could not add to cart. Please try again.');
-          })
-          .finally(function () { updateATCBtn(currentVariant); });
-      });
-    }
-
-    /* ── NOTIFICATION ── */
-    function updateNotifContent(item) {
-      if (!notifEl) return;
-      if (notifImg && item && item.image) {
-        notifImg.src = item.image;
-      }
-      if (notifVar && currentVariant) {
-        notifVar.textContent = currentVariant.title === 'Default Title' ? productTitle : currentVariant.title;
-      }
-    }
-
-    function showNotif() {
-      if (!notifEl) return;
-      clearTimeout(notifTimer);
-      notifEl.classList.add('is-visible');
-      notifTimer = setTimeout(function () { notifEl.classList.remove('is-visible'); }, {{ section.settings.notification_duration | times: 1000 }});
-    }
-
-    if (notifEl) {
-      notifEl.querySelector('.cps-notif-close').addEventListener('click', function () {
-        notifEl.classList.remove('is-visible');
-        clearTimeout(notifTimer);
-      });
-    }
-
-    /* ── CART COUNT ── */
-    function updateCartCount() {
-      fetch('/cart.js', { headers: { 'Accept': 'application/json' } })
-        .then(function (r) { return r.json(); })
-        .then(function (cart) {
-          document.querySelectorAll('[data-cart-count], .cart-count, .js-cart-count').forEach(function (el) {
-            el.textContent = cart.item_count;
-          });
-          document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart: cart } }));
-        })
-        .catch(function () {});
-    }
-
-    /* ── THEME EDITOR reload ── */
-    document.addEventListener('shopify:section:load', function (e) {
-      if (e.detail.sectionId === sid) init();
-    });
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
 })();
 </script>
 
 {% schema %}
 {
   "name": "Custom Product Section",
-  "tag": "section",
-  "class": "cps-section-wrapper",
   "settings": [
-    {
-      "type": "header",
-      "content": "Product"
-    },
     {
       "type": "product",
       "id": "product",
-      "label": "Product",
-      "info": "Leave empty to use the current product on product pages."
+      "label": "Product"
     },
     {
-      "type": "header",
-      "content": "Layout"
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color",
+      "default": "#5B4FE9"
     },
     {
-      "type": "select",
-      "id": "image_position",
-      "label": "Image position",
-      "options": [
-        { "value": "left",  "label": "Left" },
-        { "value": "right", "label": "Right" }
-      ],
-      "default": "left"
+      "type": "color",
+      "id": "title_color",
+      "label": "Title Color",
+      "default": "#1a1a1a"
     },
     {
-      "type": "range",
-      "id": "section_padding",
-      "label": "Section padding",
-      "min": 0,
-      "max": 120,
-      "step": 4,
-      "unit": "px",
-      "default": 64
+      "type": "text",
+      "id": "flavor_label",
+      "label": "Variants Label",
+      "default": "Choose your flavor:"
+    },
+    {
+      "type": "text",
+      "id": "atc_label",
+      "label": "Add to Cart Button Label",
+      "default": "ADD TO CART"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_guarantee",
+      "label": "Show Money-Back Guarantee",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "guarantee_text",
+      "label": "Guarantee Text",
+      "default": "30-Day Money-Back Guarantee"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_type",
+      "label": "Show Product Type",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badges",
+      "label": "Show Badges",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge_1_icon",
+      "label": "Badge 1 Icon",
+      "default": "🗓"
+    },
+    {
+      "type": "text",
+      "id": "badge_1_text",
+      "label": "Badge 1 Text",
+      "default": "3 bags (90 servings)"
+    },
+    {
+      "type": "text",
+      "id": "badge_2_icon",
+      "label": "Badge 2 Icon",
+      "default": "🚫"
+    },
+    {
+      "type": "text",
+      "id": "badge_2_text",
+      "label": "Badge 2 Text",
+      "default": "No artificial flavors/sweeteners"
+    },
+    {
+      "type": "text",
+      "id": "badge_3_icon",
+      "label": "Badge 3 Icon"
+    },
+    {
+      "type": "text",
+      "id": "badge_3_text",
+      "label": "Badge 3 Text"
+    },
+    {
+      "type": "text",
+      "id": "accordion_1_title",
+      "label": "Accordion 1 Title",
+      "default": "What is Rimo™"
+    },
+    {
+      "type": "richtext",
+      "id": "accordion_1_content",
+      "label": "Accordion 1 Content"
+    },
+    {
+      "type": "text",
+      "id": "accordion_2_title",
+      "label": "Accordion 2 Title",
+      "default": "How to Use"
+    },
+    {
+      "type": "richtext",
+      "id": "accordion_2_content",
+      "label": "Accordion 2 Content"
+    },
+    {
+      "type": "text",
+      "id": "accordion_3_title",
+      "label": "Accordion 3 Title"
+    },
+    {
+      "type": "richtext",
+      "id": "accordion_3_content",
+      "label": "Accordion 3 Content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_reviews",
+      "label": "Show Reviews",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "review_1_text",
+      "label": "Review 1 Text",
+      "default": "I love this product! Noticeable increased energy and post workout pain levels much lower."
+    },
+    {
+      "type": "text",
+      "id": "review_1_author",
+      "label": "Review 1 Author",
+      "default": "Joanette D."
+    },
+    {
+      "type": "text",
+      "id": "review_2_text",
+      "label": "Review 2 Text",
+      "default": "Have definitely felt a surge in my energy and overall well being since taking."
+    },
+    {
+      "type": "text",
+      "id": "review_2_author",
+      "label": "Review 2 Author",
+      "default": "Joanette D."
+    },
+    {
+      "type": "text",
+      "id": "review_3_text",
+      "label": "Review 3 Text"
+    },
+    {
+      "type": "text",
+      "id": "review_3_author",
+      "label": "Review 3 Author"
+    },
+    {
+      "type": "text",
+      "id": "review_4_text",
+      "label": "Review 4 Text"
+    },
+    {
+      "type": "text",
+      "id": "review_4_author",
+      "label": "Review 4 Author"
     },
     {
       "type": "range",
       "id": "max_width",
-      "label": "Max content width",
+      "label": "Max Width (px)",
       "min": 800,
       "max": 1600,
-      "step": 40,
-      "unit": "px",
+      "step": 50,
       "default": 1200
     },
     {
       "type": "range",
-      "id": "image_radius",
-      "label": "Image border radius",
+      "id": "section_padding",
+      "label": "Section Padding (px)",
       "min": 0,
-      "max": 24,
-      "step": 2,
-      "unit": "px",
-      "default": 8
-    },
-    {
-      "type": "header",
-      "content": "Colors"
-    },
-    {
-      "type": "color",
-      "id": "bg_color",
-      "label": "Background",
-      "default": "#ffffff"
-    },
-    {
-      "type": "color",
-      "id": "text_color",
-      "label": "Text",
-      "default": "#111111"
-    },
-    {
-      "type": "color",
-      "id": "primary_color",
-      "label": "Primary / button color",
-      "default": "#111111"
-    },
-    {
-      "type": "color",
-      "id": "btn_text_color",
-      "label": "Button text color",
-      "default": "#ffffff"
-    },
-    {
-      "type": "color",
-      "id": "border_color",
-      "label": "Border color",
-      "default": "#e5e5e5"
-    },
-    {
-      "type": "header",
-      "content": "Product Details"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_vendor",
-      "label": "Show vendor",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "show_sku",
-      "label": "Show SKU",
-      "default": false
-    },
-    {
-      "type": "checkbox",
-      "id": "show_description",
-      "label": "Show description",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "show_quantity",
-      "label": "Show quantity selector",
-      "default": true
-    },
-    {
-      "type": "header",
-      "content": "Button & Notification"
-    },
-    {
-      "type": "text",
-      "id": "btn_text",
-      "label": "Add to cart text",
-      "default": "Add to Cart"
-    },
-    {
-      "type": "text",
-      "id": "adding_text",
-      "label": "Adding text",
-      "default": "Adding…"
-    },
-    {
-      "type": "text",
-      "id": "sold_out_text",
-      "label": "Sold out text",
-      "default": "Sold Out"
-    },
-    {
-      "type": "text",
-      "id": "unavailable_text",
-      "label": "Unavailable text",
-      "default": "Unavailable"
-    },
-    {
-      "type": "text",
-      "id": "notification_text",
-      "label": "Notification message",
-      "default": "Added!"
-    },
-    {
-      "type": "text",
-      "id": "view_cart_text",
-      "label": "View cart button text",
-      "default": "View Your Cart"
-    },
-    {
-      "type": "range",
-      "id": "notification_duration",
-      "label": "Notification duration (seconds)",
-      "min": 2,
-      "max": 8,
-      "step": 1,
-      "default": 3
-    }
-  ],
-  "blocks": [
-    {
-      "type": "feature_list",
-      "name": "Feature List",
-      "limit": 1,
-      "settings": [
-        { "type": "text", "id": "feature_1", "label": "Feature 1", "default": "Free shipping over $50" },
-        { "type": "text", "id": "feature_2", "label": "Feature 2", "default": "30-day hassle-free returns" },
-        { "type": "text", "id": "feature_3", "label": "Feature 3", "default": "2-year warranty included" },
-        { "type": "text", "id": "feature_4", "label": "Feature 4" },
-        { "type": "text", "id": "feature_5", "label": "Feature 5" },
-        { "type": "text", "id": "feature_6", "label": "Feature 6" }
-      ]
-    },
-    {
-      "type": "custom_text",
-      "name": "Custom Text",
-      "settings": [
-        {
-          "type": "richtext",
-          "id": "text",
-          "label": "Text",
-          "default": "<p>Add any additional product information here.</p>"
-        }
-      ]
+      "max": 100,
+      "step": 4,
+      "default": 40
     }
   ],
   "presets": [
     {
-      "name": "Custom Product Section",
-      "blocks": [
-        { "type": "feature_list" }
-      ]
+      "name": "Custom Product Section"
     }
   ]
 }
