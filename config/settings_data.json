@@ -396,7 +396,7 @@
         "type": "custom-product-section",
         "name": "Custom Product Section",
         "settings": {
-          "product": "test-1",
+          "product": "longevity-gummies",
           "max_width": 1200,
           "section_padding": 64
         }
