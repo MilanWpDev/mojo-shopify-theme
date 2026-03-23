@@ -585,7 +585,11 @@
       {%- endif -%}
 
       <div class="custom-product-section__description" data-cps="description">
-        {{ first_variant.metafields.custom.description | default: current_product.description }}
+        {%- if first_variant.metafields.custom.description != blank -%}
+          {{ first_variant.metafields.custom.description | metafield_tag }}
+        {%- else -%}
+          {{ current_product.description }}
+        {%- endif -%}
       </div>
 
       {%- unless current_product.has_only_default_variant -%}
@@ -597,10 +601,18 @@
             {%- assign opt_idx = forloop.index0 -%}
             <div class="custom-product-section__chips" data-option-index="{{ opt_idx }}">
               {%- for value in option.values -%}
+                {%- assign matched_variant = nil -%}
+                {%- for variant in current_product.variants -%}
+                  {%- if variant.option1 == value -%}
+                    {%- assign matched_variant = variant -%}
+                    {%- break -%}
+                  {%- endif -%}
+                {%- endfor -%}
                 <button
                   class="custom-product-section__chip{% if value == option.selected_value %} custom-product-section__chip--active{% endif %}"
                   data-value="{{ value }}"
                   data-option-index="{{ opt_idx }}"
+                  data-variant-description="{% if matched_variant and matched_variant.metafields.custom.description != blank %}{{ matched_variant.metafields.custom.description | metafield_tag | escape }}{% else %}{{ current_product.description | escape }}{% endif %}"
                   type="button"
                 >
                   <span class="custom-product-section__chip-dot"></span>
@@ -611,7 +623,18 @@
             <div class="custom-product-section__dropdown" data-option-index="{{ opt_idx }}">
               <select class="custom-product-section__dropdown-select" data-option-index="{{ opt_idx }}">
                 {%- for value in option.values -%}
-                  <option value="{{ value }}"{% if value == option.selected_value %} selected{% endif %}>
+                  {%- assign matched_variant = nil -%}
+                  {%- for variant in current_product.variants -%}
+                    {%- if variant.option1 == value -%}
+                      {%- assign matched_variant = variant -%}
+                      {%- break -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                  <option
+                    value="{{ value }}"
+                    data-variant-description="{% if matched_variant and matched_variant.metafields.custom.description != blank %}{{ matched_variant.metafields.custom.description | metafield_tag | escape }}{% else %}{{ current_product.description | escape }}{% endif %}"
+                    {% if value == option.selected_value %}selected{% endif %}
+                  >
                     {{ value }}
                   </option>
                 {%- endfor -%}
@@ -792,17 +815,25 @@
     return '$' + (cents / 100).toFixed(2);
   }
 
-  function getVariantDescriptionHtml(variant) {
-    if (
-      variant &&
-      variant.metafields &&
-      variant.metafields.custom &&
-      variant.metafields.custom.description
-    ) {
-      var desc = variant.metafields.custom.description;
+  function findDescriptionSource(variant) {
+    var chipMatch = null;
+    sectionEl.querySelectorAll('.custom-product-section__chip[data-option-index="0"]').forEach(function(chip) {
+      if (!chipMatch && chip.dataset.value === variant.option1) {
+        chipMatch = chip;
+      }
+    });
+    if (chipMatch && chipMatch.dataset.variantDescription) {
+      return chipMatch.dataset.variantDescription;
+    }
 
-      if (typeof desc === 'string') return desc;
-      if (desc.value) return desc.value;
+    var optionMatch = null;
+    sectionEl.querySelectorAll('.custom-product-section__dropdown-select[data-option-index="0"] option').forEach(function(option) {
+      if (!optionMatch && option.value === variant.option1) {
+        optionMatch = option;
+      }
+    });
+    if (optionMatch && optionMatch.dataset.variantDescription) {
+      return optionMatch.dataset.variantDescription;
     }
 
     return {{ current_product.description | json }};
@@ -869,7 +900,7 @@
 
     var descEl = sectionEl.querySelector('[data-cps="description"]');
     if (descEl) {
-      descEl.innerHTML = getVariantDescriptionHtml(variant);
+      descEl.innerHTML = findDescriptionSource(variant);
     }
 
     if (!skipImageSync && variant.featured_image) {
