@@ -19,26 +19,34 @@
     background: #f5f5f5;
     border-radius: 12px;
   }
-
-  /* ── Gallery ── */
   .custom-product-section__inner {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 60px;
     align-items: start;
   }
+
+  /* ── Gallery ── */
   .custom-product-section__main-swiper {
     border-radius: 12px;
     overflow: hidden;
     background: #f8f8f8;
+    width: 100%;
+  }
+  .custom-product-section__main-swiper .swiper-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .custom-product-section__main-image {
     width: 100%;
     height: 500px;
     object-fit: contain;
+    display: block;
   }
   .custom-product-section__thumb-swiper {
     margin-top: 12px;
+    width: 100%;
   }
   .custom-product-section__thumb-swiper .swiper-slide {
     width: 80px !important;
@@ -58,6 +66,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
   }
   .custom-product-section__main-swiper .swiper-button-prev,
   .custom-product-section__main-swiper .swiper-button-next {
@@ -417,8 +426,6 @@
   }
 </style>
 
-{%- comment -%} ── HTML / LIQUID ── {%- endcomment -%}
-
 <div
   class="custom-product-section"
   data-section-id="{{ section.id }}"
@@ -437,9 +444,8 @@
 
   <div class="custom-product-section__inner">
 
-    {%- comment -%} ── Gallery ── {%- endcomment -%}
     <div class="custom-product-section__gallery">
-      <div class="swiper custom-product-section__main-swiper">
+      <div class="swiper custom-product-section__main-swiper" id="mainSwiper-{{ section.id }}">
         <div class="swiper-wrapper">
           {%- for image in current_product.images -%}
             <div class="swiper-slide">
@@ -456,7 +462,7 @@
         <div class="swiper-button-next"></div>
       </div>
 
-      <div class="swiper custom-product-section__thumb-swiper">
+      <div class="swiper custom-product-section__thumb-swiper" id="thumbSwiper-{{ section.id }}">
         <div class="swiper-wrapper">
           {%- for image in current_product.images -%}
             <div class="swiper-slide">
@@ -467,7 +473,6 @@
       </div>
     </div>
 
-    {%- comment -%} ── Product Info ── {%- endcomment -%}
     <div class="custom-product-section__info">
 
       <h1 class="custom-product-section__title" data-cps="title">
@@ -478,7 +483,7 @@
         {%- if section.settings.show_product_type and current_product.type != blank -%}
           <span class="custom-product-section__type">{{ current_product.type }}</span>
         {%- endif -%}
-        <span class="custom-product-section__variant-label" data-cps="variant-label">
+        <span class="custom-product-section__variant-label">
           <span class="custom-product-section__dot" data-cps="dot"></span>
           <span data-cps="variant-label-text">{{ first_variant.title }}</span>
         </span>
@@ -501,20 +506,17 @@
         </div>
       {%- endif -%}
 
-      <div class="custom-product-section__description" data-cps="description">
+      <div class="custom-product-section__description">
         {{ current_product.description }}
       </div>
 
-      {%- comment -%} ── Variant Selectors ── {%- endcomment -%}
       {%- unless current_product.has_only_default_variant -%}
         <div class="custom-product-section__variants">
           <p class="custom-product-section__variants-label">
             {{ section.settings.flavor_label | default: 'Choose your flavor:' }}
           </p>
-
           {%- for option in current_product.options_with_values -%}
             {%- assign opt_idx = forloop.index0 -%}
-
             <div class="custom-product-section__chips" data-option-index="{{ opt_idx }}">
               {%- for value in option.values -%}
                 <button
@@ -527,12 +529,8 @@
                 </button>
               {%- endfor -%}
             </div>
-
             <div class="custom-product-section__dropdown" data-option-index="{{ opt_idx }}">
-              <select
-                class="custom-product-section__dropdown-select"
-                data-option-index="{{ opt_idx }}"
-              >
+              <select class="custom-product-section__dropdown-select" data-option-index="{{ opt_idx }}">
                 {%- for value in option.values -%}
                   <option value="{{ value }}"{% if value == option.selected_value %} selected{% endif %}>
                     {{ value }}
@@ -540,12 +538,10 @@
                 {%- endfor -%}
               </select>
             </div>
-
           {%- endfor -%}
         </div>
       {%- endunless -%}
 
-      {%- comment -%} ── ATC ── {%- endcomment -%}
       <div class="custom-product-section__atc-row">
         <div class="custom-product-section__quantity">
           <button class="custom-product-section__qty-btn" data-action="minus">−</button>
@@ -571,7 +567,6 @@
         </p>
       {%- endif -%}
 
-      {%- comment -%} ── Notification ── {%- endcomment -%}
       <div class="custom-product-section__notification" data-cps="notification" style="display:none;">
         <div class="custom-product-section__notification-header">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -589,7 +584,6 @@
         <a href="/cart" class="custom-product-section__notification-cart-btn">VIEW YOUR CART</a>
       </div>
 
-      {%- comment -%} ── Accordions ── {%- endcomment -%}
       {%- for i in (1..3) -%}
         {%- assign acc_title   = 'accordion_' | append: i | append: '_title' -%}
         {%- assign acc_content = 'accordion_' | append: i | append: '_content' -%}
@@ -609,10 +603,9 @@
     </div>
   </div>
 
-  {%- comment -%} ── Reviews ── {%- endcomment -%}
   {%- if section.settings.show_reviews -%}
     <div class="custom-product-section__reviews">
-      <div class="swiper custom-product-section__reviews-swiper">
+      <div class="swiper custom-product-section__reviews-swiper" id="reviewsSwiper-{{ section.id }}">
         <div class="swiper-wrapper">
           {%- for i in (1..4) -%}
             {%- assign rev_text   = 'review_' | append: i | append: '_text' -%}
@@ -621,7 +614,7 @@
               <div class="swiper-slide">
                 <div class="custom-product-section__review-card">
                   <div class="custom-product-section__review-stars">★★★★★</div>
-                  <p class="custom-product-section__review-text">{{ section.settings[rev_text] }}</p>
+                  <p class="custom-product-section__review-text">{{ settings[rev_text] }}</p>
                   <div class="custom-product-section__review-author">
                     {{ section.settings[rev_author] }}
                     <span>✓ Verified customer</span>
@@ -641,120 +634,113 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  const sectionEl = document.querySelector(
-    '.custom-product-section[data-section-id="{{ section.id }}"]'
-  );
+(function () {
+  var sectionId = '{{ section.id }}';
+  var sectionEl = document.querySelector('.custom-product-section[data-section-id="' + sectionId + '"]');
   if (!sectionEl) return;
 
-  const product = window.cpsProduct_{{ section.id }};
+  var product = window['cpsProduct_' + sectionId];
   if (!product) return;
 
-  const variantColors = {
+  var variantColors = {
     'Mighty Mango':      '#f5a623',
     'Pineapple':         '#f0d000',
     'Black Currant':     '#6b2d8b',
     'Tropical':          '#00c9b1',
     'Blueberry Vanilla': '#7b5ea7',
-    'Chocolate':         '#5c3d1e',
+    'Chocolate':         '#5c3d1e'
   };
 
-  /* set chip dot colors */
-  sectionEl.querySelectorAll('.custom-product-section__chip').forEach(chip => {
-    const val = chip.dataset.value;
-    const dot = chip.querySelector('.custom-product-section__chip-dot');
-    if (dot && variantColors[val]) dot.style.background = variantColors[val];
+  sectionEl.querySelectorAll('.custom-product-section__chip').forEach(function(chip) {
+    var dot = chip.querySelector('.custom-product-section__chip-dot');
+    var color = variantColors[chip.dataset.value];
+    if (dot && color) dot.style.background = color;
   });
 
-  let selectedOptions = [...product.variants[0].options];
-  let currentVariant  = product.variants[0];
-  let notifTimer      = null;
+  var selectedOptions = product.variants[0].options.slice();
+  var currentVariant  = product.variants[0];
+  var notifTimer      = null;
 
-  /* ── Swiper init ── */
-  const thumbSwiper = new Swiper(
-    sectionEl.querySelector('.custom-product-section__thumb-swiper'),
-    {
-      spaceBetween: 8,
-      slidesPerView: 'auto',
-      freeMode: true,
-      watchSlidesProgress: true,
-    }
-  );
+  /* ── Swiper ── */
+  var thumbEl = document.getElementById('thumbSwiper-' + sectionId);
+  var mainEl  = document.getElementById('mainSwiper-' + sectionId);
 
-  const mainSwiper = new Swiper(
-    sectionEl.querySelector('.custom-product-section__main-swiper'),
-    {
-      spaceBetween: 10,
-      navigation: {
-        nextEl: sectionEl.querySelector('.custom-product-section__main-swiper .swiper-button-next'),
-        prevEl: sectionEl.querySelector('.custom-product-section__main-swiper .swiper-button-prev'),
-      },
-      thumbs: { swiper: thumbSwiper },
-    }
-  );
+  var thumbSwiper = new Swiper(thumbEl, {
+    spaceBetween: 8,
+    slidesPerView: 'auto',
+    freeMode: true,
+    watchSlidesProgress: true
+  });
 
-  const reviewsEl = sectionEl.querySelector('.custom-product-section__reviews-swiper');
+  var mainSwiper = new Swiper(mainEl, {
+    spaceBetween: 10,
+    navigation: {
+      nextEl: mainEl.querySelector('.swiper-button-next'),
+      prevEl: mainEl.querySelector('.swiper-button-prev')
+    },
+    thumbs: { swiper: thumbSwiper }
+  });
+
+  var reviewsEl = document.getElementById('reviewsSwiper-' + sectionId);
   if (reviewsEl) {
     new Swiper(reviewsEl, {
       spaceBetween: 16,
       navigation: {
         nextEl: reviewsEl.querySelector('.swiper-button-next'),
-        prevEl: reviewsEl.querySelector('.swiper-button-prev'),
+        prevEl: reviewsEl.querySelector('.swiper-button-prev')
       },
       breakpoints: {
         0:   { slidesPerView: 1 },
-        600: { slidesPerView: 2 },
-      },
+        600: { slidesPerView: 2 }
+      }
     });
   }
 
   /* ── Helpers ── */
   function findVariant(options) {
-    return product.variants.find(v =>
-      options.every((val, i) => v[`option${i + 1}`] === val)
-    ) || null;
+    return product.variants.find(function(v) {
+      return options.every(function(val, i) { return v['option' + (i + 1)] === val; });
+    }) || null;
   }
 
   function formatMoney(cents) {
-    return (cents / 100).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+    return '$' + (cents / 100).toFixed(2);
   }
 
   function updateUI(variant) {
     if (!variant) return;
     currentVariant = variant;
 
-    sectionEl.querySelectorAll('[data-cps="price"]').forEach(el => {
+    sectionEl.querySelectorAll('[data-cps="price"]').forEach(function(el) {
       el.textContent = formatMoney(variant.price);
     });
 
-    const atcBtn = sectionEl.querySelector('[data-cps="atc"]');
+    var atcBtn = sectionEl.querySelector('[data-cps="atc"]');
     if (atcBtn) atcBtn.dataset.variantId = variant.id;
 
-    const labelText = sectionEl.querySelector('[data-cps="variant-label-text"]');
+    var labelText = sectionEl.querySelector('[data-cps="variant-label-text"]');
     if (labelText) labelText.textContent = variant.title;
 
     if (variant.featured_image) {
-      const id = variant.featured_image.id;
-      sectionEl.querySelectorAll('.custom-product-section__main-image').forEach((img, idx) => {
-        if (parseInt(img.dataset.imageId) === id) mainSwiper.slideTo(idx);
+      var imgId = variant.featured_image.id;
+      sectionEl.querySelectorAll('.custom-product-section__main-image').forEach(function(img, idx) {
+        if (parseInt(img.dataset.imageId) === imgId) mainSwiper.slideTo(idx);
       });
     }
   }
 
   /* ── Chips ── */
-  sectionEl.querySelectorAll('.custom-product-section__chip').forEach(chip => {
-    chip.addEventListener('click', function () {
-      const idx = parseInt(this.dataset.optionIndex);
-      const val = this.dataset.value;
+  sectionEl.querySelectorAll('.custom-product-section__chip').forEach(function(chip) {
+    chip.addEventListener('click', function() {
+      var idx = parseInt(this.dataset.optionIndex);
+      var val = this.dataset.value;
       selectedOptions[idx] = val;
 
-      sectionEl.querySelectorAll(`.custom-product-section__chip[data-option-index="${idx}"]`)
-        .forEach(c => c.classList.remove('custom-product-section__chip--active'));
+      sectionEl.querySelectorAll('.custom-product-section__chip[data-option-index="' + idx + '"]')
+        .forEach(function(c) { c.classList.remove('custom-product-section__chip--active'); });
       this.classList.add('custom-product-section__chip--active');
 
-      const sel = sectionEl.querySelector(
-        `.custom-product-section__dropdown-select[data-option-index="${idx}"]`
-      );
+      var sel = sectionEl.querySelector('.custom-product-section__dropdown-select[data-option-index="' + idx + '"]');
       if (sel) sel.value = val;
 
       updateUI(findVariant(selectedOptions));
@@ -762,89 +748,88 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   /* ── Dropdown ── */
-  sectionEl.querySelectorAll('.custom-product-section__dropdown-select').forEach(select => {
-    select.addEventListener('change', function () {
-      const idx = parseInt(this.dataset.optionIndex);
-      const val = this.value;
+  sectionEl.querySelectorAll('.custom-product-section__dropdown-select').forEach(function(select) {
+    select.addEventListener('change', function() {
+      var idx = parseInt(this.dataset.optionIndex);
+      var val = this.value;
       selectedOptions[idx] = val;
 
-      sectionEl.querySelectorAll(`.custom-product-section__chip[data-option-index="${idx}"]`)
-        .forEach(c => c.classList.toggle('custom-product-section__chip--active', c.dataset.value === val));
+      sectionEl.querySelectorAll('.custom-product-section__chip[data-option-index="' + idx + '"]')
+        .forEach(function(c) {
+          c.classList.toggle('custom-product-section__chip--active', c.dataset.value === val);
+        });
 
       updateUI(findVariant(selectedOptions));
     });
   });
 
   /* ── Quantity ── */
-  sectionEl.querySelector('[data-action="minus"]').addEventListener('click', () => {
-    const input = sectionEl.querySelector('.custom-product-section__qty-input');
+  sectionEl.querySelector('[data-action="minus"]').addEventListener('click', function() {
+    var input = sectionEl.querySelector('.custom-product-section__qty-input');
     if (parseInt(input.value) > 1) input.value = parseInt(input.value) - 1;
   });
-  sectionEl.querySelector('[data-action="plus"]').addEventListener('click', () => {
-    const input = sectionEl.querySelector('.custom-product-section__qty-input');
+  sectionEl.querySelector('[data-action="plus"]').addEventListener('click', function() {
+    var input = sectionEl.querySelector('.custom-product-section__qty-input');
     input.value = parseInt(input.value) + 1;
   });
 
   /* ── ATC ── */
-  sectionEl.querySelector('[data-cps="atc"]').addEventListener('click', async function () {
-    const btn       = this;
-    const variantId = parseInt(btn.dataset.variantId);
-    const qty       = parseInt(sectionEl.querySelector('.custom-product-section__qty-input').value);
+  sectionEl.querySelector('[data-cps="atc"]').addEventListener('click', function() {
+    var btn       = this;
+    var variantId = parseInt(btn.dataset.variantId);
+    var qty       = parseInt(sectionEl.querySelector('.custom-product-section__qty-input').value);
 
     btn.disabled    = true;
     btn.textContent = 'Adding…';
 
-    try {
-      const res = await fetch('/cart/add.js', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: variantId, quantity: qty }),
-      });
+    fetch('/cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: variantId, quantity: qty })
+    })
+    .then(function(res) {
       if (!res.ok) throw new Error('ATC failed');
 
-      const notif        = sectionEl.querySelector('[data-cps="notification"]');
-      const notifImg     = sectionEl.querySelector('[data-cps="notif-img"]');
-      const notifTitle   = sectionEl.querySelector('[data-cps="notif-title"]');
-      const notifVariant = sectionEl.querySelector('[data-cps="notif-variant"]');
+      var notif        = sectionEl.querySelector('[data-cps="notification"]');
+      var notifImg     = sectionEl.querySelector('[data-cps="notif-img"]');
+      var notifTitle   = sectionEl.querySelector('[data-cps="notif-title"]');
+      var notifVariant = sectionEl.querySelector('[data-cps="notif-variant"]');
 
-      if (notifImg) {
-        notifImg.src = currentVariant.featured_image
-          ? currentVariant.featured_image.src
-          : product.featured_image;
-      }
+      if (notifImg) notifImg.src = currentVariant.featured_image ? currentVariant.featured_image.src : product.featured_image;
       if (notifTitle)   notifTitle.textContent  = product.title;
       if (notifVariant) notifVariant.textContent = currentVariant.title;
 
       notif.style.display = 'block';
       if (notifTimer) clearTimeout(notifTimer);
-      notifTimer = setTimeout(() => { notif.style.display = 'none'; }, 3000);
-
-    } catch (err) {
+      notifTimer = setTimeout(function() { notif.style.display = 'none'; }, 3000);
+    })
+    .catch(function(err) {
       console.error('ATC error:', err);
-    } finally {
+    })
+    .finally(function() {
       btn.disabled = false;
-      const price  = sectionEl.querySelector('[data-cps="price"]');
-      btn.innerHTML = `{{ section.settings.atc_label | default: 'ADD TO CART' }} — <span data-cps="price">${price ? price.textContent : ''}</span>`;
-    }
+      var price = sectionEl.querySelector('[data-cps="price"]');
+      btn.innerHTML = '{{ section.settings.atc_label | default: "ADD TO CART" }} — <span data-cps="price">' + (price ? price.textContent : '') + '</span>';
+    });
   });
 
   /* ── Accordions ── */
-  sectionEl.querySelectorAll('.custom-product-section__accordion-trigger').forEach(trigger => {
-    trigger.addEventListener('click', function () {
-      const acc    = this.closest('.custom-product-section__accordion');
-      const isOpen = acc.classList.contains('custom-product-section__accordion--open');
-      sectionEl.querySelectorAll('.custom-product-section__accordion').forEach(a => {
+  sectionEl.querySelectorAll('.custom-product-section__accordion-trigger').forEach(function(trigger) {
+    trigger.addEventListener('click', function() {
+      var acc    = this.closest('.custom-product-section__accordion');
+      var isOpen = acc.classList.contains('custom-product-section__accordion--open');
+      sectionEl.querySelectorAll('.custom-product-section__accordion').forEach(function(a) {
         a.classList.remove('custom-product-section__accordion--open');
         a.querySelector('.custom-product-section__accordion-icon').textContent = '+';
       });
       if (!isOpen) {
         acc.classList.add('custom-product-section__accordion--open');
-        this.querySelector('.custom-product-section__accordion-icon').textContent = '−';
+        trigger.querySelector('.custom-product-section__accordion-icon').textContent = '−';
       }
     });
   });
 
-});
+})();
 </script>
 
 {% schema %}
