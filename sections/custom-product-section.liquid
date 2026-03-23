@@ -79,7 +79,7 @@
     background: #FEFEFE;
     overflow: hidden;
     cursor: pointer;
-    opacity: 0.6;
+    opacity: 0.5;
     transition: all 0.2s;
     box-sizing: border-box;
     display: flex;
@@ -94,8 +94,8 @@
     display: block;
   }
   .custom-product-section__thumb-swiper .swiper-slide-thumb-active {
-    border-color: {{ section.settings.accent_color | default: '#5B4FE9' }};
-    opacity: 1;
+    border: 1px solid #373737;
+    opacity: 1 !important;
   }
 
   .custom-product-section__main-swiper .swiper-button-prev,
@@ -803,7 +803,14 @@
     spaceBetween: 8,
     slidesPerView: 'auto',
     watchSlidesProgress: true,
-    allowTouchMove: false
+    watchSlidesVisibility: true,
+    slideToClickedSlide: true,
+    allowTouchMove: false,
+    on: {
+      click: function (swiper) {
+        mainSwiper.slideTo(swiper.clickedIndex);
+      }
+    }
   });
 
   var mainSwiper = new Swiper(mainEl, {
