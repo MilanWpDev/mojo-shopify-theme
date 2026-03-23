@@ -39,7 +39,7 @@
     overflow: hidden;
     background: white;
     width: 100%;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 772 / 773;
     height: auto;
     margin-bottom: 16px;
   }
@@ -51,7 +51,6 @@
     align-items: center;
     justify-content: center;
     background: white;
-    aspect-ratio: 1 / 1;
   }
   .custom-product-section__main-image {
     width: 100%;
@@ -60,7 +59,7 @@
     display: block;
   }
 
-  /* Thumbnails desktop — 6 jednakih */
+  /* Thumbnails desktop — 89x89 container, 65x80 image */
   .custom-product-section__thumb-swiper {
     width: 100%;
   }
@@ -70,9 +69,9 @@
   }
   .custom-product-section__thumb-swiper .swiper-slide {
     flex-shrink: 0;
-    width: calc((100% - 40px) / 6) !important;
-    aspect-ratio: 1 / 1;
-    height: auto !important;
+    width: 89px !important;
+    height: 89px !important;
+    aspect-ratio: unset;
     border-radius: 8px;
     border: 1px solid #EBEBEB;
     background: #FEFEFE;
@@ -84,12 +83,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 5px 12px 4px 12px;
   }
   .custom-product-section__thumb-swiper .swiper-slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    width: 65px;
+    height: 80px;
+    object-fit: contain;
     display: block;
+    flex-shrink: 0;
   }
   .custom-product-section__thumb-swiper .swiper-slide-thumb-active {
     border-color: {{ section.settings.accent_color | default: '#5B4FE9' }};
@@ -503,17 +504,21 @@
       gap: 24px;
     }
     .custom-product-section__main-swiper {
-      aspect-ratio: 1 / 1;
+      aspect-ratio: 470 / 679;
       height: auto;
       border-radius: 7.109px;
       border: 0.444px solid #BBB;
       margin-bottom: 7px;
     }
     .custom-product-section__thumb-swiper .swiper-slide {
-      width: 50.381px !important;
-      height: 50.381px !important;
-      aspect-ratio: unset;
-      border-radius: 4.071px;
+      width: 65px !important;
+      height: 80px !important;
+      padding: 4px 8px 3px 8px;
+    }
+    .custom-product-section__thumb-swiper .swiper-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
     .custom-product-section__chips { display: none; }
     .custom-product-section__dropdown { display: block; }
@@ -794,7 +799,7 @@
 
   var thumbSwiper = new Swiper(thumbEl, {
     spaceBetween: 8,
-    slidesPerView: 6,
+    slidesPerView: 'auto',
     watchSlidesProgress: true,
     allowTouchMove: false
   });
