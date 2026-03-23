@@ -4,7 +4,7 @@
 {%- assign first_variant = current_product.selected_or_first_available_variant -%}
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
 <style>
   .custom-product-section {
@@ -27,7 +27,6 @@
     gap: 60px;
     align-items: start;
   }
-  .custom-product-section__gallery {}
   .custom-product-section__main-swiper {
     border-radius: 12px;
     overflow: hidden;
@@ -76,7 +75,6 @@
   }
 
   /* ── Info ── */
-  .custom-product-section__info {}
   .custom-product-section__title {
     font-size: 32px;
     font-weight: 700;
@@ -92,9 +90,7 @@
     color: #666;
     flex-wrap: wrap;
   }
-  .custom-product-section__type {
-    color: #666;
-  }
+  .custom-product-section__type { color: #666; }
   .custom-product-section__variant-label {
     display: flex;
     align-items: center;
@@ -133,9 +129,7 @@
   }
 
   /* ── Variants ── */
-  .custom-product-section__variants {
-    margin-bottom: 20px;
-  }
+  .custom-product-section__variants { margin-bottom: 20px; }
   .custom-product-section__variants-label {
     font-weight: 600;
     font-size: 14px;
@@ -164,7 +158,7 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: var(--chip-color, #888);
+    background: #888;
     flex-shrink: 0;
   }
   .custom-product-section__chip--active {
@@ -323,9 +317,7 @@
   .custom-product-section__notification-cart-btn:hover { background: #ebe5ff; }
 
   /* ── Accordion ── */
-  .custom-product-section__accordion {
-    border-top: 1px solid #eee;
-  }
+  .custom-product-section__accordion { border-top: 1px solid #eee; }
   .custom-product-section__accordion:last-of-type {
     border-bottom: 1px solid #eee;
     margin-bottom: 24px;
@@ -363,6 +355,7 @@
   /* ── Reviews ── */
   .custom-product-section__reviews {
     margin-top: 48px;
+    padding-bottom: 60px;
     position: relative;
   }
   .custom-product-section__reviews-swiper .swiper-button-prev,
@@ -374,12 +367,15 @@
     border-radius: 50%;
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     top: auto;
-    bottom: -48px;
+    bottom: 0;
   }
   .custom-product-section__reviews-swiper .swiper-button-prev { left: auto; right: 52px; }
   .custom-product-section__reviews-swiper .swiper-button-next { right: 0; }
   .custom-product-section__reviews-swiper .swiper-button-prev::after,
-  .custom-product-section__reviews-swiper .swiper-button-next::after { font-size: 14px !important; font-weight: bold; }
+  .custom-product-section__reviews-swiper .swiper-button-next::after {
+    font-size: 14px !important;
+    font-weight: bold;
+  }
   .custom-product-section__review-card {
     background: white;
     border: 1px solid #eee;
@@ -443,7 +439,6 @@
 
     {%- comment -%} ── Gallery ── {%- endcomment -%}
     <div class="custom-product-section__gallery">
-
       <div class="swiper custom-product-section__main-swiper">
         <div class="swiper-wrapper">
           {%- for image in current_product.images -%}
@@ -470,7 +465,6 @@
           {%- endfor -%}
         </div>
       </div>
-
     </div>
 
     {%- comment -%} ── Product Info ── {%- endcomment -%}
@@ -647,7 +641,7 @@
 </div>
 
 <script>
-(function () {
+document.addEventListener('DOMContentLoaded', function () {
   const sectionEl = document.querySelector(
     '.custom-product-section[data-section-id="{{ section.id }}"]'
   );
@@ -655,6 +649,22 @@
 
   const product = window.cpsProduct_{{ section.id }};
   if (!product) return;
+
+  const variantColors = {
+    'Mighty Mango':      '#f5a623',
+    'Pineapple':         '#f0d000',
+    'Black Currant':     '#6b2d8b',
+    'Tropical':          '#00c9b1',
+    'Blueberry Vanilla': '#7b5ea7',
+    'Chocolate':         '#5c3d1e',
+  };
+
+  /* set chip dot colors */
+  sectionEl.querySelectorAll('.custom-product-section__chip').forEach(chip => {
+    const val = chip.dataset.value;
+    const dot = chip.querySelector('.custom-product-section__chip-dot');
+    if (dot && variantColors[val]) dot.style.background = variantColors[val];
+  });
 
   let selectedOptions = [...product.variants[0].options];
   let currentVariant  = product.variants[0];
@@ -687,12 +697,14 @@
   if (reviewsEl) {
     new Swiper(reviewsEl, {
       spaceBetween: 16,
-      slidesPerView: 2,
       navigation: {
         nextEl: reviewsEl.querySelector('.swiper-button-next'),
         prevEl: reviewsEl.querySelector('.swiper-button-prev'),
       },
-      breakpoints: { 0: { slidesPerView: 1 }, 600: { slidesPerView: 2 } },
+      breakpoints: {
+        0:   { slidesPerView: 1 },
+        600: { slidesPerView: 2 },
+      },
     });
   }
 
@@ -711,20 +723,16 @@
     if (!variant) return;
     currentVariant = variant;
 
-    /* price */
     sectionEl.querySelectorAll('[data-cps="price"]').forEach(el => {
       el.textContent = formatMoney(variant.price);
     });
 
-    /* atc variant id */
     const atcBtn = sectionEl.querySelector('[data-cps="atc"]');
     if (atcBtn) atcBtn.dataset.variantId = variant.id;
 
-    /* variant label text */
     const labelText = sectionEl.querySelector('[data-cps="variant-label-text"]');
     if (labelText) labelText.textContent = variant.title;
 
-    /* slide to variant image */
     if (variant.featured_image) {
       const id = variant.featured_image.id;
       sectionEl.querySelectorAll('.custom-product-section__main-image').forEach((img, idx) => {
@@ -733,7 +741,7 @@
     }
   }
 
-  /* ── Chip clicks ── */
+  /* ── Chips ── */
   sectionEl.querySelectorAll('.custom-product-section__chip').forEach(chip => {
     chip.addEventListener('click', function () {
       const idx = parseInt(this.dataset.optionIndex);
@@ -753,7 +761,7 @@
     });
   });
 
-  /* ── Dropdown change ── */
+  /* ── Dropdown ── */
   sectionEl.querySelectorAll('.custom-product-section__dropdown-select').forEach(select => {
     select.addEventListener('change', function () {
       const idx = parseInt(this.dataset.optionIndex);
@@ -794,7 +802,6 @@
       });
       if (!res.ok) throw new Error('ATC failed');
 
-      /* notification */
       const notif        = sectionEl.querySelector('[data-cps="notification"]');
       const notifImg     = sectionEl.querySelector('[data-cps="notif-img"]');
       const notifTitle   = sectionEl.querySelector('[data-cps="notif-title"]');
@@ -805,8 +812,8 @@
           ? currentVariant.featured_image.src
           : product.featured_image;
       }
-      if (notifTitle)   notifTitle.textContent   = product.title;
-      if (notifVariant) notifVariant.textContent  = currentVariant.title;
+      if (notifTitle)   notifTitle.textContent  = product.title;
+      if (notifVariant) notifVariant.textContent = currentVariant.title;
 
       notif.style.display = 'block';
       if (notifTimer) clearTimeout(notifTimer);
@@ -826,11 +833,10 @@
     trigger.addEventListener('click', function () {
       const acc    = this.closest('.custom-product-section__accordion');
       const isOpen = acc.classList.contains('custom-product-section__accordion--open');
-      sectionEl.querySelectorAll('.custom-product-section__accordion')
-        .forEach(a => {
-          a.classList.remove('custom-product-section__accordion--open');
-          a.querySelector('.custom-product-section__accordion-icon').textContent = '+';
-        });
+      sectionEl.querySelectorAll('.custom-product-section__accordion').forEach(a => {
+        a.classList.remove('custom-product-section__accordion--open');
+        a.querySelector('.custom-product-section__accordion-icon').textContent = '+';
+      });
       if (!isOpen) {
         acc.classList.add('custom-product-section__accordion--open');
         this.querySelector('.custom-product-section__accordion-icon').textContent = '−';
@@ -838,7 +844,7 @@
     });
   });
 
-})();
+});
 </script>
 
 {% schema %}
