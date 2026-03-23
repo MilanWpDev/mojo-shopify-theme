@@ -8,9 +8,9 @@
 
 <style>
   .custom-product-section {
-    max-width: {{ section.settings.max_width | default: 1200 }}px;
+    max-width: 1440px;
     margin: 0 auto;
-    padding: {{ section.settings.section_padding | default: 40 }}px 20px;
+    padding: 64px 56px;
     font-family: inherit;
     box-sizing: border-box;
   }
@@ -34,62 +34,70 @@
 
   /* ── Gallery ── */
   .custom-product-section__main-swiper {
-    border-radius: 12px;
+    border-radius: 16px;
+    border: 1px solid #BBB;
     overflow: hidden;
-    background: #f8f8f8;
+    background: white;
     width: 100%;
-    height: 500px;
+    aspect-ratio: 772 / 773;
+    height: auto;
+    margin-bottom: 16px;
   }
   .custom-product-section__main-swiper .swiper-wrapper {
     height: 100%;
   }
   .custom-product-section__main-swiper .swiper-slide {
-    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    background: white;
+    height: 100%;
   }
   .custom-product-section__main-image {
-    width: 100%;
-    height: 100%;
+    width: auto;
+    height: 85%;
+    max-width: 85%;
     object-fit: contain;
     display: block;
   }
+
+  /* Thumbnails desktop */
   .custom-product-section__thumb-swiper {
-    margin-top: 12px;
     width: 100%;
   }
   .custom-product-section__thumb-swiper .swiper-wrapper {
     display: flex;
-    flex-wrap: nowrap;
     gap: 8px;
   }
   .custom-product-section__thumb-swiper .swiper-slide {
     flex-shrink: 0;
-    width: calc((100% - 48px) / 7) !important;
-    height: 0;
-    padding-bottom: calc((100% - 48px) / 7);
-    position: relative;
+    width: 89px !important;
+    height: 89px !important;
+    aspect-ratio: unset;
     border-radius: 8px;
+    border: 1px solid #EBEBEB;
+    background: #FEFEFE;
     overflow: hidden;
     cursor: pointer;
-    border: 2px solid transparent;
     opacity: 0.6;
     transition: all 0.2s;
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
   }
   .custom-product-section__thumb-swiper .swiper-slide img {
-    position: absolute;
-    top: 0; left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
   }
   .custom-product-section__thumb-swiper .swiper-slide-thumb-active {
     border-color: {{ section.settings.accent_color | default: '#5B4FE9' }};
     opacity: 1;
   }
+
   .custom-product-section__main-swiper .swiper-button-prev,
   .custom-product-section__main-swiper .swiper-button-next {
     color: {{ section.settings.accent_color | default: '#5B4FE9' }} !important;
@@ -187,7 +195,6 @@
     transition: all 0.2s;
     color: #333;
   }
-  /* Radio krugic — neaktivan */
   .custom-product-section__chip-dot {
     width: 18px;
     height: 18px;
@@ -209,13 +216,11 @@
     background: transparent;
     transition: background 0.2s;
   }
-  /* Aktivan chip — background = boja flavora */
   .custom-product-section__chip--active {
     border-color: var(--chip-color, #888);
     background: var(--chip-color, #888);
     color: white;
   }
-  /* Aktivan radio krugic — beli outline, bela tacka unutra */
   .custom-product-section__chip--active .custom-product-section__chip-dot {
     border-color: white;
     background: transparent;
@@ -224,17 +229,17 @@
     background: white;
   }
   .custom-product-section__chip--active[data-value="Pineapple"],
-.custom-product-section__chip--active[data-value="Tropical"] {
-  color: #373737;
-}
-.custom-product-section__chip--active[data-value="Pineapple"] .custom-product-section__chip-dot,
-.custom-product-section__chip--active[data-value="Tropical"] .custom-product-section__chip-dot {
-  border-color: #373737;
-}
-.custom-product-section__chip--active[data-value="Pineapple"] .custom-product-section__chip-dot::after,
-.custom-product-section__chip--active[data-value="Tropical"] .custom-product-section__chip-dot::after {
-  background: #373737;
-}
+  .custom-product-section__chip--active[data-value="Tropical"] {
+    color: #373737;
+  }
+  .custom-product-section__chip--active[data-value="Pineapple"] .custom-product-section__chip-dot,
+  .custom-product-section__chip--active[data-value="Tropical"] .custom-product-section__chip-dot {
+    border-color: #373737;
+  }
+  .custom-product-section__chip--active[data-value="Pineapple"] .custom-product-section__chip-dot::after,
+  .custom-product-section__chip--active[data-value="Tropical"] .custom-product-section__chip-dot::after {
+    background: #373737;
+  }
   .custom-product-section__dropdown {
     display: none;
     margin-bottom: 16px;
@@ -348,9 +353,10 @@
   .custom-product-section__notification-img {
     width: 60px;
     height: 60px;
-    object-fit: cover;
+    object-fit: contain;
     border-radius: 6px;
     flex-shrink: 0;
+    background: #f5f5f5;
   }
   .custom-product-section__notification-details {
     display: flex;
@@ -418,7 +424,7 @@
     display: block;
   }
 
-  /* ── Reviews — unutar info kolone ── */
+  /* ── Reviews ── */
   .custom-product-section__reviews {
     margin-top: 24px;
     position: relative;
@@ -492,11 +498,30 @@
 
   /* ── Responsive ── */
   @media (max-width: 768px) {
+    .custom-product-section {
+      padding: 48px 16px;
+    }
     .custom-product-section__inner {
       grid-template-columns: 1fr !important;
       gap: 24px;
     }
-    .custom-product-section__main-swiper { height: 320px; }
+    .custom-product-section__main-swiper {
+      aspect-ratio: 470 / 679;
+      height: auto;
+      border-radius: 7.109px;
+      border: 0.444px solid #BBB;
+      margin-bottom: 7px;
+    }
+    .custom-product-section__thumb-swiper .swiper-slide {
+      width: 65px !important;
+      height: 80px !important;
+      padding: 6px;
+    }
+    .custom-product-section__thumb-swiper .swiper-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
     .custom-product-section__chips { display: none; }
     .custom-product-section__dropdown { display: block; }
     .custom-product-section__title { font-size: 24px; }
@@ -512,7 +537,6 @@
   data-section-id="{{ section.id }}"
   data-product-id="{{ current_product.id }}"
 >
-
   {%- if current_product == empty -%}
     <div class="custom-product-section__empty">
       <p>Please select a product in the section settings.</p>
@@ -536,6 +560,7 @@
                 alt="{{ image.alt | escape }}"
                 class="custom-product-section__main-image"
                 data-image-id="{{ image.id }}"
+                data-image-alt="{{ image.alt | escape | downcase }}"
               >
             </div>
           {%- endfor -%}
@@ -587,8 +612,12 @@
         </div>
       {%- endif -%}
 
-      <div class="custom-product-section__description">
-        {{ current_product.description }}
+      <div class="custom-product-section__description" data-cps="description">
+        {%- if first_variant.metafields.custom.description != blank -%}
+          {{ first_variant.metafields.custom.description | metafield_tag }}
+        {%- else -%}
+          {{ current_product.description }}
+        {%- endif -%}
       </div>
 
       {%- unless current_product.has_only_default_variant -%}
@@ -600,10 +629,19 @@
             {%- assign opt_idx = forloop.index0 -%}
             <div class="custom-product-section__chips" data-option-index="{{ opt_idx }}">
               {%- for value in option.values -%}
+                {%- assign matched_variant = nil -%}
+                {%- for variant in current_product.variants -%}
+                  {%- if variant.option1 == value -%}
+                    {%- assign matched_variant = variant -%}
+                    {%- break -%}
+                  {%- endif -%}
+                {%- endfor -%}
                 <button
                   class="custom-product-section__chip{% if value == option.selected_value %} custom-product-section__chip--active{% endif %}"
                   data-value="{{ value }}"
                   data-option-index="{{ opt_idx }}"
+                  data-variant-description="{% if matched_variant and matched_variant.metafields.custom.description != blank %}{{ matched_variant.metafields.custom.description | metafield_tag | escape }}{% else %}{{ current_product.description | escape }}{% endif %}"
+                  type="button"
                 >
                   <span class="custom-product-section__chip-dot"></span>
                   {{ value }}
@@ -613,7 +651,18 @@
             <div class="custom-product-section__dropdown" data-option-index="{{ opt_idx }}">
               <select class="custom-product-section__dropdown-select" data-option-index="{{ opt_idx }}">
                 {%- for value in option.values -%}
-                  <option value="{{ value }}"{% if value == option.selected_value %} selected{% endif %}>
+                  {%- assign matched_variant = nil -%}
+                  {%- for variant in current_product.variants -%}
+                    {%- if variant.option1 == value -%}
+                      {%- assign matched_variant = variant -%}
+                      {%- break -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                  <option
+                    value="{{ value }}"
+                    data-variant-description="{% if matched_variant and matched_variant.metafields.custom.description != blank %}{{ matched_variant.metafields.custom.description | metafield_tag | escape }}{% else %}{{ current_product.description | escape }}{% endif %}"
+                    {% if value == option.selected_value %}selected{% endif %}
+                  >
                     {{ value }}
                   </option>
                 {%- endfor -%}
@@ -625,14 +674,15 @@
 
       <div class="custom-product-section__atc-row">
         <div class="custom-product-section__quantity">
-          <button class="custom-product-section__qty-btn" data-action="minus">−</button>
+          <button class="custom-product-section__qty-btn" data-action="minus" type="button">−</button>
           <input type="number" class="custom-product-section__qty-input" value="1" min="1" max="99">
-          <button class="custom-product-section__qty-btn" data-action="plus">+</button>
+          <button class="custom-product-section__qty-btn" data-action="plus" type="button">+</button>
         </div>
         <button
           class="custom-product-section__atc-btn"
           data-variant-id="{{ first_variant.id }}"
           data-cps="atc"
+          type="button"
         >
           {{ section.settings.atc_label | default: 'ADD TO CART' }} —
           <span data-cps="price">{{ first_variant.price | money }}</span>
@@ -670,7 +720,7 @@
         {%- assign acc_content = 'accordion_' | append: i | append: '_content' -%}
         {%- if section.settings[acc_title] != blank -%}
           <div class="custom-product-section__accordion">
-            <button class="custom-product-section__accordion-trigger">
+            <button class="custom-product-section__accordion-trigger" type="button">
               {{ section.settings[acc_title] }}
               <span class="custom-product-section__accordion-icon">+</span>
             </button>
@@ -681,12 +731,11 @@
         {%- endif -%}
       {%- endfor -%}
 
-      <!-- Reviews unutar info kolone -->
       {%- if section.settings.show_reviews -%}
         <div class="custom-product-section__reviews">
           <div class="custom-product-section__reviews-header">
-            <button class="custom-product-section__reviews-nav" id="reviewsPrev-{{ section.id }}">&#8592;</button>
-            <button class="custom-product-section__reviews-nav" id="reviewsNext-{{ section.id }}">&#8594;</button>
+            <button class="custom-product-section__reviews-nav" id="reviewsPrev-{{ section.id }}" type="button">&#8592;</button>
+            <button class="custom-product-section__reviews-nav" id="reviewsNext-{{ section.id }}" type="button">&#8594;</button>
           </div>
           <div class="custom-product-section__reviews-clip">
             <div class="swiper custom-product-section__reviews-swiper" id="reviewsSwiper-{{ section.id }}">
@@ -714,10 +763,7 @@
       {%- endif -%}
 
     </div>
-    <!-- kraj __info -->
-
   </div>
-  <!-- kraj __inner -->
 
   {%- endif -%}
 </div>
@@ -738,31 +784,26 @@
     'Tropical':          '#90E6E5',
     'Blueberry Vanilla': '#7637FF',
     'Chocolate':         '#834936'
-};
+  };
 
-  /* Set chip color CSS var + neaktivan dot boja */
   sectionEl.querySelectorAll('.custom-product-section__chip').forEach(function(chip) {
     var color = variantColors[chip.dataset.value];
-    if (color) {
-      chip.style.setProperty('--chip-color', color);
-    }
+    if (color) chip.style.setProperty('--chip-color', color);
   });
 
   var selectedOptions = product.variants[0].options.slice();
   var currentVariant  = product.variants[0];
   var notifTimer      = null;
+  var isSyncingFromImage = false;
 
-  /* ── Swiper ── */
   var thumbEl = document.getElementById('thumbSwiper-' + sectionId);
   var mainEl  = document.getElementById('mainSwiper-' + sectionId);
-  var totalImages = {{ current_product.images.size }};
 
   var thumbSwiper = new Swiper(thumbEl, {
     spaceBetween: 8,
-    slidesPerView: totalImages,
+    slidesPerView: 'auto',
     watchSlidesProgress: true,
-    allowTouchMove: false,
-    freeMode: false
+    allowTouchMove: false
   });
 
   var mainSwiper = new Swiper(mainEl, {
@@ -786,7 +827,6 @@
     });
   }
 
-  /* ── Helpers ── */
   function findVariant(options) {
     return product.variants.find(function(v) {
       return options.every(function(val, i) {
@@ -799,7 +839,54 @@
     return '$' + (cents / 100).toFixed(2);
   }
 
-  function updateUI(variant) {
+  function findDescriptionSource(variant) {
+    var chipMatch = null;
+    sectionEl.querySelectorAll('.custom-product-section__chip[data-option-index="0"]').forEach(function(chip) {
+      if (!chipMatch && chip.dataset.value === variant.option1) chipMatch = chip;
+    });
+    if (chipMatch && chipMatch.dataset.variantDescription) return chipMatch.dataset.variantDescription;
+
+    var optionMatch = null;
+    sectionEl.querySelectorAll('.custom-product-section__dropdown-select[data-option-index="0"] option').forEach(function(option) {
+      if (!optionMatch && option.value === variant.option1) optionMatch = option;
+    });
+    if (optionMatch && optionMatch.dataset.variantDescription) return optionMatch.dataset.variantDescription;
+
+    return {{ current_product.description | json }};
+  }
+
+  function getVariantFromImage(imageId, imageAlt) {
+    imageAlt = (imageAlt || '').toLowerCase().trim();
+    var byImage = product.variants.find(function(v) {
+      return v.featured_image && parseInt(v.featured_image.id) === imageId;
+    });
+    if (byImage) return byImage;
+    var byTitle = product.variants.find(function(v) {
+      return imageAlt && imageAlt.indexOf((v.title || '').toLowerCase().trim()) !== -1;
+    });
+    if (byTitle) return byTitle;
+    var byOption = product.variants.find(function(v) {
+      return v.options.some(function(opt) {
+        return imageAlt && imageAlt.indexOf((opt || '').toLowerCase().trim()) !== -1;
+      });
+    });
+    return byOption || null;
+  }
+
+  function syncSelectorsFromVariant(variant) {
+    if (!variant) return;
+    selectedOptions = variant.options.slice();
+    sectionEl.querySelectorAll('.custom-product-section__chip').forEach(function(chip) {
+      var idx = parseInt(chip.dataset.optionIndex);
+      chip.classList.toggle('custom-product-section__chip--active', selectedOptions[idx] === chip.dataset.value);
+    });
+    sectionEl.querySelectorAll('.custom-product-section__dropdown-select').forEach(function(select) {
+      var idx = parseInt(select.dataset.optionIndex);
+      select.value = selectedOptions[idx];
+    });
+  }
+
+  function updateUI(variant, skipImageSync) {
     if (!variant) return;
     currentVariant = variant;
 
@@ -813,74 +900,84 @@
     var labelText = sectionEl.querySelector('[data-cps="variant-label-text"]');
     if (labelText) labelText.textContent = variant.title;
 
-    /* Update meta dot color */
     var metaDot = sectionEl.querySelector('[data-cps="dot"]');
     if (metaDot) {
       var col = variantColors[variant.title] || variantColors[variant.option1] || '#f5a623';
       metaDot.style.background = col;
     }
 
-    if (variant.featured_image) {
-      var imgId = variant.featured_image.id;
+    var descEl = sectionEl.querySelector('[data-cps="description"]');
+    if (descEl) descEl.innerHTML = findDescriptionSource(variant);
+
+    if (!skipImageSync && variant.featured_image) {
+      var imgId = parseInt(variant.featured_image.id);
       sectionEl.querySelectorAll('.custom-product-section__main-image').forEach(function(img, idx) {
-        if (parseInt(img.dataset.imageId) === imgId) mainSwiper.slideTo(idx);
+        if (parseInt(img.dataset.imageId) === imgId && mainSwiper.activeIndex !== idx) {
+          mainSwiper.slideTo(idx);
+        }
       });
     }
   }
 
-  /* ── Chips ── */
+  mainSwiper.on('slideChange', function() {
+    if (isSyncingFromImage) return;
+    var activeSlide = mainSwiper.slides[mainSwiper.activeIndex];
+    if (!activeSlide) return;
+    var img = activeSlide.querySelector('.custom-product-section__main-image');
+    if (!img) return;
+    var imageId = parseInt(img.dataset.imageId);
+    var imageAlt = img.dataset.imageAlt || '';
+    var matchedVariant = getVariantFromImage(imageId, imageAlt);
+    if (!matchedVariant) return;
+    isSyncingFromImage = true;
+    syncSelectorsFromVariant(matchedVariant);
+    updateUI(matchedVariant, true);
+    setTimeout(function() { isSyncingFromImage = false; }, 0);
+  });
+
   sectionEl.querySelectorAll('.custom-product-section__chip').forEach(function(chip) {
     chip.addEventListener('click', function() {
       var idx = parseInt(this.dataset.optionIndex);
       var val = this.dataset.value;
       selectedOptions[idx] = val;
-
       sectionEl.querySelectorAll('.custom-product-section__chip[data-option-index="' + idx + '"]')
         .forEach(function(c) { c.classList.remove('custom-product-section__chip--active'); });
       this.classList.add('custom-product-section__chip--active');
-
       var sel = sectionEl.querySelector('.custom-product-section__dropdown-select[data-option-index="' + idx + '"]');
       if (sel) sel.value = val;
-
-      updateUI(findVariant(selectedOptions));
+      updateUI(findVariant(selectedOptions), false);
     });
   });
 
-  /* ── Dropdown ── */
   sectionEl.querySelectorAll('.custom-product-section__dropdown-select').forEach(function(select) {
     select.addEventListener('change', function() {
       var idx = parseInt(this.dataset.optionIndex);
       var val = this.value;
       selectedOptions[idx] = val;
-
       sectionEl.querySelectorAll('.custom-product-section__chip[data-option-index="' + idx + '"]')
         .forEach(function(c) {
           c.classList.toggle('custom-product-section__chip--active', c.dataset.value === val);
         });
-
-      updateUI(findVariant(selectedOptions));
+      updateUI(findVariant(selectedOptions), false);
     });
   });
 
-  /* ── Quantity ── */
   sectionEl.querySelector('[data-action="minus"]').addEventListener('click', function() {
     var input = sectionEl.querySelector('.custom-product-section__qty-input');
     if (parseInt(input.value) > 1) input.value = parseInt(input.value) - 1;
   });
+
   sectionEl.querySelector('[data-action="plus"]').addEventListener('click', function() {
     var input = sectionEl.querySelector('.custom-product-section__qty-input');
     input.value = parseInt(input.value) + 1;
   });
 
-  /* ── ATC ── */
   sectionEl.querySelector('[data-cps="atc"]').addEventListener('click', function() {
     var btn       = this;
     var variantId = parseInt(btn.dataset.variantId);
     var qty       = parseInt(sectionEl.querySelector('.custom-product-section__qty-input').value);
-
     btn.disabled    = true;
     btn.textContent = 'Adding...';
-
     fetch('/cart/add.js', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -888,23 +985,18 @@
     })
     .then(function(res) {
       if (!res.ok) throw new Error('ATC failed');
-
       var notif        = sectionEl.querySelector('[data-cps="notification"]');
       var notifImg     = sectionEl.querySelector('[data-cps="notif-img"]');
       var notifTitle   = sectionEl.querySelector('[data-cps="notif-title"]');
       var notifVariant = sectionEl.querySelector('[data-cps="notif-variant"]');
-
       if (notifImg) notifImg.src = currentVariant.featured_image ? currentVariant.featured_image.src : product.featured_image;
-      if (notifTitle)   notifTitle.textContent  = product.title;
+      if (notifTitle) notifTitle.textContent = product.title;
       if (notifVariant) notifVariant.textContent = currentVariant.title;
-
       notif.style.display = 'block';
       if (notifTimer) clearTimeout(notifTimer);
       notifTimer = setTimeout(function() { notif.style.display = 'none'; }, 3000);
     })
-    .catch(function(err) {
-      console.error('ATC error:', err);
-    })
+    .catch(function(err) { console.error('ATC error:', err); })
     .finally(function() {
       btn.disabled = false;
       var price = sectionEl.querySelector('[data-cps="price"]');
@@ -912,7 +1004,6 @@
     });
   });
 
-  /* ── Accordions ── */
   sectionEl.querySelectorAll('.custom-product-section__accordion-trigger').forEach(function(trigger) {
     trigger.addEventListener('click', function() {
       var acc    = this.closest('.custom-product-section__accordion');
@@ -928,6 +1019,8 @@
     });
   });
 
+  syncSelectorsFromVariant(currentVariant);
+  updateUI(currentVariant, false);
 })();
 </script>
 
@@ -1131,24 +1224,6 @@
       "id": "review_6_author",
       "label": "Review 6 Author",
       "default": "Anna P."
-    },
-    {
-      "type": "range",
-      "id": "max_width",
-      "label": "Max Width (px)",
-      "min": 800,
-      "max": 1600,
-      "step": 50,
-      "default": 1200
-    },
-    {
-      "type": "range",
-      "id": "section_padding",
-      "label": "Section Padding (px)",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "default": 40
     }
   ],
   "presets": [
