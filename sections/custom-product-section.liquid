@@ -7,366 +7,477 @@
 -%}
 
 {%- style -%}
-  #cps-{{ section.id }} {
-    --cps-bg:        {{ section.settings.bg_color }};
-    --cps-text:      {{ section.settings.text_color }};
-    --cps-primary:   {{ section.settings.primary_color }};
-    --cps-btn-text:  {{ section.settings.btn_text_color }};
-    --cps-border:    {{ section.settings.border_color }};
-    --cps-padding:   {{ section.settings.section_padding }}px;
-    background-color: var(--cps-bg);
-    color: var(--cps-text);
-    padding: var(--cps-padding) 16px;
-    box-sizing: border-box;
-  }
+#cps-{{ section.id }} {
+  --cps-primary:    {{ section.settings.primary_color }};
+  --cps-btn-text:   {{ section.settings.btn_text_color }};
+  --cps-bg:         {{ section.settings.bg_color }};
+  --cps-text:       {{ section.settings.text_color }};
+  --cps-border:     {{ section.settings.border_color }};
+  --cps-radius:     {{ section.settings.image_radius }}px;
+  --cps-padding:    {{ section.settings.section_padding }}px;
+  background: var(--cps-bg);
+  color: var(--cps-text);
+  padding: var(--cps-padding) 0;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+*, *::before, *::after { box-sizing: inherit; }
 
-  /* ── Container ── */
+/* ── Inner ── */
+#cps-{{ section.id }} .cps-inner {
+  max-width: {{ section.settings.max_width }}px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  align-items: start;
+}
+#cps-{{ section.id }} .cps-inner.img-right { direction: rtl; }
+#cps-{{ section.id }} .cps-inner.img-right > * { direction: ltr; }
+@media (max-width: 860px) {
   #cps-{{ section.id }} .cps-inner {
-    max-width: {{ section.settings.max_width }}px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 48px;
-    align-items: start;
+    grid-template-columns: 1fr;
+    gap: 28px;
+    direction: ltr !important;
   }
-  #cps-{{ section.id }} .cps-inner.layout-right { direction: rtl; }
-  #cps-{{ section.id }} .cps-inner.layout-right > * { direction: ltr; }
+}
 
-  @media (max-width: 768px) {
-    #cps-{{ section.id }} .cps-inner { grid-template-columns: 1fr; gap: 24px; }
-    #cps-{{ section.id }} .cps-inner.layout-right { direction: ltr; }
-  }
+/* ── Gallery ── */
+#cps-{{ section.id }} .cps-main-swiper {
+  border-radius: var(--cps-radius);
+  overflow: hidden;
+  background: #f4f4f4;
+  position: relative;
+}
+#cps-{{ section.id }} .cps-main-swiper .swiper-slide img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+}
+#cps-{{ section.id }} .swiper-button-prev,
+#cps-{{ section.id }} .swiper-button-next {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(0,0,0,.55);
+  color: #fff;
+  backdrop-filter: blur(4px);
+}
+#cps-{{ section.id }} .swiper-button-prev::after,
+#cps-{{ section.id }} .swiper-button-next::after { font-size: 13px; font-weight: 800; }
 
-  /* ── Gallery ── */
-  #cps-{{ section.id }} .cps-gallery { position: relative; }
+/* ── Thumbnails ── */
+#cps-{{ section.id }} .cps-thumbs-swiper {
+  margin-top: 10px;
+  padding-bottom: 2px;
+}
+#cps-{{ section.id }} .cps-thumbs-swiper .swiper-slide {
+  width: 68px !important;
+  height: 68px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  opacity: .55;
+  transition: opacity .2s, border-color .2s;
+}
+#cps-{{ section.id }} .cps-thumbs-swiper .swiper-slide-thumb-active {
+  opacity: 1;
+  border-color: var(--cps-primary);
+}
+#cps-{{ section.id }} .cps-thumbs-swiper .swiper-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
 
-  #cps-{{ section.id }} .cps-main-swiper {
-    width: 100%;
-    border-radius: {{ section.settings.image_radius }}px;
-    overflow: hidden;
-    background: #f5f5f5;
-  }
-  #cps-{{ section.id }} .cps-main-swiper .swiper-slide img {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    display: block;
-  }
+/* ── Info column ── */
+#cps-{{ section.id }} .cps-info {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
 
-  #cps-{{ section.id }} .cps-thumbs-swiper {
-    margin-top: 10px;
-  }
-  #cps-{{ section.id }} .cps-thumbs-swiper .swiper-slide {
-    width: 72px !important;
-    height: 72px;
-    border-radius: 6px;
-    overflow: hidden;
-    cursor: pointer;
-    opacity: 0.55;
-    border: 2px solid transparent;
-    transition: opacity 0.2s, border-color 0.2s;
-    box-sizing: border-box;
-  }
-  #cps-{{ section.id }} .cps-thumbs-swiper .swiper-slide-thumb-active {
-    opacity: 1;
-    border-color: var(--cps-primary);
-  }
-  #cps-{{ section.id }} .cps-thumbs-swiper .swiper-slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
+/* ── Vendor ── */
+#cps-{{ section.id }} .cps-vendor {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  opacity: .5;
+  margin: 0;
+}
 
-  #cps-{{ section.id }} .swiper-button-next,
-  #cps-{{ section.id }} .swiper-button-prev {
-    color: var(--cps-primary);
-    background: var(--cps-bg);
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    box-shadow: 0 2px 8px rgba(0,0,0,.15);
-  }
-  #cps-{{ section.id }} .swiper-button-next::after,
-  #cps-{{ section.id }} .swiper-button-prev::after { font-size: 14px; font-weight: 700; }
+/* ── Title ── */
+#cps-{{ section.id }} .cps-title {
+  font-size: clamp(24px, 3.5vw, 38px);
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0;
+}
 
-  /* ── Product Info ── */
-  #cps-{{ section.id }} .cps-info { display: flex; flex-direction: column; gap: 16px; }
+/* ── Variant subtitle ── */
+#cps-{{ section.id }} .cps-variant-subtitle {
+  font-size: 14px;
+  opacity: .6;
+  margin: -10px 0 0;
+}
 
-  #cps-{{ section.id }} .cps-vendor {
-    font-size: 12px;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    opacity: .6;
-    margin: 0;
-  }
+/* ── Price ── */
+#cps-{{ section.id }} .cps-price-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+#cps-{{ section.id }} .cps-price-current {
+  font-size: 28px;
+  font-weight: 700;
+}
+#cps-{{ section.id }} .cps-price-compare {
+  font-size: 18px;
+  text-decoration: line-through;
+  opacity: .4;
+}
+#cps-{{ section.id }} .cps-price-badge {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 9px;
+  background: #e53e3e;
+  color: #fff;
+  border-radius: 4px;
+}
 
-  #cps-{{ section.id }} .cps-title {
-    font-size: clamp(22px, 3vw, 32px);
-    font-weight: 700;
-    line-height: 1.2;
-    margin: 0;
-    color: var(--cps-text);
-  }
+/* ── Description ── */
+#cps-{{ section.id }} .cps-desc {
+  font-size: 14px;
+  line-height: 1.65;
+  opacity: .75;
+}
+#cps-{{ section.id }} .cps-desc p { margin: 0 0 8px; }
+#cps-{{ section.id }} .cps-desc p:last-child { margin: 0; }
 
-  #cps-{{ section.id }} .cps-variant-title {
-    font-size: 14px;
-    opacity: .7;
-    margin: -8px 0 0;
-  }
+/* ── Divider ── */
+#cps-{{ section.id }} hr.cps-divider {
+  border: none;
+  border-top: 1px solid var(--cps-border);
+  margin: 0;
+}
 
-  #cps-{{ section.id }} .cps-sku {
-    font-size: 12px;
-    opacity: .55;
-    margin: 0;
-  }
+/* ── Option group ── */
+#cps-{{ section.id }} .cps-option-group { display: flex; flex-direction: column; gap: 10px; }
+#cps-{{ section.id }} .cps-option-label {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+}
+#cps-{{ section.id }} .cps-option-label span {
+  font-weight: 400;
+  text-transform: none;
+  opacity: .6;
+}
 
-  /* ── Price ── */
-  #cps-{{ section.id }} .cps-price {
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  #cps-{{ section.id }} .cps-price-current {
-    font-size: 26px;
-    font-weight: 700;
-    color: var(--cps-text);
-  }
-  #cps-{{ section.id }} .cps-price-compare {
-    font-size: 18px;
-    text-decoration: line-through;
-    opacity: .45;
-  }
-  #cps-{{ section.id }} .cps-price-badge {
-    font-size: 12px;
-    font-weight: 600;
-    padding: 2px 8px;
-    border-radius: 4px;
-    background: #e53e3e;
-    color: #fff;
-  }
+/* Radio-pill buttons */
+#cps-{{ section.id }} .cps-option-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+#cps-{{ section.id }} .cps-opt-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border: 1.5px solid var(--cps-border);
+  border-radius: 50px;
+  background: transparent;
+  color: var(--cps-text);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color .15s, background .15s, color .15s;
+  line-height: 1;
+  font-family: inherit;
+}
+#cps-{{ section.id }} .cps-opt-btn .cps-radio {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color .15s;
+}
+#cps-{{ section.id }} .cps-opt-btn .cps-radio::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity .15s;
+}
+#cps-{{ section.id }} .cps-opt-btn:hover {
+  border-color: var(--cps-primary);
+}
+#cps-{{ section.id }} .cps-opt-btn.is-active {
+  background: var(--cps-primary);
+  border-color: var(--cps-primary);
+  color: var(--cps-btn-text);
+}
+#cps-{{ section.id }} .cps-opt-btn.is-active .cps-radio {
+  border-color: var(--cps-btn-text);
+}
+#cps-{{ section.id }} .cps-opt-btn.is-active .cps-radio::after {
+  opacity: 1;
+  background: var(--cps-btn-text);
+}
+#cps-{{ section.id }} .cps-opt-btn.is-unavailable {
+  opacity: .3;
+  text-decoration: line-through;
+  cursor: not-allowed;
+  pointer-events: none;
+}
 
-  /* ── Variants ── */
-  #cps-{{ section.id }} .cps-option-group { display: flex; flex-direction: column; gap: 8px; }
+/* Mobile dropdown */
+#cps-{{ section.id }} .cps-mobile-select {
+  display: none;
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid var(--cps-border);
+  border-radius: 8px;
+  background: var(--cps-bg);
+  color: var(--cps-text);
+  font-size: 15px;
+  font-family: inherit;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  cursor: pointer;
+}
+@media (max-width: 600px) {
+  #cps-{{ section.id }} .cps-option-buttons { display: none; }
+  #cps-{{ section.id }} .cps-mobile-select { display: block; }
+}
 
-  #cps-{{ section.id }} .cps-option-label {
-    font-size: 13px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: .06em;
-  }
-  #cps-{{ section.id }} .cps-option-label span { font-weight: 400; text-transform: none; opacity: .7; }
+/* ── Quantity + ATC ── */
+#cps-{{ section.id }} .cps-atc-row {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+#cps-{{ section.id }} .cps-quantity {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid var(--cps-border);
+  border-radius: 8px;
+  overflow: hidden;
+  min-width: 112px;
+}
+#cps-{{ section.id }} .cps-qty-btn {
+  width: 38px;
+  min-height: 48px;
+  border: none;
+  background: transparent;
+  color: var(--cps-text);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s;
+  padding: 0;
+  line-height: 1;
+  font-family: inherit;
+}
+#cps-{{ section.id }} .cps-qty-btn:hover { background: rgba(0,0,0,.06); }
+#cps-{{ section.id }} .cps-qty-input {
+  width: 36px;
+  border: none;
+  text-align: center;
+  font-size: 15px;
+  color: var(--cps-text);
+  background: transparent;
+  -moz-appearance: textfield;
+  outline: none;
+  font-family: inherit;
+}
+#cps-{{ section.id }} .cps-qty-input::-webkit-inner-spin-button,
+#cps-{{ section.id }} .cps-qty-input::-webkit-outer-spin-button { -webkit-appearance: none; }
 
-  #cps-{{ section.id }} .cps-option-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+#cps-{{ section.id }} .cps-atc-btn {
+  flex: 1;
+  padding: 14px 20px;
+  background: var(--cps-primary);
+  color: var(--cps-btn-text);
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity .15s, transform .1s;
+  font-family: inherit;
+}
+#cps-{{ section.id }} .cps-atc-btn:hover:not(:disabled) { opacity: .88; }
+#cps-{{ section.id }} .cps-atc-btn:active:not(:disabled) { transform: scale(.98); }
+#cps-{{ section.id }} .cps-atc-btn:disabled { opacity: .4; cursor: not-allowed; }
 
-  #cps-{{ section.id }} .cps-opt-btn {
-    padding: 8px 16px;
-    border: 1.5px solid var(--cps-border);
-    background: transparent;
-    color: var(--cps-text);
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: border-color .15s, background .15s, color .15s;
-    line-height: 1;
-  }
-  #cps-{{ section.id }} .cps-opt-btn:hover { border-color: var(--cps-primary); }
-  #cps-{{ section.id }} .cps-opt-btn.is-active {
-    background: var(--cps-primary);
-    border-color: var(--cps-primary);
-    color: var(--cps-btn-text);
-  }
-  #cps-{{ section.id }} .cps-opt-btn.is-unavailable {
-    opacity: .35;
-    text-decoration: line-through;
-    cursor: not-allowed;
-  }
+/* ── Blocks ── */
+#cps-{{ section.id }} .cps-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+#cps-{{ section.id }} .cps-features li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+#cps-{{ section.id }} .cps-features li::before {
+  content: '';
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  border-radius: 50%;
+  background: var(--cps-primary);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M2 6l3 3 5-5' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: 12px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+#cps-{{ section.id }} .cps-custom-text {
+  font-size: 14px;
+  line-height: 1.6;
+}
 
-  /* ── Description ── */
-  #cps-{{ section.id }} .cps-description {
-    font-size: 15px;
-    line-height: 1.65;
-    opacity: .8;
-  }
-  #cps-{{ section.id }} .cps-description p { margin: 0 0 10px; }
+/* ── ATC Notification popup ── */
+#cps-notif-{{ section.id }} {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 300px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.18);
+  overflow: hidden;
+  z-index: 99999;
+  opacity: 0;
+  transform: translateY(-12px);
+  pointer-events: none;
+  transition: opacity .25s, transform .25s;
+}
+#cps-notif-{{ section.id }}.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+#cps-notif-{{ section.id }} .cps-notif-header {
+  background: #dcfce7;
+  color: #15803d;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#cps-notif-{{ section.id }} .cps-notif-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #16a34a;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+#cps-notif-{{ section.id }} .cps-notif-body {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+}
+#cps-notif-{{ section.id }} .cps-notif-img {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+  background: #f4f4f4;
+}
+#cps-notif-{{ section.id }} .cps-notif-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111;
+  margin: 0 0 4px;
+  line-height: 1.3;
+}
+#cps-notif-{{ section.id }} .cps-notif-variant {
+  font-size: 12px;
+  color: #666;
+  margin: 0;
+}
+#cps-notif-{{ section.id }} .cps-notif-footer {
+  padding: 0 16px 16px;
+}
+#cps-notif-{{ section.id }} .cps-notif-cart-btn {
+  display: block;
+  width: 100%;
+  padding: 11px;
+  background: var(--cps-primary);
+  color: var(--cps-btn-text);
+  text-align: center;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  border-radius: 8px;
+  transition: opacity .15s;
+}
+#cps-notif-{{ section.id }} .cps-notif-cart-btn:hover { opacity: .88; }
+#cps-notif-{{ section.id }} .cps-notif-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 18px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 2px 6px;
+  font-family: inherit;
+}
+#cps-notif-{{ section.id }} .cps-notif-close:hover { color: #111; }
 
-  /* ── Blocks ── */
-  #cps-{{ section.id }} .cps-features {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  #cps-{{ section.id }} .cps-features li {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-  }
-  #cps-{{ section.id }} .cps-features li::before {
-    content: '';
-    width: 18px;
-    height: 18px;
-    min-width: 18px;
-    background: var(--cps-primary);
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M2 6l3 3 5-5' stroke='%23fff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    background-size: 12px;
-    background-repeat: no-repeat;
-    background-position: center;
-  }
-
-  #cps-{{ section.id }} .cps-custom-text { font-size: 14px; line-height: 1.6; }
-
-  /* ── Quantity + ATC ── */
-  #cps-{{ section.id }} .cps-atc-row {
-    display: flex;
-    gap: 12px;
-    align-items: stretch;
-    flex-wrap: wrap;
-  }
-
-  #cps-{{ section.id }} .cps-quantity {
-    display: flex;
-    align-items: center;
-    border: 1.5px solid var(--cps-border);
-    border-radius: 4px;
-    overflow: hidden;
-    min-width: 110px;
-  }
-  #cps-{{ section.id }} .cps-qty-btn {
-    width: 36px;
-    height: 100%;
-    border: none;
-    background: transparent;
-    color: var(--cps-text);
-    font-size: 18px;
-    cursor: pointer;
-    transition: background .15s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-    padding: 0;
-    min-height: 44px;
-  }
-  #cps-{{ section.id }} .cps-qty-btn:hover { background: rgba(0,0,0,.06); }
-  #cps-{{ section.id }} .cps-qty-input {
-    width: 36px;
-    border: none;
-    text-align: center;
-    font-size: 15px;
-    color: var(--cps-text);
-    background: transparent;
-    -moz-appearance: textfield;
-    outline: none;
-  }
-  #cps-{{ section.id }} .cps-qty-input::-webkit-outer-spin-button,
-  #cps-{{ section.id }} .cps-qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-
-  #cps-{{ section.id }} .cps-atc-btn {
-    flex: 1;
-    min-width: 160px;
-    padding: 14px 24px;
-    background: var(--cps-primary);
-    color: var(--cps-btn-text);
-    border: none;
-    border-radius: 4px;
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: .04em;
-    cursor: pointer;
-    transition: opacity .15s, transform .1s;
-    text-transform: uppercase;
-  }
-  #cps-{{ section.id }} .cps-atc-btn:hover:not(:disabled) { opacity: .88; }
-  #cps-{{ section.id }} .cps-atc-btn:active:not(:disabled) { transform: scale(.98); }
-  #cps-{{ section.id }} .cps-atc-btn:disabled { opacity: .45; cursor: not-allowed; }
-
-  /* ── Notification ── */
-  #cps-notif-{{ section.id }} {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    background: #1a1a1a;
-    color: #fff;
-    padding: 14px 18px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 14px;
-    z-index: 9999;
-    box-shadow: 0 8px 24px rgba(0,0,0,.25);
-    opacity: 0;
-    transform: translateY(16px);
-    pointer-events: none;
-    transition: opacity .25s, transform .25s;
-    max-width: 340px;
-  }
-  #cps-notif-{{ section.id }}.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
-  #cps-notif-{{ section.id }} .cps-notif-icon {
-    width: 24px;
-    height: 24px;
-    min-width: 24px;
-    border-radius: 50%;
-    background: #22c55e;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    font-weight: 700;
-  }
-  #cps-notif-{{ section.id }} .cps-notif-msg { flex: 1; }
-  #cps-notif-{{ section.id }} .cps-notif-cart {
-    color: #a3e635;
-    text-decoration: none;
-    font-weight: 600;
-    white-space: nowrap;
-  }
-  #cps-notif-{{ section.id }} .cps-notif-cart:hover { text-decoration: underline; }
-  #cps-notif-{{ section.id }} .cps-notif-close {
-    background: none;
-    border: none;
-    color: rgba(255,255,255,.6);
-    cursor: pointer;
-    font-size: 18px;
-    line-height: 1;
-    padding: 0;
-    margin-left: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: color .15s;
-  }
-  #cps-notif-{{ section.id }} .cps-notif-close:hover { color: #fff; }
-
-  /* ── Divider ── */
-  #cps-{{ section.id }} .cps-divider {
-    border: none;
-    border-top: 1px solid var(--cps-border);
-    margin: 0;
-  }
-
-  /* ── Placeholder ── */
-  #cps-{{ section.id }} .cps-placeholder {
-    text-align: center;
-    padding: 60px 20px;
-    opacity: .4;
-    font-size: 15px;
-    border: 2px dashed currentColor;
-    border-radius: 8px;
-  }
+/* ── Placeholder ── */
+#cps-{{ section.id }} .cps-placeholder {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 60px 20px;
+  text-align: center;
+  opacity: .4;
+  font-size: 15px;
+  border: 2px dashed currentColor;
+  border-radius: 12px;
+}
 {%- endstyle -%}
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
@@ -374,11 +485,10 @@
 <div id="cps-{{ section.id }}" data-section-id="{{ section.id }}">
   {%- if current_product != blank -%}
 
-    <div class="cps-inner{% if section.settings.image_position == 'right' %} layout-right{% endif %}">
+    <div class="cps-inner{% if section.settings.image_position == 'right' %} img-right{% endif %}">
 
-      {%- comment -%} ── IMAGE GALLERY ── {%- endcomment -%}
+      {%- comment -%}── GALLERY ──{%- endcomment -%}
       <div class="cps-gallery">
-
         <div class="swiper cps-main-swiper" id="cps-main-{{ section.id }}">
           <div class="swiper-wrapper">
             {%- for image in current_product.images -%}
@@ -392,7 +502,7 @@
               </div>
             {%- else -%}
               <div class="swiper-slide">
-                {{ 'product-1' | placeholder_svg_tag: 'cps-placeholder-img' }}
+                {{ 'product-1' | placeholder_svg_tag }}
               </div>
             {%- endfor -%}
           </div>
@@ -408,20 +518,19 @@
               {%- for image in current_product.images -%}
                 <div class="swiper-slide" data-image-id="{{ image.id }}">
                   <img
-                    src="{{ image | image_url: width: 144 }}"
+                    src="{{ image | image_url: width: 160 }}"
                     alt="{{ image.alt | default: current_product.title | escape }}"
                     loading="lazy"
-                    width="72"
+                    width="80"
                   >
                 </div>
               {%- endfor -%}
             </div>
           </div>
         {%- endif -%}
-
       </div>
 
-      {%- comment -%} ── PRODUCT INFO ── {%- endcomment -%}
+      {%- comment -%}── INFO ──{%- endcomment -%}
       <div class="cps-info">
 
         {%- if section.settings.show_vendor and current_product.vendor != blank -%}
@@ -431,29 +540,25 @@
         <h2 class="cps-title" id="cps-title-{{ section.id }}">{{ current_product.title }}</h2>
 
         {%- unless current_product.has_only_default_variant -%}
-          <p class="cps-variant-title" id="cps-variant-title-{{ section.id }}">
-            {{- first_variant.title -}}
-          </p>
+          <p class="cps-variant-subtitle" id="cps-var-sub-{{ section.id }}">{{ first_variant.title }}</p>
         {%- endunless -%}
 
-        {%- if section.settings.show_sku -%}
-          <p class="cps-sku" id="cps-sku-{{ section.id }}">
-            SKU: <span>{{- first_variant.sku | default: '—' -}}</span>
-          </p>
-        {%- endif -%}
-
-        <div class="cps-price" id="cps-price-{{ section.id }}">
+        <div class="cps-price-wrap" id="cps-price-{{ section.id }}">
           {%- if first_variant.compare_at_price > first_variant.price -%}
             <span class="cps-price-compare">{{ first_variant.compare_at_price | money }}</span>
-            {%- assign discount = first_variant.compare_at_price | minus: first_variant.price | times: 100 | divided_by: first_variant.compare_at_price -%}
-            <span class="cps-price-badge">-{{ discount }}%</span>
+            {%- assign pct = first_variant.compare_at_price | minus: first_variant.price | times: 100 | divided_by: first_variant.compare_at_price -%}
+            <span class="cps-price-badge">-{{ pct }}%</span>
           {%- endif -%}
           <span class="cps-price-current">{{ first_variant.price | money }}</span>
         </div>
 
+        {%- if section.settings.show_description and current_product.description != blank -%}
+          <div class="cps-desc">{{ current_product.description }}</div>
+        {%- endif -%}
+
         <hr class="cps-divider">
 
-        {%- comment -%} ── VARIANT OPTIONS ── {%- endcomment -%}
+        {%- comment -%}── VARIANT OPTIONS ──{%- endcomment -%}
         {%- unless current_product.has_only_default_variant -%}
           <div id="cps-options-{{ section.id }}">
             {%- for option in current_product.options_with_values -%}
@@ -462,6 +567,8 @@
                   {{ option.name }}:
                   <span id="cps-opt-val-{{ section.id }}-{{ forloop.index }}">{{ option.selected_value }}</span>
                 </p>
+
+                {{- '<!-- desktop pill buttons -->' -}}
                 <div class="cps-option-buttons">
                   {%- for value in option.values -%}
                     <button
@@ -469,65 +576,68 @@
                       type="button"
                       data-option-index="{{ forloop.parentloop.index0 }}"
                       data-value="{{ value | escape }}"
-                    >{{ value }}</button>
+                    >
+                      <span class="cps-radio"></span>
+                      {{ value }}
+                    </button>
                   {%- endfor -%}
                 </div>
+
+                {{- '<!-- mobile dropdown -->' -}}
+                <select
+                  class="cps-mobile-select"
+                  data-option-index="{{ forloop.index0 }}"
+                  aria-label="{{ option.name }}"
+                >
+                  {%- for value in option.values -%}
+                    <option
+                      value="{{ value | escape }}"
+                      {% if option.selected_value == value %}selected{% endif %}
+                    >{{ value }}</option>
+                  {%- endfor -%}
+                </select>
               </div>
             {%- endfor -%}
           </div>
         {%- endunless -%}
 
-        {%- comment -%} ── BLOCKS ── {%- endcomment -%}
+        {%- comment -%}── BLOCKS ──{%- endcomment -%}
         {%- for block in section.blocks -%}
           {%- case block.type -%}
-
             {%- when 'feature_list' -%}
-              {%- assign has_features = false -%}
+              {%- assign has_feat = false -%}
               {%- for i in (1..6) -%}
-                {%- assign feat_key = 'feature_' | append: i -%}
-                {%- if block.settings[feat_key] != blank -%}{%- assign has_features = true -%}{%- endif -%}
+                {%- assign fk = 'feature_' | append: i -%}
+                {%- if block.settings[fk] != blank -%}{%- assign has_feat = true -%}{%- endif -%}
               {%- endfor -%}
-              {%- if has_features -%}
+              {%- if has_feat -%}
                 <ul class="cps-features" {{ block.shopify_attributes }}>
                   {%- for i in (1..6) -%}
-                    {%- assign feat_key = 'feature_' | append: i -%}
-                    {%- if block.settings[feat_key] != blank -%}
-                      <li>{{ block.settings[feat_key] }}</li>
+                    {%- assign fk = 'feature_' | append: i -%}
+                    {%- if block.settings[fk] != blank -%}
+                      <li>{{ block.settings[fk] }}</li>
                     {%- endif -%}
                   {%- endfor -%}
                 </ul>
               {%- endif -%}
-
             {%- when 'custom_text' -%}
               {%- if block.settings.text != blank -%}
-                <div class="cps-custom-text" {{ block.shopify_attributes }}>
-                  {{ block.settings.text }}
-                </div>
+                <div class="cps-custom-text" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
               {%- endif -%}
-
           {%- endcase -%}
         {%- endfor -%}
 
         <hr class="cps-divider">
 
-        {%- comment -%} ── QUANTITY + ATC ── {%- endcomment -%}
+        {%- comment -%}── QUANTITY + ATC ──{%- endcomment -%}
         <div class="cps-atc-row">
           {%- if section.settings.show_quantity -%}
             <div class="cps-quantity">
-              <button class="cps-qty-btn" type="button" data-action="minus" aria-label="Decrease quantity">−</button>
-              <input
-                class="cps-qty-input"
-                id="cps-qty-{{ section.id }}"
-                type="number"
-                value="1"
-                min="1"
-                max="99"
-                aria-label="Quantity"
-              >
-              <button class="cps-qty-btn" type="button" data-action="plus" aria-label="Increase quantity">+</button>
+              <button class="cps-qty-btn" type="button" data-action="minus" aria-label="Decrease">−</button>
+              <input class="cps-qty-input" id="cps-qty-{{ section.id }}" type="number" value="1" min="1" max="99" aria-label="Quantity">
+              <button class="cps-qty-btn" type="button" data-action="plus" aria-label="Increase">+</button>
             </div>
           {%- endif -%}
-
           <button
             class="cps-atc-btn"
             id="cps-atc-{{ section.id }}"
@@ -543,30 +653,48 @@
           </button>
         </div>
 
-        {%- if section.settings.show_description and current_product.description != blank -%}
-          <hr class="cps-divider">
-          <div class="cps-description" id="cps-desc-{{ section.id }}">
-            {{ current_product.description }}
-          </div>
+        {%- if section.settings.show_sku -%}
+          <p class="cps-sku" id="cps-sku-{{ section.id }}" style="font-size:12px;opacity:.5;margin:0;">
+            SKU: <span>{{ first_variant.sku | default: '—' }}</span>
+          </p>
         {%- endif -%}
 
       </div>
     </div>
 
-    {%- comment -%} ── NOTIFICATION ── {%- endcomment -%}
+    {%- comment -%}── NOTIFICATION POPUP ──{%- endcomment -%}
     <div id="cps-notif-{{ section.id }}" role="status" aria-live="polite">
-      <span class="cps-notif-icon" aria-hidden="true">✓</span>
-      <span class="cps-notif-msg">{{ section.settings.notification_text }}</span>
-      <a class="cps-notif-cart" href="/cart">{{ section.settings.view_cart_text }}</a>
-      <button class="cps-notif-close" type="button" aria-label="Close notification">×</button>
+      <button class="cps-notif-close" type="button" aria-label="Close">×</button>
+      <div class="cps-notif-header">
+        <span class="cps-notif-check">✓</span>
+        {{ section.settings.notification_text }}
+      </div>
+      <div class="cps-notif-body">
+        <img
+          class="cps-notif-img"
+          id="cps-notif-img-{{ section.id }}"
+          src="{{ current_product.featured_image | image_url: width: 120 }}"
+          alt="{{ current_product.title | escape }}"
+          width="56"
+          height="56"
+        >
+        <div>
+          <p class="cps-notif-name">{{ current_product.title }}</p>
+          <p class="cps-notif-variant" id="cps-notif-var-{{ section.id }}">{{ first_variant.title }}</p>
+        </div>
+      </div>
+      <div class="cps-notif-footer">
+        <a class="cps-notif-cart-btn" href="/cart">{{ section.settings.view_cart_text }}</a>
+      </div>
     </div>
 
-    {%- comment -%} ── PRODUCT JSON FOR JS ── {%- endcomment -%}
+    {%- comment -%}── PRODUCT DATA FOR JS ──{%- endcomment -%}
     <script type="application/json" id="cps-data-{{ section.id }}">
       {
-        "variants": {{ current_product.variants | json }},
-        "images":   {{ current_product.images | json }},
-        "initialVariantId": {{ first_variant.id }}
+        "variants":         {{ current_product.variants | json }},
+        "images":           {{ current_product.images | json }},
+        "initialVariantId": {{ first_variant.id }},
+        "productTitle":     {{ current_product.title | json }}
       }
     </script>
 
@@ -584,15 +712,11 @@
 
   var sid = '{{ section.id }}';
 
-  /* ── Wait for Swiper ── */
   function waitForSwiper(cb) {
     if (typeof Swiper !== 'undefined') { cb(); return; }
-    var t = setInterval(function () {
-      if (typeof Swiper !== 'undefined') { clearInterval(t); cb(); }
-    }, 50);
+    var t = setInterval(function () { if (typeof Swiper !== 'undefined') { clearInterval(t); cb(); } }, 50);
   }
 
-  /* ── Money formatter ── */
   function formatMoney(cents) {
     var fmt = (window.Shopify && window.Shopify.money_format) || '${{amount}}';
     var amount = (cents / 100).toFixed(2);
@@ -604,32 +728,30 @@
 
   function init() {
     var dataEl = document.getElementById('cps-data-' + sid);
-    if (!dataEl) return; /* no product — placeholder shown */
+    if (!dataEl) return;
 
-    var data          = JSON.parse(dataEl.textContent);
-    var allVariants   = data.variants;
-    var allImages     = data.images;
-    var sectionEl     = document.getElementById('cps-' + sid);
-    var atcBtn        = document.getElementById('cps-atc-' + sid);
-    var notifEl       = document.getElementById('cps-notif-' + sid);
-    var qtyInput      = document.getElementById('cps-qty-' + sid);
-    var priceEl       = document.getElementById('cps-price-' + sid);
-    var varTitleEl    = document.getElementById('cps-variant-title-' + sid);
-    var skuEl         = document.getElementById('cps-sku-' + sid);
+    var data           = JSON.parse(dataEl.textContent);
+    var allVariants    = data.variants;
+    var allImages      = data.images;
+    var productTitle   = data.productTitle;
+    var sectionEl      = document.getElementById('cps-' + sid);
+    var atcBtn         = document.getElementById('cps-atc-' + sid);
+    var notifEl        = document.getElementById('cps-notif-' + sid);
+    var notifImg       = document.getElementById('cps-notif-img-' + sid);
+    var notifVar       = document.getElementById('cps-notif-var-' + sid);
+    var qtyInput       = document.getElementById('cps-qty-' + sid);
+    var priceEl        = document.getElementById('cps-price-' + sid);
+    var varSubEl       = document.getElementById('cps-var-sub-' + sid);
+    var skuEl          = document.getElementById('cps-sku-' + sid);
+    var mainSwiper, thumbsSwiper, notifTimer;
 
-    var selectedOptions = [];
     var currentVariant  = allVariants.find(function (v) { return v.id === data.initialVariantId; }) || allVariants[0];
-    var mainSwiper, thumbsSwiper;
-    var notifTimer;
-
-    /* Seed selected options from initial variant */
-    selectedOptions = currentVariant ? currentVariant.options.slice() : [];
+    var selectedOptions = currentVariant ? currentVariant.options.slice() : [];
 
     /* ── SWIPER ── */
     waitForSwiper(function () {
-      var hasMultiple = allImages.length > 1;
-
-      if (hasMultiple) {
+      var multi = allImages.length > 1;
+      if (multi) {
         thumbsSwiper = new Swiper('#cps-thumbs-' + sid, {
           spaceBetween: 8,
           slidesPerView: 'auto',
@@ -637,152 +759,128 @@
           freeMode: true,
         });
       }
-
       mainSwiper = new Swiper('#cps-main-' + sid, {
         spaceBetween: 0,
-        navigation: hasMultiple ? {
+        navigation: multi ? {
           nextEl: '#cps-main-' + sid + ' .swiper-button-next',
           prevEl: '#cps-main-' + sid + ' .swiper-button-prev',
         } : false,
-        thumbs: hasMultiple ? { swiper: thumbsSwiper } : undefined,
+        thumbs: multi ? { swiper: thumbsSwiper } : undefined,
         keyboard: { enabled: true },
-        a11y: true,
       });
     });
 
-    /* ── VARIANT HELPERS ── */
-    function findVariant(options) {
+    /* ── HELPERS ── */
+    function findVariant(opts) {
       return allVariants.find(function (v) {
-        return v.options.every(function (opt, i) { return opt === options[i]; });
+        return v.options.every(function (o, i) { return o === opts[i]; });
       }) || null;
     }
 
-    /* Returns array of unavailable option values for a given option index */
-    function getUnavailableValues(optionIndex) {
-      var unavailable = [];
-      allVariants.forEach(function (v) {
-        if (!v.available) {
-          unavailable.push(v.options[optionIndex]);
-        }
-      });
-      return unavailable;
-    }
-
-    /* ── UPDATE UI ── */
-    function updatePrice(variant) {
-      if (!priceEl || !variant) return;
+    function updatePrice(v) {
+      if (!priceEl || !v) return;
       var html = '';
-      if (variant.compare_at_price && variant.compare_at_price > variant.price) {
-        var pct = Math.round((variant.compare_at_price - variant.price) / variant.compare_at_price * 100);
-        html += '<span class="cps-price-compare">' + formatMoney(variant.compare_at_price) + '</span>';
+      if (v.compare_at_price && v.compare_at_price > v.price) {
+        var pct = Math.round((v.compare_at_price - v.price) / v.compare_at_price * 100);
+        html += '<span class="cps-price-compare">' + formatMoney(v.compare_at_price) + '</span>';
         html += '<span class="cps-price-badge">-' + pct + '%</span>';
       }
-      html += '<span class="cps-price-current">' + formatMoney(variant.price) + '</span>';
+      html += '<span class="cps-price-current">' + formatMoney(v.price) + '</span>';
       priceEl.innerHTML = html;
     }
 
-    function updateVariantTitle(variant) {
-      if (!varTitleEl || !variant) return;
-      varTitleEl.textContent = variant.title === 'Default Title' ? '' : variant.title;
+    function updateSubtitle(v) {
+      if (!varSubEl || !v) return;
+      varSubEl.textContent = v.title === 'Default Title' ? '' : v.title;
     }
 
-    function updateSKU(variant) {
-      if (!skuEl || !variant) return;
+    function updateSKU(v) {
+      if (!skuEl || !v) return;
       var span = skuEl.querySelector('span');
-      if (span) span.textContent = variant.sku || '—';
+      if (span) span.textContent = v.sku || '—';
     }
 
-    function updateATCButton(variant) {
+    function updateATCBtn(v) {
       if (!atcBtn) return;
-      if (!variant) {
+      if (!v) {
         atcBtn.disabled = true;
         atcBtn.textContent = '{{ section.settings.unavailable_text }}';
         return;
       }
-      atcBtn.dataset.variantId = variant.id;
-      if (variant.available) {
-        atcBtn.disabled = false;
-        atcBtn.textContent = '{{ section.settings.btn_text }}';
-      } else {
-        atcBtn.disabled = true;
-        atcBtn.textContent = '{{ section.settings.sold_out_text }}';
-      }
+      atcBtn.dataset.variantId = v.id;
+      atcBtn.disabled = !v.available;
+      atcBtn.textContent = v.available ? '{{ section.settings.btn_text }}' : '{{ section.settings.sold_out_text }}';
     }
 
-    function updateImage(variant) {
-      if (!mainSwiper || !variant || !variant.featured_image) return;
-      var imageId  = variant.featured_image.id;
-      var imgIndex = allImages.findIndex(function (img) { return img.id === imageId; });
-      if (imgIndex !== -1) {
-        mainSwiper.slideTo(imgIndex, 400);
-      }
+    function updateImage(v) {
+      if (!mainSwiper || !v || !v.featured_image) return;
+      var idx = allImages.findIndex(function (img) { return img.id === v.featured_image.id; });
+      if (idx !== -1) mainSwiper.slideTo(idx, 400);
     }
 
-    function updateOptionButtonStates() {
+    function updateOptionUI() {
       if (!sectionEl) return;
       sectionEl.querySelectorAll('.cps-opt-btn').forEach(function (btn) {
-        var idx   = parseInt(btn.dataset.optionIndex, 10);
-        var value = btn.dataset.value;
-
-        /* active state */
-        btn.classList.toggle('is-active', selectedOptions[idx] === value);
-
-        /* availability check: fix current option, test if any variant available with this value */
-        var testOptions = selectedOptions.slice();
-        testOptions[idx] = value;
-        var testVariant = findVariant(testOptions);
-        var isUnavailable = testVariant ? !testVariant.available : true;
-        btn.classList.toggle('is-unavailable', isUnavailable);
+        var idx  = parseInt(btn.dataset.optionIndex, 10);
+        var val  = btn.dataset.value;
+        btn.classList.toggle('is-active', selectedOptions[idx] === val);
+        var test = selectedOptions.slice();
+        test[idx] = val;
+        var tv = findVariant(test);
+        btn.classList.toggle('is-unavailable', tv ? !tv.available : true);
       });
-    }
-
-    function updateOptionLabels() {
       selectedOptions.forEach(function (val, i) {
-        var labelSpan = document.getElementById('cps-opt-val-' + sid + '-' + (i + 1));
-        if (labelSpan) labelSpan.textContent = val;
+        var span = document.getElementById('cps-opt-val-' + sid + '-' + (i + 1));
+        if (span) span.textContent = val;
+        var sel = sectionEl.querySelector('.cps-mobile-select[data-option-index="' + i + '"]');
+        if (sel) sel.value = val;
       });
     }
 
-    /* ── OPTION CLICK ── */
+    /* ── OPTION CLICK (desktop pills) ── */
     if (sectionEl) {
       sectionEl.addEventListener('click', function (e) {
         var btn = e.target.closest('.cps-opt-btn');
         if (!btn) return;
-
-        var idx   = parseInt(btn.dataset.optionIndex, 10);
-        var value = btn.dataset.value;
-
-        selectedOptions[idx] = value;
-
+        selectedOptions[parseInt(btn.dataset.optionIndex, 10)] = btn.dataset.value;
         currentVariant = findVariant(selectedOptions);
-
-        updateOptionButtonStates();
-        updateOptionLabels();
+        updateOptionUI();
         updatePrice(currentVariant);
-        updateVariantTitle(currentVariant);
+        updateSubtitle(currentVariant);
         updateSKU(currentVariant);
-        updateATCButton(currentVariant);
+        updateATCBtn(currentVariant);
         updateImage(currentVariant);
       });
-    }
 
-    /* ── QUANTITY ── */
-    if (sectionEl) {
+      /* ── OPTION CHANGE (mobile dropdown) ── */
+      sectionEl.addEventListener('change', function (e) {
+        var sel = e.target.closest('.cps-mobile-select');
+        if (!sel) return;
+        selectedOptions[parseInt(sel.dataset.optionIndex, 10)] = sel.value;
+        currentVariant = findVariant(selectedOptions);
+        updateOptionUI();
+        updatePrice(currentVariant);
+        updateSubtitle(currentVariant);
+        updateSKU(currentVariant);
+        updateATCBtn(currentVariant);
+        updateImage(currentVariant);
+      });
+
+      /* ── QUANTITY ── */
       sectionEl.addEventListener('click', function (e) {
         var btn = e.target.closest('.cps-qty-btn');
         if (!btn || !qtyInput) return;
         var val = parseInt(qtyInput.value, 10) || 1;
-        if (btn.dataset.action === 'plus')  qtyInput.value = Math.min(val + 1, 99);
-        if (btn.dataset.action === 'minus') qtyInput.value = Math.max(val - 1, 1);
+        qtyInput.value = btn.dataset.action === 'plus' ? Math.min(val + 1, 99) : Math.max(val - 1, 1);
       });
     }
 
     /* ── ADD TO CART ── */
     if (atcBtn) {
       atcBtn.addEventListener('click', function () {
-        var variantId = parseInt(atcBtn.dataset.variantId, 10);
-        var qty       = qtyInput ? parseInt(qtyInput.value, 10) || 1 : 1;
-        if (!variantId) return;
+        var varId = parseInt(atcBtn.dataset.variantId, 10);
+        var qty   = qtyInput ? parseInt(qtyInput.value, 10) || 1 : 1;
+        if (!varId) return;
 
         atcBtn.disabled = true;
         atcBtn.textContent = '{{ section.settings.adding_text }}';
@@ -790,46 +888,40 @@
         fetch('/cart/add.js', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body: JSON.stringify({ id: variantId, quantity: qty }),
+          body: JSON.stringify({ id: varId, quantity: qty }),
         })
-          .then(function (res) {
-            if (!res.ok) return res.json().then(function (e) { throw e; });
-            return res.json();
+          .then(function (r) {
+            if (!r.ok) return r.json().then(function (e) { throw e; });
+            return r.json();
           })
-          .then(function () {
-            showNotification();
+          .then(function (item) {
+            updateNotifContent(item);
+            showNotif();
             updateCartCount();
           })
           .catch(function (err) {
-            alert((err && err.description) || 'Could not add item to cart. Please try again.');
+            alert((err && err.description) || 'Could not add to cart. Please try again.');
           })
-          .finally(function () {
-            updateATCButton(currentVariant);
-          });
+          .finally(function () { updateATCBtn(currentVariant); });
       });
     }
 
-    /* ── CART COUNT UPDATE ── */
-    function updateCartCount() {
-      fetch('/cart.js', { headers: { 'Accept': 'application/json' } })
-        .then(function (r) { return r.json(); })
-        .then(function (cart) {
-          document.querySelectorAll('[data-cart-count], .cart-count, .js-cart-count').forEach(function (el) {
-            el.textContent = cart.item_count;
-          });
-          document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart: cart } }));
-        })
-        .catch(function () { /* silently ignore */ });
+    /* ── NOTIFICATION ── */
+    function updateNotifContent(item) {
+      if (!notifEl) return;
+      if (notifImg && item && item.image) {
+        notifImg.src = item.image;
+      }
+      if (notifVar && currentVariant) {
+        notifVar.textContent = currentVariant.title === 'Default Title' ? productTitle : currentVariant.title;
+      }
     }
 
-    /* ── NOTIFICATION ── */
-    function showNotification() {
+    function showNotif() {
       if (!notifEl) return;
       clearTimeout(notifTimer);
       notifEl.classList.add('is-visible');
-      notifTimer = setTimeout(function () {
-        notifEl.classList.remove('is-visible');
-      }, {{ section.settings.notification_duration | times: 1000 }});
+      notifTimer = setTimeout(function () { notifEl.classList.remove('is-visible'); }, {{ section.settings.notification_duration | times: 1000 }});
     }
 
     if (notifEl) {
@@ -839,13 +931,25 @@
       });
     }
 
-    /* ── THEME EDITOR events ── */
+    /* ── CART COUNT ── */
+    function updateCartCount() {
+      fetch('/cart.js', { headers: { 'Accept': 'application/json' } })
+        .then(function (r) { return r.json(); })
+        .then(function (cart) {
+          document.querySelectorAll('[data-cart-count], .cart-count, .js-cart-count').forEach(function (el) {
+            el.textContent = cart.item_count;
+          });
+          document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart: cart } }));
+        })
+        .catch(function () {});
+    }
+
+    /* ── THEME EDITOR reload ── */
     document.addEventListener('shopify:section:load', function (e) {
       if (e.detail.sectionId === sid) init();
     });
   }
 
-  /* ── Boot ── */
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
@@ -933,7 +1037,7 @@
     {
       "type": "color",
       "id": "primary_color",
-      "label": "Primary / button background",
+      "label": "Primary / button color",
       "default": "#111111"
     },
     {
@@ -945,7 +1049,7 @@
     {
       "type": "color",
       "id": "border_color",
-      "label": "Border / divider color",
+      "label": "Border color",
       "default": "#e5e5e5"
     },
     {
@@ -989,7 +1093,7 @@
     {
       "type": "text",
       "id": "adding_text",
-      "label": "Adding to cart text",
+      "label": "Adding text",
       "default": "Adding…"
     },
     {
@@ -1001,20 +1105,20 @@
     {
       "type": "text",
       "id": "unavailable_text",
-      "label": "Unavailable combination text",
+      "label": "Unavailable text",
       "default": "Unavailable"
     },
     {
       "type": "text",
       "id": "notification_text",
       "label": "Notification message",
-      "default": "Added to your cart!"
+      "default": "Added!"
     },
     {
       "type": "text",
       "id": "view_cart_text",
-      "label": "View cart link text",
-      "default": "View Cart →"
+      "label": "View cart button text",
+      "default": "View Your Cart"
     },
     {
       "type": "range",
@@ -1032,10 +1136,6 @@
       "name": "Feature List",
       "limit": 1,
       "settings": [
-        {
-          "type": "header",
-          "content": "Features (up to 6)"
-        },
         { "type": "text", "id": "feature_1", "label": "Feature 1", "default": "Free shipping over $50" },
         { "type": "text", "id": "feature_2", "label": "Feature 2", "default": "30-day hassle-free returns" },
         { "type": "text", "id": "feature_3", "label": "Feature 3", "default": "2-year warranty included" },
