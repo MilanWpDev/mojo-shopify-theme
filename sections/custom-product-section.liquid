@@ -594,7 +594,7 @@
 
   /* ── Money formatter ── */
   function formatMoney(cents) {
-    var fmt = (window.Shopify && window.Shopify.money_format) || '${{ "{{amount}}" }}';
+    var fmt = (window.Shopify && window.Shopify.money_format) || '${{amount}}';
     var amount = (cents / 100).toFixed(2);
     return fmt
       .replace(/\{\{\s*amount\s*\}\}/g, amount)
