@@ -177,28 +177,51 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 16px;
+    padding: 10px 16px;
     border: 1.5px solid #ddd;
     border-radius: 100px;
     background: white;
     cursor: pointer;
     font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+    color: #333;
+  }
+  /* Radio krugic — neaktivan */
+  .custom-product-section__chip-dot {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid #ccc;
+    background: white;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
     transition: all 0.2s;
   }
-  .custom-product-section__chip-dot {
-    width: 10px;
-    height: 10px;
+  .custom-product-section__chip-dot::after {
+    content: '';
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-    background: #888;
-    flex-shrink: 0;
+    background: transparent;
+    transition: background 0.2s;
   }
+  /* Aktivan chip — background = boja flavora */
   .custom-product-section__chip--active {
-    border-color: {{ section.settings.accent_color | default: '#5B4FE9' }};
-    background: {{ section.settings.accent_color | default: '#5B4FE9' }};
+    border-color: var(--chip-color, #888);
+    background: var(--chip-color, #888);
     color: white;
   }
+  /* Aktivan radio krugic — beli outline, bela tacka unutra */
   .custom-product-section__chip--active .custom-product-section__chip-dot {
-    border: 2px solid white;
+    border-color: white;
+    background: transparent;
+  }
+  .custom-product-section__chip--active .custom-product-section__chip-dot::after {
+    background: white;
   }
   .custom-product-section__dropdown {
     display: none;
@@ -383,12 +406,10 @@
     display: block;
   }
 
-  /* ── Reviews — unutar info kolone, overflow hidden da ne izlazi ── */
+  /* ── Reviews — unutar info kolone ── */
   .custom-product-section__reviews {
     margin-top: 24px;
     position: relative;
-    /* Probijamo desnu ivicu info kolone da slider ide do ruba */
-    overflow: visible;
   }
   .custom-product-section__reviews-header {
     display: flex;
@@ -416,7 +437,6 @@
     opacity: 0.35;
     cursor: default;
   }
-  /* Clip slider da ne izlazi iz info kolone */
   .custom-product-section__reviews-clip {
     overflow: hidden;
     width: 100%;
@@ -649,7 +669,7 @@
         {%- endif -%}
       {%- endfor -%}
 
-      <!-- ── Reviews — unutar info kolone ── -->
+      <!-- Reviews unutar info kolone -->
       {%- if section.settings.show_reviews -%}
         <div class="custom-product-section__reviews">
           <div class="custom-product-section__reviews-header">
@@ -701,17 +721,19 @@
 
   var variantColors = {
     'Mighty Mango':      '#f5a623',
-    'Pineapple':         '#f0d000',
+    'Pineapple':         '#c8d400',
     'Black Currant':     '#6b2d8b',
     'Tropical':          '#00c9b1',
     'Blueberry Vanilla': '#7b5ea7',
     'Chocolate':         '#5c3d1e'
   };
 
+  /* Set chip color CSS var + neaktivan dot boja */
   sectionEl.querySelectorAll('.custom-product-section__chip').forEach(function(chip) {
-    var dot   = chip.querySelector('.custom-product-section__chip-dot');
     var color = variantColors[chip.dataset.value];
-    if (dot && color) dot.style.background = color;
+    if (color) {
+      chip.style.setProperty('--chip-color', color);
+    }
   });
 
   var selectedOptions = product.variants[0].options.slice();
@@ -778,6 +800,13 @@
 
     var labelText = sectionEl.querySelector('[data-cps="variant-label-text"]');
     if (labelText) labelText.textContent = variant.title;
+
+    /* Update meta dot color */
+    var metaDot = sectionEl.querySelector('[data-cps="dot"]');
+    if (metaDot) {
+      var col = variantColors[variant.title] || variantColors[variant.option1] || '#f5a623';
+      metaDot.style.background = col;
+    }
 
     if (variant.featured_image) {
       var imgId = variant.featured_image.id;
