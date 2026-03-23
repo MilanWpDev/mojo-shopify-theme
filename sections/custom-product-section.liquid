@@ -37,7 +37,7 @@
     border-radius: 16px;
     border: 1px solid #BBB;
     overflow: hidden;
-    background: #f8f8f8;
+    background: white;
     width: 100%;
     height: 500px;
     margin-bottom: 16px;
@@ -50,6 +50,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    background: white;
   }
   .custom-product-section__main-image {
     width: 100%;
@@ -70,9 +71,8 @@
   .custom-product-section__thumb-swiper .swiper-slide {
     flex-shrink: 0;
     width: 99px !important;
-    height: 99px;
+    height: 99px !important;
     padding: 0;
-    position: relative;
     border-radius: 8px;
     border: 1px solid #EBEBEB;
     background: #FEFEFE;
@@ -510,7 +510,7 @@
     }
     .custom-product-section__thumb-swiper .swiper-slide {
       width: 50.381px !important;
-      height: 50.381px;
+      height: 50.381px !important;
       border-radius: 4.071px;
     }
     .custom-product-section__chips { display: none; }
@@ -789,13 +789,13 @@
 
   var thumbEl = document.getElementById('thumbSwiper-' + sectionId);
   var mainEl  = document.getElementById('mainSwiper-' + sectionId);
-  var totalImages = {{ current_product.images.size }};
 
   var thumbSwiper = new Swiper(thumbEl, {
     spaceBetween: 8,
     slidesPerView: 'auto',
     watchSlidesProgress: true,
-    freeMode: true
+    freeMode: true,
+    allowTouchMove: true
   });
 
   var mainSwiper = new Swiper(mainEl, {
