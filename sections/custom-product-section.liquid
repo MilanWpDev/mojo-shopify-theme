@@ -39,8 +39,7 @@
     overflow: hidden;
     background: white;
     width: 100%;
-    aspect-ratio: 772 / 773;
-    height: auto;
+    height: 773px;
     margin-bottom: 16px;
   }
   .custom-product-section__main-swiper .swiper-wrapper {
@@ -52,6 +51,7 @@
     justify-content: center;
     background: white;
     height: 100%;
+    overflow: hidden;
   }
   .custom-product-section__main-image {
     width: auto;
@@ -509,7 +509,6 @@
       gap: 24px;
     }
     .custom-product-section__main-swiper {
-      aspect-ratio: unset;
       height: 380px;
       border-radius: 7.109px;
       border: 0.444px solid #BBB;
@@ -524,6 +523,7 @@
       align-items: center;
       justify-content: center;
       background: white;
+      overflow: hidden;
     }
     .custom-product-section__main-image {
       width: auto;
@@ -765,7 +765,7 @@
                     <div class="swiper-slide">
                       <div class="custom-product-section__review-card">
                         <div class="custom-product-section__review-stars">★★★★★</div>
-                        <p class="custom-product-section__review-text">{{ settings[rev_text] }}</p>
+                        <p class="custom-product-section__review-text">{{ section.settings[rev_text] }}</p>
                         <div class="custom-product-section__review-author">
                           {{ section.settings[rev_author] }}
                           <span>✓ Verified customer</span>
