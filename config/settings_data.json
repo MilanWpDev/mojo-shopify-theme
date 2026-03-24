@@ -394,60 +394,6 @@
       },
       "custom_product_section_YdMTXe": {
         "type": "custom-product-section",
-        "blocks": {
-          "review_86e4ha": {
-            "type": "review",
-            "settings": {
-              "stars": "★★★★★",
-              "text": "I love this product! Noticeable increased energy and post workout pain levels much lower.",
-              "author": "Joanette D.",
-              "subtitle": "✓ Verified customer"
-            }
-          },
-          "review_hH8QAe": {
-            "type": "review",
-            "settings": {
-              "stars": "★★★★★",
-              "text": "I love this product! Noticeable increased energy and post workout pain levels much lower.",
-              "author": "Joanette D.",
-              "subtitle": "✓ Verified customer"
-            }
-          },
-          "review_gwx68X": {
-            "type": "review",
-            "settings": {
-              "stars": "★★★★★",
-              "text": "I love this product! Noticeable increased energy and post workout pain levels much lower.",
-              "author": "Joanette D.",
-              "subtitle": "✓ Verified customer"
-            }
-          },
-          "review_DMHYt3": {
-            "type": "review",
-            "settings": {
-              "stars": "★★★★★",
-              "text": "I love this product! Noticeable increased energy and post workout pain levels much lower.",
-              "author": "Joanette D.",
-              "subtitle": "✓ Verified customer"
-            }
-          },
-          "review_L9dqMw": {
-            "type": "review",
-            "settings": {
-              "stars": "★★★★★",
-              "text": "I love this product! Noticeable increased energy and post workout pain levels much lower.",
-              "author": "Joanette D.",
-              "subtitle": "✓ Verified customer"
-            }
-          }
-        },
-        "block_order": [
-          "review_86e4ha",
-          "review_hH8QAe",
-          "review_gwx68X",
-          "review_DMHYt3",
-          "review_L9dqMw"
-        ],
         "name": "Custom Product Section",
         "settings": {
           "product": "longevity-gummies",

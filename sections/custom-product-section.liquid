@@ -1,11 +1,3 @@
-{% comment %} custom-product-section.liquid {% endcomment %}
-
-{%- assign current_product = all_products[section.settings.product] -%}
-{%- assign first_variant = current_product.selected_or_first_available_variant -%}
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
 <style>
   .custom-product-section {
     max-width: {{ section.settings.max_width | default: 1440 }}px;
@@ -17,30 +9,32 @@
     font-family: inherit;
     box-sizing: border-box;
   }
+
   .custom-product-section__empty {
     text-align: center;
     padding: 60px;
     background: #f5f5f5;
     border-radius: 12px;
   }
+
   .custom-product-section__inner {
     display: grid;
     grid-template-columns: minmax(0, 770px) minmax(0, 500px);
     gap: 56px;
     align-items: start;
   }
+
   .custom-product-section__gallery,
   .custom-product-section__info {
     min-width: 0;
     display: block;
   }
 
-  /* ── Gallery ── */
   .custom-product-section__main-swiper {
     border-radius: 16px;
-    border: 1px solid #BBB;
+    border: 1px solid #bbb;
     overflow: hidden;
-    background: white;
+    background: #fff;
     width: 100%;
     height: 770px;
     margin-bottom: 16px;
@@ -48,14 +42,16 @@
     -webkit-transform: translateZ(0);
     position: relative;
   }
+
   .custom-product-section__main-swiper .swiper-wrapper {
     height: 100%;
   }
+
   .custom-product-section__main-swiper .swiper-slide {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: white;
+    background: #fff;
     height: 100%;
     overflow: hidden;
     transform: translateZ(0);
@@ -63,6 +59,7 @@
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
   }
+
   .custom-product-section__main-image {
     width: auto;
     height: 85%;
@@ -72,6 +69,7 @@
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
   }
+
   .custom-product-section__main-swiper .swiper-button-prev,
   .custom-product-section__main-swiper .swiper-button-next {
     width: 48px;
@@ -88,10 +86,12 @@
     border: none;
     transition: background 0.2s;
   }
+
   .custom-product-section__main-swiper .swiper-button-prev::after,
   .custom-product-section__main-swiper .swiper-button-next::after {
     display: none;
   }
+
   .custom-product-section__main-swiper .swiper-button-prev .cps-arrow-icon,
   .custom-product-section__main-swiper .swiper-button-next .cps-arrow-icon {
     width: 19.2px;
@@ -99,27 +99,31 @@
     display: block;
     flex-shrink: 0;
   }
+
   .custom-product-section__main-swiper .swiper-button-prev .cps-arrow-icon path,
   .custom-product-section__main-swiper .swiper-button-next .cps-arrow-icon path {
-    fill: white;
+    fill: #fff;
   }
+
   .custom-product-section__main-swiper .swiper-button-next .cps-arrow-icon {
     transform: rotate(180deg);
   }
+
   .custom-product-section__main-swiper .swiper-button-prev.swiper-button-disabled,
   .custom-product-section__main-swiper .swiper-button-next.swiper-button-disabled {
-    background: #BBB;
+    background: #bbb;
     opacity: 1;
   }
+
   .custom-product-section__main-swiper .swiper-button-prev.swiper-button-disabled .cps-arrow-icon path,
   .custom-product-section__main-swiper .swiper-button-next.swiper-button-disabled .cps-arrow-icon path {
     fill: #787878;
   }
 
-  /* Thumbnails */
   .custom-product-section__thumb-swiper {
     width: 100%;
   }
+
   .custom-product-section__thumb-swiper .swiper-wrapper {
     display: flex;
     flex-wrap: nowrap;
@@ -128,6 +132,7 @@
     transform: none;
     width: 100%;
   }
+
   .custom-product-section__thumb-swiper .swiper-slide {
     flex: 0 0 99px;
     width: 99px;
@@ -135,8 +140,8 @@
     min-width: 99px;
     max-width: 99px;
     border-radius: 8px;
-    border: 1px solid #EBEBEB;
-    background: #FEFEFE;
+    border: 1px solid #ebebeb;
+    background: #fefefe;
     overflow: hidden;
     cursor: pointer;
     opacity: 0.5;
@@ -147,18 +152,19 @@
     justify-content: center;
     padding: 8px;
   }
+
   .custom-product-section__thumb-swiper .swiper-slide img {
     width: 100%;
     height: 100%;
     object-fit: contain;
     display: block;
   }
+
   .custom-product-section__thumb-swiper .swiper-slide-thumb-active {
     border: 1px solid #373737;
     opacity: 1;
   }
 
-  /* ── Info ── */
   .custom-product-section__title {
     font-size: 32px;
     font-weight: 400;
@@ -176,6 +182,7 @@
     margin-bottom: 12px;
     flex-wrap: wrap;
   }
+
   .custom-product-section__type {
     font-size: 16px;
     font-weight: 400;
@@ -186,13 +193,15 @@
     margin: 0;
     padding: 0;
   }
+
   .custom-product-section__meta-separator {
     width: 1px;
     height: 14px;
-    background: #DDD;
+    background: #ddd;
     flex-shrink: 0;
     display: block;
   }
+
   .custom-product-section__variant-label {
     display: flex;
     align-items: center;
@@ -203,6 +212,7 @@
     letter-spacing: -0.48px;
     color: #373737;
   }
+
   .custom-product-section__dot {
     width: 10px;
     height: 10px;
@@ -212,7 +222,6 @@
     flex-shrink: 0;
   }
 
-  /* ── Badges ── */
   .custom-product-section__badges {
     display: flex;
     flex-direction: row;
@@ -221,6 +230,7 @@
     margin-bottom: 16px;
     flex-wrap: wrap;
   }
+
   .custom-product-section__badge {
     display: flex;
     align-items: center;
@@ -231,11 +241,11 @@
     letter-spacing: -0.48px;
     color: #373737;
   }
+
   .custom-product-section__badge svg {
     flex-shrink: 0;
   }
 
-  /* ── Description ── */
   .custom-product-section__description {
     font-size: 16px;
     font-weight: 400;
@@ -246,8 +256,10 @@
     margin-bottom: 32px;
   }
 
-  /* ── Variants ── */
-  .custom-product-section__variants { margin-bottom: 0; }
+  .custom-product-section__variants {
+    margin-bottom: 0;
+  }
+
   .custom-product-section__variants-label {
     font-size: 16px;
     font-weight: 600;
@@ -258,12 +270,14 @@
     margin-top: 0;
     display: block;
   }
+
   .custom-product-section__chips {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
     margin-bottom: 16px;
   }
+
   .custom-product-section__chip {
     display: flex;
     align-items: center;
@@ -271,19 +285,20 @@
     padding: 10px 16px;
     border: 1.5px solid #ddd;
     border-radius: 100px;
-    background: white;
+    background: #fff;
     cursor: pointer;
     font-size: 14px;
     font-weight: 500;
     transition: all 0.2s;
     color: #333;
   }
+
   .custom-product-section__chip-dot {
     width: 18px;
     height: 18px;
     border-radius: 50%;
     border: 1.5px solid #ccc;
-    background: white;
+    background: #fff;
     flex-shrink: 0;
     display: flex;
     align-items: center;
@@ -291,6 +306,7 @@
     position: relative;
     transition: all 0.2s;
   }
+
   .custom-product-section__chip-dot::after {
     content: '';
     width: 8px;
@@ -299,41 +315,48 @@
     background: transparent;
     transition: background 0.2s;
   }
+
   .custom-product-section__chip--active {
     border-color: var(--chip-color, #888);
     background: var(--chip-color, #888);
-    color: white;
+    color: #fff;
   }
+
   .custom-product-section__chip--active .custom-product-section__chip-dot {
-    border-color: white;
+    border-color: #fff;
     background: transparent;
   }
+
   .custom-product-section__chip--active .custom-product-section__chip-dot::after {
-    background: white;
+    background: #fff;
   }
+
   .custom-product-section__chip--active[data-value="Pineapple"],
   .custom-product-section__chip--active[data-value="Tropical"] {
     color: #373737;
   }
+
   .custom-product-section__chip--active[data-value="Pineapple"] .custom-product-section__chip-dot,
   .custom-product-section__chip--active[data-value="Tropical"] .custom-product-section__chip-dot {
     border-color: #373737;
   }
+
   .custom-product-section__chip--active[data-value="Pineapple"] .custom-product-section__chip-dot::after,
   .custom-product-section__chip--active[data-value="Tropical"] .custom-product-section__chip-dot::after {
     background: #373737;
   }
 
-  /* ── Dropdown ── */
   .custom-product-section__dropdown {
     display: none;
     margin-bottom: 32px;
   }
+
   .custom-product-section__dropdown-wrapper {
     position: relative;
     display: flex;
     align-items: center;
   }
+
   .custom-product-section__dropdown-dot {
     position: absolute;
     left: 16px;
@@ -345,11 +368,12 @@
     z-index: 1;
     pointer-events: none;
   }
+
   .custom-product-section__dropdown-select {
     width: 100%;
     height: 54px;
     padding: 16px 40px 16px 34px;
-    border: 1px solid #B8B8B8;
+    border: 1px solid #b8b8b8;
     border-radius: 8px;
     font-size: 16px;
     font-weight: 400;
@@ -358,31 +382,32 @@
     color: #373737;
     appearance: none;
     -webkit-appearance: none;
-    background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='1.5' fill='none'/%3E%3C/svg%3E") no-repeat right 16px center;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='1.5' fill='none'/%3E%3C/svg%3E") no-repeat right 16px center;
     cursor: pointer;
     box-sizing: border-box;
   }
 
-  /* ── ATC Row ── */
   .custom-product-section__atc-row {
     display: flex;
     gap: 8px;
     align-items: center;
     margin-bottom: 32px;
   }
+
   .custom-product-section__quantity {
     display: flex;
     align-items: center;
     justify-content: center;
     height: 48px;
     padding: 12px 16px;
-    border: 1px solid #B8B8B8;
+    border: 1px solid #b8b8b8;
     border-radius: 8px;
-    background: white;
+    background: #fff;
     gap: 8px;
     flex-shrink: 0;
     box-sizing: border-box;
   }
+
   .custom-product-section__qty-btn {
     width: 24px;
     height: 24px;
@@ -399,7 +424,11 @@
     padding: 0;
     flex-shrink: 0;
   }
-  .custom-product-section__qty-btn:hover { opacity: 0.6; }
+
+  .custom-product-section__qty-btn:hover {
+    opacity: 0.6;
+  }
+
   .custom-product-section .custom-product-section__qty-input {
     width: 32px;
     min-width: 32px;
@@ -420,23 +449,26 @@
     -webkit-appearance: none;
     appearance: none;
   }
+
   .custom-product-section .custom-product-section__qty-input::-webkit-inner-spin-button,
   .custom-product-section .custom-product-section__qty-input::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }
+
   .custom-product-section .custom-product-section__qty-input:focus {
     outline: none;
     box-shadow: none;
     border: none;
     color: #373737;
   }
+
   .custom-product-section__atc-btn {
     flex: 1;
     height: 48px;
     padding: 21px 42px;
     background: {{ section.settings.accent_color | default: '#5B4FE9' }};
-    color: white;
+    color: #fff;
     border: none;
     border-radius: 8px;
     font-size: 16px;
@@ -451,10 +483,16 @@
     gap: 8px;
     box-sizing: border-box;
   }
-  .custom-product-section__atc-btn:hover { opacity: 0.9; }
-  .custom-product-section__atc-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  /* ── Guarantee ── */
+  .custom-product-section__atc-btn:hover {
+    opacity: 0.9;
+  }
+
+  .custom-product-section__atc-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
   .custom-product-section__guarantee {
     display: flex;
     align-items: center;
@@ -467,24 +505,32 @@
     color: #373737;
     margin-bottom: 32px;
   }
+
   .custom-product-section__guarantee svg {
     flex-shrink: 0;
   }
 
-  /* ── Notification ── */
   .custom-product-section__notification {
-    background: white;
+    background: #fff;
     border: 1px solid #e5e5e5;
     border-radius: 12px;
     overflow: hidden;
     margin-bottom: 20px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     animation: cpsSlideIn 0.3s ease;
   }
+
   @keyframes cpsSlideIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
+
   .custom-product-section__notification-header {
     background: #e8f5e9;
     padding: 10px 16px;
@@ -495,12 +541,14 @@
     font-size: 14px;
     color: #2e7d32;
   }
+
   .custom-product-section__notification-body {
     display: flex;
     align-items: center;
     gap: 12px;
     padding: 12px 16px;
   }
+
   .custom-product-section__notification-img {
     width: 60px;
     height: 60px;
@@ -509,6 +557,7 @@
     flex-shrink: 0;
     background: #f5f5f5;
   }
+
   .custom-product-section__notification-details {
     display: flex;
     flex-direction: column;
@@ -516,15 +565,18 @@
     font-size: 14px;
     font-weight: 600;
   }
+
   .custom-product-section__notification-variant {
     font-size: 13px;
     color: #888;
     font-weight: 400;
   }
+
   .custom-product-section__notification-variant::before {
     content: '● ';
     color: #f5a623;
   }
+
   .custom-product-section__notification-cart-btn {
     display: block;
     text-align: center;
@@ -537,14 +589,20 @@
     letter-spacing: 0.5px;
     transition: background 0.2s;
   }
-  .custom-product-section__notification-cart-btn:hover { background: #ebe5ff; }
 
-  /* ── Accordion ── */
-  .custom-product-section__accordion { border-top: 1px solid #eee; }
+  .custom-product-section__notification-cart-btn:hover {
+    background: #ebe5ff;
+  }
+
+  .custom-product-section__accordion {
+    border-top: 1px solid #eee;
+  }
+
   .custom-product-section__accordion:last-of-type {
     border-bottom: 1px solid #eee;
     margin-bottom: 24px;
   }
+
   .custom-product-section__accordion-trigger {
     width: 100%;
     display: flex;
@@ -561,12 +619,14 @@
     cursor: pointer;
     text-align: left;
   }
+
   .custom-product-section__accordion-icon {
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
   }
+
   .custom-product-section__accordion-content {
     display: none;
     padding-bottom: 16px;
@@ -576,21 +636,23 @@
     letter-spacing: -0.48px;
     color: #373737;
   }
+
   .custom-product-section__accordion--open .custom-product-section__accordion-content {
     display: block;
   }
 
-  /* ── Reviews ── */
   .custom-product-section__reviews {
     margin-top: 24px;
     position: relative;
   }
+
   .custom-product-section__reviews-header {
     display: flex;
     justify-content: flex-end;
     gap: 8px;
     margin-bottom: 16px;
   }
+
   .custom-product-section__reviews-nav {
     width: 48px;
     height: 48px;
@@ -608,54 +670,73 @@
     padding: 14.4px 19.2px;
     box-sizing: border-box;
   }
+
   .custom-product-section__reviews-nav svg {
     width: 19.2px;
     height: 19.2px;
     display: block;
     flex-shrink: 0;
   }
+
   .custom-product-section__reviews-nav svg path {
-    fill: white;
+    fill: #fff;
   }
+
   .custom-product-section__reviews-nav:last-child svg {
     transform: rotate(180deg);
   }
+
   .custom-product-section__reviews-nav.swiper-button-disabled {
-    background: #BBB;
+    background: #bbb;
     opacity: 1;
     cursor: default;
   }
+
   .custom-product-section__reviews-nav.swiper-button-disabled svg path {
     fill: #787878;
   }
+
   .custom-product-section__reviews-clip {
     overflow: hidden;
     width: 100%;
   }
+
   .custom-product-section__reviews-swiper .swiper-slide {
     width: 320px;
     height: auto;
     box-sizing: border-box;
   }
+
+  .custom-product-section__reviews-single {
+    width: 100%;
+  }
+
+  .custom-product-section__reviews-single .custom-product-section__review-card {
+    max-width: 320px;
+  }
+
   .custom-product-section__review-card {
-    background: white;
+    background: #fff;
     border: 1px solid #eee;
     border-radius: 12px;
     padding: 24px;
     height: 100%;
     box-sizing: border-box;
   }
+
   .custom-product-section__review-stars {
     color: #f5a623;
     font-size: 18px;
     margin-bottom: 12px;
   }
+
   .custom-product-section__review-text {
     font-size: 14px;
     line-height: 1.6;
     color: #333;
     margin-bottom: 16px;
   }
+
   .custom-product-section__review-author {
     font-weight: 600;
     font-size: 14px;
@@ -663,13 +744,13 @@
     flex-direction: column;
     gap: 2px;
   }
+
   .custom-product-section__review-author span {
     font-weight: 400;
     font-size: 12px;
     color: #888;
   }
 
-  /* ── Responsive ── */
   @media (max-width: 768px) {
     .custom-product-section {
       padding:
@@ -677,53 +758,63 @@
         {{ section.settings.section_padding_horizontal_mobile | default: 16 }}px
         {{ section.settings.section_padding_bottom_mobile | default: 48 }}px;
     }
+
     .custom-product-section__inner {
       grid-template-columns: 1fr;
       gap: 24px;
     }
+
     .custom-product-section__main-swiper {
       height: 380px;
       border-radius: 7.109px;
-      border: 0.444px solid #BBB;
+      border: 0.444px solid #bbb;
       margin-bottom: 7px;
     }
+
     .custom-product-section__main-swiper .swiper-wrapper {
       height: 380px;
     }
+
     .custom-product-section__main-swiper .swiper-slide {
       height: 380px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: white;
+      background: #fff;
       overflow: hidden;
     }
+
     .custom-product-section__main-image {
       width: auto;
       height: 85%;
       max-width: 85%;
       object-fit: contain;
     }
+
     .custom-product-section__main-swiper .swiper-button-prev,
     .custom-product-section__main-swiper .swiper-button-next {
       width: 32px;
       height: 32px;
       margin-top: -16px;
     }
+
     .custom-product-section__main-swiper .swiper-button-prev .cps-arrow-icon,
     .custom-product-section__main-swiper .swiper-button-next .cps-arrow-icon {
       width: 14px;
       height: 14px;
     }
+
     .custom-product-section__reviews-nav {
       width: 32px;
       height: 32px;
       padding: 9.6px 12.8px;
     }
+
     .custom-product-section__reviews-nav svg {
       width: 14px;
       height: 14px;
     }
+
     .custom-product-section__thumb-swiper .swiper-slide {
       flex: 0 0 calc((100% - 40px) / 6);
       width: calc((100% - 40px) / 6);
@@ -734,47 +825,63 @@
       border-radius: 4.071px;
       padding: 6px;
     }
+
     .custom-product-section__thumb-swiper .swiper-slide img {
       width: 100%;
       height: 100%;
       object-fit: contain;
     }
+
     .custom-product-section__thumb-swiper .swiper-wrapper {
       justify-content: center;
     }
+
     .custom-product-section__meta {
       flex-direction: column;
       align-items: flex-start;
       gap: 4px;
     }
+
     .custom-product-section__meta-separator {
       display: none;
     }
+
     .custom-product-section__badges {
       flex-direction: column;
       align-items: flex-start;
       gap: 12px;
     }
-    .custom-product-section__chips { display: none; }
-    .custom-product-section__dropdown { display: block; }
+
+    .custom-product-section__chips {
+      display: none;
+    }
+
+    .custom-product-section__dropdown {
+      display: block;
+    }
+
     .custom-product-section__atc-row {
       flex-wrap: nowrap;
       gap: 8px;
     }
+
     .custom-product-section__quantity {
       flex-shrink: 0;
       padding: 12px 10px;
       gap: 4px;
     }
+
     .custom-product-section__qty-btn {
       width: 20px;
       font-size: 16px;
     }
+
     .custom-product-section .custom-product-section__qty-input {
       width: 24px;
       min-width: 24px;
       font-size: 15px;
     }
+
     .custom-product-section__atc-btn {
       flex: 1 1 0;
       min-width: 0;
@@ -783,11 +890,30 @@
       letter-spacing: 0.2px;
       overflow: hidden;
     }
+
     .custom-product-section__reviews-swiper .swiper-slide {
       width: 314px;
     }
+
+    .custom-product-section__reviews-single .custom-product-section__review-card {
+      max-width: 100%;
+    }
   }
 </style>
+
+{% comment %} custom-product-section.liquid {% endcomment %}
+
+{%- assign current_product = all_products[section.settings.product] -%}
+{%- assign first_variant = current_product.selected_or_first_available_variant -%}
+{%- assign review_count = 0 -%}
+{%- for block in section.blocks -%}
+  {%- if block.type == 'review' -%}
+    {%- assign review_count = review_count | plus: 1 -%}
+  {%- endif -%}
+{%- endfor -%}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
 {%- capture arrow_svg -%}
 <svg class="cps-arrow-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -806,266 +932,281 @@
     </div>
   {%- else -%}
 
-  <script>
-    window.cpsProduct_{{ section.id }} = {{ current_product | json }};
-  </script>
+    <script>
+      window.cpsProduct_{{ section.id }} = {{ current_product | json }};
+    </script>
 
-  <div class="custom-product-section__inner">
-
-    <div class="custom-product-section__gallery">
-      <div class="swiper custom-product-section__main-swiper" id="mainSwiper-{{ section.id }}">
-        <div class="swiper-wrapper">
-          {%- for image in current_product.images -%}
-            <div class="swiper-slide">
-              <img
-                src="{{ image | image_url: width: 800 }}"
-                alt="{{ image.alt | escape }}"
-                class="custom-product-section__main-image"
-                data-image-id="{{ image.id }}"
-                data-image-alt="{{ image.alt | escape | downcase }}"
-              >
-            </div>
-          {%- endfor -%}
-        </div>
-        <div class="swiper-button-prev">{{ arrow_svg }}</div>
-        <div class="swiper-button-next">{{ arrow_svg }}</div>
-      </div>
-
-      <div class="custom-product-section__thumb-swiper" id="thumbSwiper-{{ section.id }}">
-        <div class="swiper-wrapper">
-          {%- for image in current_product.images -%}
-            <div class="swiper-slide">
-              <img src="{{ image | image_url: width: 120 }}" alt="{{ image.alt | escape }}">
-            </div>
-          {%- endfor -%}
-        </div>
-      </div>
-    </div>
-
-    <div class="custom-product-section__info">
-
-      <h1 class="custom-product-section__title">{{ current_product.title }}</h1>
-
-      <div class="custom-product-section__meta">
-        {%- if section.settings.show_product_type and current_product.type != blank -%}
-          <span class="custom-product-section__type">{{ current_product.type }}</span>
-          <span class="custom-product-section__meta-separator"></span>
-        {%- endif -%}
-        <span class="custom-product-section__variant-label">
-          <span class="custom-product-section__dot" data-cps="dot"></span>
-          <span data-cps="variant-label-text">{{ first_variant.title }}</span>
-        </span>
-      </div>
-
-      {%- if section.settings.show_badges -%}
-        <div class="custom-product-section__badges">
-          {%- if section.settings.badge_1_text != blank -%}
-            <div class="custom-product-section__badge">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M4.50977 2.89999H11.4404C11.6005 2.90021 11.7318 3.02616 11.7393 3.18613L12.2129 13.5865C12.2206 13.7573 12.084 13.9 11.9131 13.9H4.03613C3.86529 13.8998 3.72866 13.7572 3.73633 13.5865L4.20996 3.18613C4.21737 3.02602 4.34946 2.89999 4.50977 2.89999Z" stroke="#373737"/>
-                <line x1="4" y1="5.10001" x2="12" y2="5.10001" stroke="#373737"/>
-              </svg>
-              <span>{{ section.settings.badge_1_text }}</span>
-            </div>
-          {%- endif -%}
-
-          {%- if section.settings.badge_2_text != blank -%}
-            <div class="custom-product-section__badge">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M10.1004 13.6999C10.1004 13.6999 6.19968 14 4.09932 11.5996C1.99896 9.19918 1.99896 1.99794 1.99896 1.99794C1.99896 1.99794 9.2002 1.69789 11.6006 3.4982C14.001 5.29851 13.4009 10.3994 13.4009 10.3994" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M14.001 14C14.001 14 10.6466 11.465 8.60006 9.19917C6.5535 6.93333 5.59955 4.69839 5.59955 4.69839" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M8.6001 9.19916L8.90015 5.29849" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M8.60006 9.19916L5.59955 8.89911" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              <span>{{ section.settings.badge_2_text }}</span>
-            </div>
-          {%- endif -%}
-        </div>
-      {%- endif -%}
-
-      <div class="custom-product-section__description" data-cps="description">
-        {%- if first_variant.metafields.custom.description != blank -%}
-          {{ first_variant.metafields.custom.description | metafield_tag }}
-        {%- else -%}
-          {{ current_product.description }}
-        {%- endif -%}
-      </div>
-
-      {%- unless current_product.has_only_default_variant -%}
-        <div class="custom-product-section__variants">
-          <span class="custom-product-section__variants-label">
-            {{ section.settings.flavor_label | default: 'Choose your flavor:' }}
-          </span>
-          {%- for option in current_product.options_with_values -%}
-            {%- assign opt_idx = forloop.index0 -%}
-            <div class="custom-product-section__chips" data-option-index="{{ opt_idx }}">
-              {%- for value in option.values -%}
-                {%- assign matched_variant = nil -%}
-                {%- for variant in current_product.variants -%}
-                  {%- if variant.option1 == value -%}
-                    {%- assign matched_variant = variant -%}
-                    {%- break -%}
-                  {%- endif -%}
-                {%- endfor -%}
-                <button
-                  class="custom-product-section__chip{% if value == option.selected_value %} custom-product-section__chip--active{% endif %}"
-                  data-value="{{ value }}"
-                  data-option-index="{{ opt_idx }}"
-                  data-variant-description="{% if matched_variant and matched_variant.metafields.custom.description != blank %}{{ matched_variant.metafields.custom.description | metafield_tag | escape }}{% else %}{{ current_product.description | escape }}{% endif %}"
-                  type="button"
+    <div class="custom-product-section__inner">
+      <div class="custom-product-section__gallery">
+        <div class="swiper custom-product-section__main-swiper" id="mainSwiper-{{ section.id }}">
+          <div class="swiper-wrapper">
+            {%- for image in current_product.images -%}
+              <div class="swiper-slide">
+                <img
+                  src="{{ image | image_url: width: 800 }}"
+                  alt="{{ image.alt | escape }}"
+                  class="custom-product-section__main-image"
+                  data-image-id="{{ image.id }}"
+                  data-image-alt="{{ image.alt | escape | downcase }}"
                 >
-                  <span class="custom-product-section__chip-dot"></span>
-                  {{ value }}
-                </button>
-              {%- endfor -%}
-            </div>
-            <div class="custom-product-section__dropdown" data-option-index="{{ opt_idx }}">
-              <div class="custom-product-section__dropdown-wrapper">
-                <span class="custom-product-section__dropdown-dot" data-cps="dropdown-dot"></span>
-                <select class="custom-product-section__dropdown-select" data-option-index="{{ opt_idx }}">
-                  {%- for value in option.values -%}
-                    {%- assign matched_variant = nil -%}
-                    {%- for variant in current_product.variants -%}
-                      {%- if variant.option1 == value -%}
-                        {%- assign matched_variant = variant -%}
-                        {%- break -%}
-                      {%- endif -%}
-                    {%- endfor -%}
-                    <option
-                      value="{{ value }}"
-                      data-variant-description="{% if matched_variant and matched_variant.metafields.custom.description != blank %}{{ matched_variant.metafields.custom.description | metafield_tag | escape }}{% else %}{{ current_product.description | escape }}{% endif %}"
-                      {% if value == option.selected_value %}selected{% endif %}
-                    >
-                      {{ value }}
-                    </option>
+              </div>
+            {%- endfor -%}
+          </div>
+          <div class="swiper-button-prev">{{ arrow_svg }}</div>
+          <div class="swiper-button-next">{{ arrow_svg }}</div>
+        </div>
+
+        <div class="custom-product-section__thumb-swiper" id="thumbSwiper-{{ section.id }}">
+          <div class="swiper-wrapper">
+            {%- for image in current_product.images -%}
+              <div class="swiper-slide">
+                <img src="{{ image | image_url: width: 120 }}" alt="{{ image.alt | escape }}">
+              </div>
+            {%- endfor -%}
+          </div>
+        </div>
+      </div>
+
+      <div class="custom-product-section__info">
+        <h1 class="custom-product-section__title">{{ current_product.title }}</h1>
+
+        <div class="custom-product-section__meta">
+          {%- if section.settings.show_product_type and current_product.type != blank -%}
+            <span class="custom-product-section__type">{{ current_product.type }}</span>
+            <span class="custom-product-section__meta-separator"></span>
+          {%- endif -%}
+          <span class="custom-product-section__variant-label">
+            <span class="custom-product-section__dot" data-cps="dot"></span>
+            <span data-cps="variant-label-text">{{ first_variant.title }}</span>
+          </span>
+        </div>
+
+        {%- if section.settings.show_badges -%}
+          <div class="custom-product-section__badges">
+            {%- if section.settings.badge_1_text != blank -%}
+              <div class="custom-product-section__badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M4.50977 2.89999H11.4404C11.6005 2.90021 11.7318 3.02616 11.7393 3.18613L12.2129 13.5865C12.2206 13.7573 12.084 13.9 11.9131 13.9H4.03613C3.86529 13.8998 3.72866 13.7572 3.73633 13.5865L4.20996 3.18613C4.21737 3.02602 4.34946 2.89999 4.50977 2.89999Z" stroke="#373737"/>
+                  <line x1="4" y1="5.10001" x2="12" y2="5.10001" stroke="#373737"/>
+                </svg>
+                <span>{{ section.settings.badge_1_text }}</span>
+              </div>
+            {%- endif -%}
+
+            {%- if section.settings.badge_2_text != blank -%}
+              <div class="custom-product-section__badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M10.1004 13.6999C10.1004 13.6999 6.19968 14 4.09932 11.5996C1.99896 9.19918 1.99896 1.99794 1.99896 1.99794C1.99896 1.99794 9.2002 1.69789 11.6006 3.4982C14.001 5.29851 13.4009 10.3994 13.4009 10.3994" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M14.001 14C14.001 14 10.6466 11.465 8.60006 9.19917C6.5535 6.93333 5.59955 4.69839 5.59955 4.69839" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M8.6001 9.19916L8.90015 5.29849" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M8.60006 9.19916L5.59955 8.89911" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>{{ section.settings.badge_2_text }}</span>
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+
+        <div class="custom-product-section__description" data-cps="description">
+          {%- if first_variant.metafields.custom.description != blank -%}
+            {{ first_variant.metafields.custom.description | metafield_tag }}
+          {%- else -%}
+            {{ current_product.description }}
+          {%- endif -%}
+        </div>
+
+        {%- unless current_product.has_only_default_variant -%}
+          <div class="custom-product-section__variants">
+            <span class="custom-product-section__variants-label">
+              {{ section.settings.flavor_label | default: 'Choose your flavor:' }}
+            </span>
+            {%- for option in current_product.options_with_values -%}
+              {%- assign opt_idx = forloop.index0 -%}
+              <div class="custom-product-section__chips" data-option-index="{{ opt_idx }}">
+                {%- for value in option.values -%}
+                  {%- assign matched_variant = nil -%}
+                  {%- for variant in current_product.variants -%}
+                    {%- if variant.option1 == value -%}
+                      {%- assign matched_variant = variant -%}
+                      {%- break -%}
+                    {%- endif -%}
                   {%- endfor -%}
-                </select>
+                  <button
+                    class="custom-product-section__chip{% if value == option.selected_value %} custom-product-section__chip--active{% endif %}"
+                    data-value="{{ value }}"
+                    data-option-index="{{ opt_idx }}"
+                    data-variant-description="{% if matched_variant and matched_variant.metafields.custom.description != blank %}{{ matched_variant.metafields.custom.description | metafield_tag | escape }}{% else %}{{ current_product.description | escape }}{% endif %}"
+                    type="button"
+                  >
+                    <span class="custom-product-section__chip-dot"></span>
+                    {{ value }}
+                  </button>
+                {%- endfor -%}
+              </div>
+
+              <div class="custom-product-section__dropdown" data-option-index="{{ opt_idx }}">
+                <div class="custom-product-section__dropdown-wrapper">
+                  <span class="custom-product-section__dropdown-dot" data-cps="dropdown-dot"></span>
+                  <select class="custom-product-section__dropdown-select" data-option-index="{{ opt_idx }}">
+                    {%- for value in option.values -%}
+                      {%- assign matched_variant = nil -%}
+                      {%- for variant in current_product.variants -%}
+                        {%- if variant.option1 == value -%}
+                          {%- assign matched_variant = variant -%}
+                          {%- break -%}
+                        {%- endif -%}
+                      {%- endfor -%}
+                      <option
+                        value="{{ value }}"
+                        data-variant-description="{% if matched_variant and matched_variant.metafields.custom.description != blank %}{{ matched_variant.metafields.custom.description | metafield_tag | escape }}{% else %}{{ current_product.description | escape }}{% endif %}"
+                        {% if value == option.selected_value %}selected{% endif %}
+                      >
+                        {{ value }}
+                      </option>
+                    {%- endfor -%}
+                  </select>
+                </div>
+              </div>
+            {%- endfor -%}
+          </div>
+        {%- endunless -%}
+
+        <div class="custom-product-section__atc-row">
+          <div class="custom-product-section__quantity">
+            <button class="custom-product-section__qty-btn" data-action="minus" type="button">−</button>
+            <input type="number" class="custom-product-section__qty-input" value="1" min="1" max="99" readonly>
+            <button class="custom-product-section__qty-btn" data-action="plus" type="button">+</button>
+          </div>
+          <button
+            class="custom-product-section__atc-btn"
+            data-variant-id="{{ first_variant.id }}"
+            data-cps="atc"
+            type="button"
+          >
+            {{ section.settings.atc_label | default: 'ADD TO CART' }} —
+            <span data-cps="price">{{ first_variant.price | money }}</span>
+          </button>
+        </div>
+
+        {%- if section.settings.show_guarantee -%}
+          <p class="custom-product-section__guarantee">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <g clip-path="url(#clip0_8_298)">
+                <path d="M9.28334 6.46056C9.23583 6.32615 9.16252 6.20393 9.06937 6.09985C8.87122 5.87846 8.58327 5.73914 8.26278 5.73914H7.42517C6.8917 5.73914 6.45923 6.1716 6.45923 6.70508C6.45923 7.15902 6.7753 7.55171 7.21875 7.64871L8.49403 7.92768C8.99082 8.03635 9.34491 8.4766 9.34491 8.98513C9.34491 9.58278 8.86042 10.0677 8.26278 10.0677H7.54136C7.07019 10.0677 6.66936 9.76654 6.5208 9.34624" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M7.90228 5.73911V4.65698" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M7.90228 11.1498V10.0676" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M9.96613 17.0649V11.3838C9.96613 11.025 10.1086 10.681 10.3623 10.4273C10.616 10.1736 10.96 10.0311 11.3188 10.0311V10.0311C11.6775 10.0311 12.0216 10.1736 12.2753 10.4273C12.5289 10.681 12.6714 11.025 12.6714 11.3838V14.3596H14.8357C15.4097 14.3596 15.9602 14.5876 16.366 14.9935C16.7719 15.3994 16.9999 15.9499 16.9999 16.5239V17.0649" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M7.90332 12.8068C5.19526 12.8068 2.99994 10.6114 2.99994 7.90338C2.99994 5.19532 5.19526 3 7.90332 3C10.6114 3 12.8067 5.19532 12.8067 7.90338C12.8067 8.13103 12.7912 8.35506 12.7612 8.57447" stroke="#373737" stroke-linecap="round"/>
+              </g>
+              <defs>
+                <clipPath id="clip0_8_298">
+                  <rect width="20" height="20" fill="white"/>
+                </clipPath>
+              </defs>
+            </svg>
+            {{ section.settings.guarantee_text | default: '30-Day Money-Back Guarantee' }}
+          </p>
+        {%- endif -%}
+
+        <div class="custom-product-section__notification" data-cps="notification" style="display:none;">
+          <div class="custom-product-section__notification-header">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            {{ section.settings.notification_added_text | default: 'Added!' }}
+          </div>
+          <div class="custom-product-section__notification-body">
+            <img class="custom-product-section__notification-img" data-cps="notif-img" src="" alt="">
+            <div class="custom-product-section__notification-details">
+              <span data-cps="notif-title"></span>
+              <span class="custom-product-section__notification-variant" data-cps="notif-variant"></span>
+            </div>
+          </div>
+          <a href="/cart" class="custom-product-section__notification-cart-btn">
+            {{ section.settings.view_cart_text | default: 'VIEW YOUR CART' }}
+          </a>
+        </div>
+
+        {%- for i in (1..3) -%}
+          {%- assign acc_title = 'accordion_' | append: i | append: '_title' -%}
+          {%- assign acc_content = 'accordion_' | append: i | append: '_content' -%}
+          {%- if section.settings[acc_title] != blank -%}
+            <div class="custom-product-section__accordion">
+              <button class="custom-product-section__accordion-trigger" type="button">
+                {{ section.settings[acc_title] }}
+                <span class="custom-product-section__accordion-icon">
+                  <svg class="cps-icon-plus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M5 12H19" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 5V19" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <svg class="cps-icon-minus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" style="display:none;">
+                    <path d="M5 12H19" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+              </button>
+              <div class="custom-product-section__accordion-content">
+                {{ section.settings[acc_content] }}
               </div>
             </div>
-          {%- endfor -%}
-        </div>
-      {%- endunless -%}
+          {%- endif -%}
+        {%- endfor -%}
 
-      <div class="custom-product-section__atc-row">
-        <div class="custom-product-section__quantity">
-          <button class="custom-product-section__qty-btn" data-action="minus" type="button">−</button>
-          <input type="number" class="custom-product-section__qty-input" value="1" min="1" max="99" readonly>
-          <button class="custom-product-section__qty-btn" data-action="plus" type="button">+</button>
-        </div>
-        <button
-          class="custom-product-section__atc-btn"
-          data-variant-id="{{ first_variant.id }}"
-          data-cps="atc"
-          type="button"
-        >
-          {{ section.settings.atc_label | default: 'ADD TO CART' }} —
-          <span data-cps="price">{{ first_variant.price | money }}</span>
-        </button>
-      </div>
+        {%- if section.settings.show_reviews and review_count > 0 -%}
+          <div class="custom-product-section__reviews">
+            {%- if review_count > 1 -%}
+              <div class="custom-product-section__reviews-header">
+                <button class="custom-product-section__reviews-nav" id="reviewsPrev-{{ section.id }}" type="button">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M8.42417 4.175C8.65848 4.40932 8.65848 4.78922 8.42417 5.02353L4.44843 8.99927H16.1999C16.5313 8.99927 16.7999 9.2679 16.7999 9.59927C16.7999 9.93064 16.5313 10.1993 16.1999 10.1993H4.44843L8.42417 14.175C8.65848 14.4093 8.65848 14.7892 8.42417 15.0235C8.18985 15.2578 7.80995 15.2578 7.57564 15.0235L2.57564 10.0235C2.34132 9.78922 2.34132 9.40932 2.57564 9.175L7.57564 4.175C7.80995 3.94069 8.18985 3.94069 8.42417 4.175Z" fill="white"/>
+                  </svg>
+                </button>
+                <button class="custom-product-section__reviews-nav" id="reviewsNext-{{ section.id }}" type="button">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" style="transform: rotate(180deg);">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M8.42417 4.175C8.65848 4.40932 8.65848 4.78922 8.42417 5.02353L4.44843 8.99927H16.1999C16.5313 8.99927 16.7999 9.2679 16.7999 9.59927C16.7999 9.93064 16.5313 10.1993 16.1999 10.1993H4.44843L8.42417 14.175C8.65848 14.4093 8.65848 14.7892 8.42417 15.0235C8.18985 15.2578 7.80995 15.2578 7.57564 15.0235L2.57564 10.0235C2.34132 9.78922 2.34132 9.40932 2.57564 9.175L7.57564 4.175C7.80995 3.94069 8.18985 3.94069 8.42417 4.175Z" fill="white"/>
+                  </svg>
+                </button>
+              </div>
 
-      {%- if section.settings.show_guarantee -%}
-        <p class="custom-product-section__guarantee">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <g clip-path="url(#clip0_8_298)">
-              <path d="M9.28334 6.46056C9.23583 6.32615 9.16252 6.20393 9.06937 6.09985C8.87122 5.87846 8.58327 5.73914 8.26278 5.73914H7.42517C6.8917 5.73914 6.45923 6.1716 6.45923 6.70508C6.45923 7.15902 6.7753 7.55171 7.21875 7.64871L8.49403 7.92768C8.99082 8.03635 9.34491 8.4766 9.34491 8.98513C9.34491 9.58278 8.86042 10.0677 8.26278 10.0677H7.54136C7.07019 10.0677 6.66936 9.76654 6.5208 9.34624" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M7.90228 5.73911V4.65698" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M7.90228 11.1498V10.0676" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M9.96613 17.0649V11.3838C9.96613 11.025 10.1086 10.681 10.3623 10.4273C10.616 10.1736 10.96 10.0311 11.3188 10.0311V10.0311C11.6775 10.0311 12.0216 10.1736 12.2753 10.4273C12.5289 10.681 12.6714 11.025 12.6714 11.3838V14.3596H14.8357C15.4097 14.3596 15.9602 14.5876 16.366 14.9935C16.7719 15.3994 16.9999 15.9499 16.9999 16.5239V17.0649" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M7.90332 12.8068C5.19526 12.8068 2.99994 10.6114 2.99994 7.90338C2.99994 5.19532 5.19526 3 7.90332 3C10.6114 3 12.8067 5.19532 12.8067 7.90338C12.8067 8.13103 12.7912 8.35506 12.7612 8.57447" stroke="#373737" stroke-linecap="round"/>
-            </g>
-            <defs>
-              <clipPath id="clip0_8_298">
-                <rect width="20" height="20" fill="white"/>
-              </clipPath>
-            </defs>
-          </svg>
-          {{ section.settings.guarantee_text | default: '30-Day Money-Back Guarantee' }}
-        </p>
-      {%- endif -%}
-
-      <div class="custom-product-section__notification" data-cps="notification" style="display:none;">
-        <div class="custom-product-section__notification-header">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="20 6 9 17 4 12"/>
-          </svg>
-          {{ section.settings.notification_added_text | default: 'Added!' }}
-        </div>
-        <div class="custom-product-section__notification-body">
-          <img class="custom-product-section__notification-img" data-cps="notif-img" src="" alt="">
-          <div class="custom-product-section__notification-details">
-            <span data-cps="notif-title"></span>
-            <span class="custom-product-section__notification-variant" data-cps="notif-variant"></span>
-          </div>
-        </div>
-        <a href="/cart" class="custom-product-section__notification-cart-btn">
-          {{ section.settings.view_cart_text | default: 'VIEW YOUR CART' }}
-        </a>
-      </div>
-
-      {%- for i in (1..3) -%}
-        {%- assign acc_title   = 'accordion_' | append: i | append: '_title' -%}
-        {%- assign acc_content = 'accordion_' | append: i | append: '_content' -%}
-        {%- if section.settings[acc_title] != blank -%}
-          <div class="custom-product-section__accordion">
-            <button class="custom-product-section__accordion-trigger" type="button">
-              {{ section.settings[acc_title] }}
-              <span class="custom-product-section__accordion-icon">
-                <svg class="cps-icon-plus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M5 12H19" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M12 5V19" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <svg class="cps-icon-minus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" style="display:none;">
-                  <path d="M5 12H19" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </span>
-            </button>
-            <div class="custom-product-section__accordion-content">
-              {{ section.settings[acc_content] }}
-            </div>
-          </div>
-        {%- endif -%}
-      {%- endfor -%}
-
-      {%- if section.settings.show_reviews -%}
-        <div class="custom-product-section__reviews">
-          <div class="custom-product-section__reviews-header">
-            <button class="custom-product-section__reviews-nav" id="reviewsPrev-{{ section.id }}" type="button">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M8.42417 4.175C8.65848 4.40932 8.65848 4.78922 8.42417 5.02353L4.44843 8.99927H16.1999C16.5313 8.99927 16.7999 9.2679 16.7999 9.59927C16.7999 9.93064 16.5313 10.1993 16.1999 10.1993H4.44843L8.42417 14.175C8.65848 14.4093 8.65848 14.7892 8.42417 15.0235C8.18985 15.2578 7.80995 15.2578 7.57564 15.0235L2.57564 10.0235C2.34132 9.78922 2.34132 9.40932 2.57564 9.175L7.57564 4.175C7.80995 3.94069 8.18985 3.94069 8.42417 4.175Z" fill="white"/>
-              </svg>
-            </button>
-            <button class="custom-product-section__reviews-nav" id="reviewsNext-{{ section.id }}" type="button">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" style="transform: rotate(180deg);">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M8.42417 4.175C8.65848 4.40932 8.65848 4.78922 8.42417 5.02353L4.44843 8.99927H16.1999C16.5313 8.99927 16.7999 9.2679 16.7999 9.59927C16.7999 9.93064 16.5313 10.1993 16.1999 10.1993H4.44843L8.42417 14.175C8.65848 14.4093 8.65848 14.7892 8.42417 15.0235C8.18985 15.2578 7.80995 15.2578 7.57564 15.0235L2.57564 10.0235C2.34132 9.78922 2.34132 9.40932 2.57564 9.175L7.57564 4.175C7.80995 3.94069 8.18985 3.94069 8.42417 4.175Z" fill="white"/>
-              </svg>
-            </button>
-          </div>
-          <div class="custom-product-section__reviews-clip">
-            <div class="swiper custom-product-section__reviews-swiper" id="reviewsSwiper-{{ section.id }}">
-              <div class="swiper-wrapper">
+              <div class="custom-product-section__reviews-clip">
+                <div class="swiper custom-product-section__reviews-swiper" id="reviewsSwiper-{{ section.id }}">
+                  <div class="swiper-wrapper">
+                    {%- for block in section.blocks -%}
+                      {%- if block.type == 'review' -%}
+                        <div class="swiper-slide" {{ block.shopify_attributes }}>
+                          <div class="custom-product-section__review-card">
+                            <div class="custom-product-section__review-stars">{{ block.settings.stars | default: '★★★★★' }}</div>
+                            <p class="custom-product-section__review-text">{{ block.settings.text }}</p>
+                            <div class="custom-product-section__review-author">
+                              {{ block.settings.author }}
+                              <span>{{ block.settings.subtitle | default: '✓ Verified customer' }}</span>
+                            </div>
+                          </div>
+                        </div>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </div>
+                </div>
+              </div>
+            {%- else -%}
+              <div class="custom-product-section__reviews-single">
                 {%- for block in section.blocks -%}
                   {%- if block.type == 'review' -%}
-                    <div class="swiper-slide" {{ block.shopify_attributes }}>
-                      <div class="custom-product-section__review-card">
-                        <div class="custom-product-section__review-stars">{{ block.settings.stars | default: '★★★★★' }}</div>
-                        <p class="custom-product-section__review-text">{{ block.settings.text }}</p>
-                        <div class="custom-product-section__review-author">
-                          {{ block.settings.author }}
-                          <span>{{ block.settings.subtitle | default: '✓ Verified customer' }}</span>
-                        </div>
+                    <div class="custom-product-section__review-card" {{ block.shopify_attributes }}>
+                      <div class="custom-product-section__review-stars">{{ block.settings.stars | default: '★★★★★' }}</div>
+                      <p class="custom-product-section__review-text">{{ block.settings.text }}</p>
+                      <div class="custom-product-section__review-author">
+                        {{ block.settings.author }}
+                        <span>{{ block.settings.subtitle | default: '✓ Verified customer' }}</span>
                       </div>
                     </div>
                   {%- endif -%}
                 {%- endfor -%}
               </div>
-            </div>
+            {%- endif -%}
           </div>
-        </div>
-      {%- endif -%}
-
+        {%- endif -%}
+      </div>
     </div>
-  </div>
-
   {%- endif -%}
 </div>
 
@@ -1093,13 +1234,13 @@
   });
 
   var selectedOptions = product.variants[0].options.slice();
-  var currentVariant  = product.variants[0];
+  var currentVariant = product.variants[0];
   var currentPriceText = '';
-  var notifTimer      = null;
+  var notifTimer = null;
   var isSyncingFromImage = false;
 
   var thumbEl = document.getElementById('thumbSwiper-' + sectionId);
-  var mainEl  = document.getElementById('mainSwiper-' + sectionId);
+  var mainEl = document.getElementById('mainSwiper-' + sectionId);
 
   var thumbSlides = thumbEl.querySelectorAll('.swiper-slide');
   thumbSlides.forEach(function(slide, idx) {
@@ -1191,6 +1332,7 @@
         return imageAlt && imageAlt.indexOf((opt || '').toLowerCase().trim()) !== -1;
       });
     });
+
     return byOption || null;
   }
 
@@ -1220,6 +1362,7 @@
 
   function updateUI(variant, skipImageSync) {
     if (!variant) return;
+
     currentVariant = variant;
     currentPriceText = formatMoney(variant.price);
 
@@ -1271,7 +1414,9 @@
     isSyncingFromImage = true;
     syncSelectorsFromVariant(matchedVariant);
     updateUI(matchedVariant, true);
-    setTimeout(function() { isSyncingFromImage = false; }, 0);
+    setTimeout(function() {
+      isSyncingFromImage = false;
+    }, 0);
   });
 
   sectionEl.querySelectorAll('.custom-product-section__chip').forEach(function(chip) {
@@ -1280,8 +1425,10 @@
       var val = this.dataset.value;
       selectedOptions[idx] = val;
 
-      sectionEl.querySelectorAll('.custom-product-section__chip[data-option-index="' + idx + '"]')
-        .forEach(function(c) { c.classList.remove('custom-product-section__chip--active'); });
+      sectionEl.querySelectorAll('.custom-product-section__chip[data-option-index="' + idx + '"]').forEach(function(c) {
+        c.classList.remove('custom-product-section__chip--active');
+      });
+
       this.classList.add('custom-product-section__chip--active');
 
       var sel = sectionEl.querySelector('.custom-product-section__dropdown-select[data-option-index="' + idx + '"]');
@@ -1297,10 +1444,9 @@
       var val = this.value;
       selectedOptions[idx] = val;
 
-      sectionEl.querySelectorAll('.custom-product-section__chip[data-option-index="' + idx + '"]')
-        .forEach(function(c) {
-          c.classList.toggle('custom-product-section__chip--active', c.dataset.value === val);
-        });
+      sectionEl.querySelectorAll('.custom-product-section__chip[data-option-index="' + idx + '"]').forEach(function(c) {
+        c.classList.toggle('custom-product-section__chip--active', c.dataset.value === val);
+      });
 
       updateUI(findVariant(selectedOptions), false);
     });
@@ -1340,34 +1486,36 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: variantId, quantity: qty })
     })
-    .then(function(res) {
-      if (!res.ok) throw new Error('ATC failed');
+      .then(function(res) {
+        if (!res.ok) throw new Error('ATC failed');
 
-      var notif        = sectionEl.querySelector('[data-cps="notification"]');
-      var notifImg     = sectionEl.querySelector('[data-cps="notif-img"]');
-      var notifTitle   = sectionEl.querySelector('[data-cps="notif-title"]');
-      var notifVariant = sectionEl.querySelector('[data-cps="notif-variant"]');
+        var notif = sectionEl.querySelector('[data-cps="notification"]');
+        var notifImg = sectionEl.querySelector('[data-cps="notif-img"]');
+        var notifTitle = sectionEl.querySelector('[data-cps="notif-title"]');
+        var notifVariant = sectionEl.querySelector('[data-cps="notif-variant"]');
 
-      if (notifImg) notifImg.src = currentVariant.featured_image ? currentVariant.featured_image.src : product.featured_image;
-      if (notifTitle) notifTitle.textContent = product.title;
-      if (notifVariant) notifVariant.textContent = currentVariant.title;
+        if (notifImg) notifImg.src = currentVariant.featured_image ? currentVariant.featured_image.src : product.featured_image;
+        if (notifTitle) notifTitle.textContent = product.title;
+        if (notifVariant) notifVariant.textContent = currentVariant.title;
 
-      notif.style.display = 'block';
-      if (notifTimer) clearTimeout(notifTimer);
-      notifTimer = setTimeout(function() { notif.style.display = 'none'; }, 3000);
-    })
-    .catch(function(err) {
-      console.error('ATC error:', err);
-    })
-    .finally(function() {
-      btn.disabled = false;
-      rebuildAtcBtn(btn);
-    });
+        notif.style.display = 'block';
+        if (notifTimer) clearTimeout(notifTimer);
+        notifTimer = setTimeout(function() {
+          notif.style.display = 'none';
+        }, 3000);
+      })
+      .catch(function(err) {
+        console.error('ATC error:', err);
+      })
+      .finally(function() {
+        btn.disabled = false;
+        rebuildAtcBtn(btn);
+      });
   });
 
   sectionEl.querySelectorAll('.custom-product-section__accordion-trigger').forEach(function(trigger) {
     trigger.addEventListener('click', function() {
-      var acc    = this.closest('.custom-product-section__accordion');
+      var acc = this.closest('.custom-product-section__accordion');
       var isOpen = acc.classList.contains('custom-product-section__accordion--open');
 
       sectionEl.querySelectorAll('.custom-product-section__accordion').forEach(function(a) {
@@ -1415,7 +1563,6 @@
       "label": "Variants label",
       "default": "Choose your flavor:"
     },
-
     {
       "type": "header",
       "content": "Colors"
@@ -1432,7 +1579,6 @@
       "label": "Title color",
       "default": "#373737"
     },
-
     {
       "type": "header",
       "content": "Layout"
@@ -1500,7 +1646,6 @@
       "step": 2,
       "default": 16
     },
-
     {
       "type": "header",
       "content": "Add to cart"
@@ -1523,7 +1668,6 @@
       "label": "Guarantee text",
       "default": "30-Day Money-Back Guarantee"
     },
-
     {
       "type": "header",
       "content": "Notification"
@@ -1540,7 +1684,6 @@
       "label": "View cart text",
       "default": "VIEW YOUR CART"
     },
-
     {
       "type": "header",
       "content": "Badges"
@@ -1563,7 +1706,6 @@
       "label": "Flavors text",
       "default": "No artificial flavors/sweeteners"
     },
-
     {
       "type": "header",
       "content": "Accordions"
@@ -1600,7 +1742,6 @@
       "id": "accordion_3_content",
       "label": "Accordion 3 content"
     },
-
     {
       "type": "header",
       "content": "Reviews"
@@ -1615,8 +1756,7 @@
   "blocks": [
     {
       "type": "review",
-      "name": "Review",
-      "limit": 50,
+      "name": "Customer review",
       "settings": [
         {
           "type": "text",
