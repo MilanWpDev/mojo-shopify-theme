@@ -181,6 +181,8 @@
     letter-spacing: -0.48px;
     color: #373737;
     display: block;
+    margin: 0;
+    padding: 0;
   }
   .custom-product-section__meta-separator {
     width: 1px;
@@ -396,22 +398,40 @@
     flex-shrink: 0;
   }
   .custom-product-section__qty-btn:hover { opacity: 0.6; }
-  .custom-product-section__qty-input {
+
+  /* FIX: quantity input - theme override prevention */
+  .custom-product-section .custom-product-section__qty-input {
     width: 32px;
+    min-width: 32px;
     text-align: center;
     border: none;
+    border-radius: 0;
+    background: transparent;
     font-size: 16px;
     font-weight: 400;
     line-height: 140%;
     letter-spacing: -0.48px;
     color: #373737;
-    -webkit-text-fill-color: #373737;
     outline: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
     -moz-appearance: textfield;
-    background: transparent;
+    -webkit-appearance: none;
+    appearance: none;
   }
-  .custom-product-section__qty-input::-webkit-inner-spin-button,
-  .custom-product-section__qty-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+  .custom-product-section .custom-product-section__qty-input::-webkit-inner-spin-button,
+  .custom-product-section .custom-product-section__qty-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .custom-product-section .custom-product-section__qty-input:focus {
+    outline: none;
+    box-shadow: none;
+    border: none;
+    color: #373737;
+  }
+
   .custom-product-section__atc-btn {
     flex: 1;
     height: 48px;
@@ -755,8 +775,9 @@
       width: 20px;
       font-size: 16px;
     }
-    .custom-product-section__qty-input {
+    .custom-product-section .custom-product-section__qty-input {
       width: 24px;
+      min-width: 24px;
       font-size: 15px;
     }
     .custom-product-section__atc-btn {
@@ -939,7 +960,7 @@
       <div class="custom-product-section__atc-row">
         <div class="custom-product-section__quantity">
           <button class="custom-product-section__qty-btn" data-action="minus" type="button">−</button>
-          <input type="number" class="custom-product-section__qty-input" value="1" min="1" max="99">
+          <input type="number" class="custom-product-section__qty-input" value="1" min="1" max="99" readonly>
           <button class="custom-product-section__qty-btn" data-action="plus" type="button">+</button>
         </div>
         <button
@@ -1274,20 +1295,33 @@
     });
   });
 
+  /* FIX: quantity koristi span umesto input da theme ne može da overriduje */
+  var qtyDisplay = sectionEl.querySelector('.custom-product-section__qty-input');
+  var qtyValue = 1;
+
+  function updateQtyDisplay() {
+    qtyDisplay.value = qtyValue;
+    qtyDisplay.setAttribute('value', qtyValue);
+    /* JS fallback ako input ne prikazuje */
+    qtyDisplay.style.color = '#373737';
+  }
+
   sectionEl.querySelector('[data-action="minus"]').addEventListener('click', function() {
-    var input = sectionEl.querySelector('.custom-product-section__qty-input');
-    if (parseInt(input.value) > 1) input.value = parseInt(input.value) - 1;
+    if (qtyValue > 1) {
+      qtyValue--;
+      updateQtyDisplay();
+    }
   });
 
   sectionEl.querySelector('[data-action="plus"]').addEventListener('click', function() {
-    var input = sectionEl.querySelector('.custom-product-section__qty-input');
-    input.value = parseInt(input.value) + 1;
+    qtyValue++;
+    updateQtyDisplay();
   });
 
   sectionEl.querySelector('[data-cps="atc"]').addEventListener('click', function() {
     var btn       = this;
     var variantId = parseInt(btn.dataset.variantId);
-    var qty       = parseInt(sectionEl.querySelector('.custom-product-section__qty-input').value);
+    var qty       = qtyValue;
     btn.disabled    = true;
     btn.textContent = 'Adding...';
     fetch('/cart/add.js', {
@@ -1335,6 +1369,7 @@
 
   syncSelectorsFromVariant(currentVariant);
   updateUI(currentVariant, false);
+  updateQtyDisplay();
 })();
 </script>
 
