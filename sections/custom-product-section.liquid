@@ -70,7 +70,7 @@
     -webkit-transform: translateZ(0);
   }
 
-  /* ── Swiper nav buttons — glavna galerija desktop ── */
+  /* ── Swiper nav buttons ── */
   .custom-product-section__main-swiper .swiper-button-prev,
   .custom-product-section__main-swiper .swiper-button-next {
     width: 48px !important;
@@ -105,7 +105,6 @@
   .custom-product-section__main-swiper .swiper-button-next .cps-arrow-icon {
     transform: rotate(180deg);
   }
-  /* Disabled state */
   .custom-product-section__main-swiper .swiper-button-prev.swiper-button-disabled,
   .custom-product-section__main-swiper .swiper-button-next.swiper-button-disabled {
     background: #BBB !important;
@@ -116,7 +115,7 @@
     fill: #787878;
   }
 
-  /* Thumbnails — uvek svi vidljivi, centrirani, 99x99 */
+  /* Thumbnails */
   .custom-product-section__thumb-swiper {
     width: 100%;
   }
@@ -202,6 +201,9 @@
     gap: 6px;
     font-size: 13px;
     color: #555;
+  }
+  .custom-product-section__badge svg {
+    flex-shrink: 0;
   }
 
   /* ── Description ── */
@@ -364,6 +366,9 @@
     color: #666;
     margin-bottom: 20px;
   }
+  .custom-product-section__guarantee svg {
+    flex-shrink: 0;
+  }
 
   /* ── Notification ── */
   .custom-product-section__notification {
@@ -454,9 +459,10 @@
     color: inherit;
   }
   .custom-product-section__accordion-icon {
-    font-size: 20px;
-    color: #666;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .custom-product-section__accordion-content {
     display: none;
@@ -640,7 +646,7 @@
 
 {%- capture arrow_svg -%}
 <svg class="cps-arrow-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-  <path fill-rule="evenodd" clip-rule="evenodd" d="M8.42417 4.175C8.65848 4.40932 8.65848 4.78922 8.42417 5.02353L4.44843 8.99927H16.1999C16.5313 8.99927 16.7999 9.2679 16.7999 9.59927C16.7999 9.93064 16.5313 10.1993 16.1999 10.1993H4.44843L8.42417 14.175C8.65848 14.4093 8.65848 14.7892 8.42417 15.0235C8.18985 15.2578 7.80995 15.2578 7.57564 15.0235L2.57564 10.0235C2.34132 9.78922 2.34132 9.40932 2.57564 9.175L7.57564 4.175C7.80995 3.94069 8.18985 3.94069 8.42417 4.175Z" fill="#787878"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M8.42417 4.175C8.65848 4.40932 8.65848 4.78922 8.42417 5.02353L4.44843 8.99927H16.1999C16.5313 8.99927 16.7999 9.2679 16.7999 9.59927C16.7999 9.93064 16.5313 10.1993 16.1999 10.1993H4.44843L8.42417 14.175C8.65848 14.4093 8.65848 14.7892 8.42417 15.0235C8.18985 15.2578 7.80995 15.2578 7.57564 15.0235L2.57564 10.0235C2.34132 9.78922 2.34132 9.40932 2.57564 9.175L7.57564 4.175C7.80995 3.94069 8.18985 3.94069 8.42417 4.175Z" fill="white"/>
 </svg>
 {%- endcapture -%}
 
@@ -712,9 +718,22 @@
           {%- for i in (1..3) -%}
             {%- assign badge_text = 'badge_' | append: i | append: '_text' -%}
             {%- assign badge_icon = 'badge_' | append: i | append: '_icon' -%}
+            {%- assign badge_svg  = 'badge_' | append: i | append: '_svg' -%}
             {%- if section.settings[badge_text] != blank -%}
               <div class="custom-product-section__badge">
-                {%- if section.settings[badge_icon] != blank -%}
+                {%- if i == 1 -%}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M4.50977 2.89999H11.4404C11.6005 2.90021 11.7318 3.02616 11.7393 3.18613L12.2129 13.5865C12.2206 13.7573 12.084 13.9 11.9131 13.9H4.03613C3.86529 13.8998 3.72866 13.7572 3.73633 13.5865L4.20996 3.18613C4.21737 3.02602 4.34946 2.89999 4.50977 2.89999Z" stroke="#373737"/>
+                    <line x1="4" y1="5.10001" x2="12" y2="5.10001" stroke="#373737"/>
+                  </svg>
+                {%- elsif i == 2 -%}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M10.1004 13.6999C10.1004 13.6999 6.19968 14 4.09932 11.5996C1.99896 9.19918 1.99896 1.99794 1.99896 1.99794C1.99896 1.99794 9.2002 1.69789 11.6006 3.4982C14.001 5.29851 13.4009 10.3994 13.4009 10.3994" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M14.001 14C14.001 14 10.6466 11.465 8.60006 9.19917C6.5535 6.93333 5.59955 4.69839 5.59955 4.69839" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8.6001 9.19916L8.90015 5.29849" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8.60006 9.19916L5.59955 8.89911" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                {%- elsif section.settings[badge_icon] != blank -%}
                   <span>{{ section.settings[badge_icon] }}</span>
                 {%- endif -%}
                 <span>{{ section.settings[badge_text] }}</span>
@@ -803,8 +822,19 @@
 
       {%- if section.settings.show_guarantee -%}
         <p class="custom-product-section__guarantee">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <g clip-path="url(#clip0_8_298)">
+              <path d="M9.28334 6.46056C9.23583 6.32615 9.16252 6.20393 9.06937 6.09985C8.87122 5.87846 8.58327 5.73914 8.26278 5.73914H7.42517C6.8917 5.73914 6.45923 6.1716 6.45923 6.70508C6.45923 7.15902 6.7753 7.55171 7.21875 7.64871L8.49403 7.92768C8.99082 8.03635 9.34491 8.4766 9.34491 8.98513C9.34491 9.58278 8.86042 10.0677 8.26278 10.0677H7.54136C7.07019 10.0677 6.66936 9.76654 6.5208 9.34624" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M7.90228 5.73911V4.65698" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M7.90228 11.1498V10.0676" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M9.96613 17.0649V11.3838C9.96613 11.025 10.1086 10.681 10.3623 10.4273C10.616 10.1736 10.96 10.0311 11.3188 10.0311V10.0311C11.6775 10.0311 12.0216 10.1736 12.2753 10.4273C12.5289 10.681 12.6714 11.025 12.6714 11.3838V14.3596H14.8357C15.4097 14.3596 15.9602 14.5876 16.366 14.9935C16.7719 15.3994 16.9999 15.9499 16.9999 16.5239V17.0649" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M7.90332 12.8068C5.19526 12.8068 2.99994 10.6114 2.99994 7.90338C2.99994 5.19532 5.19526 3 7.90332 3C10.6114 3 12.8067 5.19532 12.8067 7.90338C12.8067 8.13103 12.7912 8.35506 12.7612 8.57447" stroke="#373737" stroke-linecap="round"/>
+            </g>
+            <defs>
+              <clipPath id="clip0_8_298">
+                <rect width="20" height="20" fill="white"/>
+              </clipPath>
+            </defs>
           </svg>
           {{ section.settings.guarantee_text | default: '30-Day Money-Back Guarantee' }}
         </p>
@@ -834,7 +864,15 @@
           <div class="custom-product-section__accordion">
             <button class="custom-product-section__accordion-trigger" type="button">
               {{ section.settings[acc_title] }}
-              <span class="custom-product-section__accordion-icon">+</span>
+              <span class="custom-product-section__accordion-icon">
+                <svg class="cps-icon-plus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M5 12H19" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M12 5V19" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <svg class="cps-icon-minus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" style="display:none;">
+                  <path d="M5 12H19" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
             </button>
             <div class="custom-product-section__accordion-content">
               {{ section.settings[acc_content] }}
@@ -1141,11 +1179,13 @@
       var isOpen = acc.classList.contains('custom-product-section__accordion--open');
       sectionEl.querySelectorAll('.custom-product-section__accordion').forEach(function(a) {
         a.classList.remove('custom-product-section__accordion--open');
-        a.querySelector('.custom-product-section__accordion-icon').textContent = '+';
+        a.querySelector('.cps-icon-plus').style.display = 'block';
+        a.querySelector('.cps-icon-minus').style.display = 'none';
       });
       if (!isOpen) {
         acc.classList.add('custom-product-section__accordion--open');
-        trigger.querySelector('.custom-product-section__accordion-icon').textContent = '-';
+        trigger.querySelector('.cps-icon-plus').style.display = 'none';
+        trigger.querySelector('.cps-icon-minus').style.display = 'block';
       }
     });
   });
@@ -1214,21 +1254,9 @@
     },
     {
       "type": "text",
-      "id": "badge_1_icon",
-      "label": "Badge 1 Icon",
-      "default": "🗓"
-    },
-    {
-      "type": "text",
       "id": "badge_1_text",
       "label": "Badge 1 Text",
       "default": "3 bags (90 servings)"
-    },
-    {
-      "type": "text",
-      "id": "badge_2_icon",
-      "label": "Badge 2 Icon",
-      "default": "🚫"
     },
     {
       "type": "text",
