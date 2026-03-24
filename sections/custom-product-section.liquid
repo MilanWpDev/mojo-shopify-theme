@@ -8,9 +8,12 @@
 
 <style>
   .custom-product-section {
-    max-width: 1440px;
+    max-width: {{ section.settings.max_width | default: 1440 }}px;
     margin: 0 auto;
-    padding: 64px 56px;
+    padding:
+      {{ section.settings.section_padding_top | default: 64 }}px
+      {{ section.settings.section_padding_horizontal | default: 56 }}px
+      {{ section.settings.section_padding_bottom | default: 64 }}px;
     font-family: inherit;
     box-sizing: border-box;
   }
@@ -22,8 +25,10 @@
   }
   .custom-product-section__inner {
     display: grid;
-    grid-template-columns: 772px 500px;
-    gap: 56px;
+    grid-template-columns:
+      minmax(0, {{ section.settings.gallery_column_width | default: 770 }}px)
+      minmax(0, {{ section.settings.info_column_width | default: 500 }}px);
+    gap: {{ section.settings.gallery_info_gap | default: 56 }}px;
     align-items: start;
   }
   .custom-product-section__gallery,
@@ -39,7 +44,7 @@
     overflow: hidden;
     background: white;
     width: 100%;
-    height: 773px;
+    height: {{ section.settings.gallery_height_desktop | default: 770 }}px;
     margin-bottom: 16px;
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
@@ -121,16 +126,16 @@
     display: flex;
     flex-wrap: nowrap;
     justify-content: center;
-    gap: 8px;
+    gap: {{ section.settings.thumbnail_gap | default: 8 }}px;
     transform: none;
     width: 100%;
   }
   .custom-product-section__thumb-swiper .swiper-slide {
-    flex: 0 0 99px;
-    width: 99px;
-    height: 99px;
-    min-width: 99px;
-    max-width: 99px;
+    flex: 0 0 {{ section.settings.thumbnail_size_desktop | default: 99 }}px;
+    width: {{ section.settings.thumbnail_size_desktop | default: 99 }}px;
+    height: {{ section.settings.thumbnail_size_desktop | default: 99 }}px;
+    min-width: {{ section.settings.thumbnail_size_desktop | default: 99 }}px;
+    max-width: {{ section.settings.thumbnail_size_desktop | default: 99 }}px;
     border-radius: 8px;
     border: 1px solid #EBEBEB;
     background: #FEFEFE;
@@ -165,7 +170,6 @@
     color: {{ section.settings.title_color | default: '#373737' }};
   }
 
-  /* Desktop: type + separator + variant in one row */
   .custom-product-section__meta {
     display: flex;
     flex-direction: row;
@@ -210,7 +214,7 @@
     flex-shrink: 0;
   }
 
-  /* ── Badges — desktop: single row ── */
+  /* ── Badges ── */
   .custom-product-section__badges {
     display: flex;
     flex-direction: row;
@@ -670,23 +674,26 @@
   /* ── Responsive ── */
   @media (max-width: 768px) {
     .custom-product-section {
-      padding: 48px 16px;
+      padding:
+        {{ section.settings.section_padding_top_mobile | default: 48 }}px
+        {{ section.settings.section_padding_horizontal_mobile | default: 16 }}px
+        {{ section.settings.section_padding_bottom_mobile | default: 48 }}px;
     }
     .custom-product-section__inner {
       grid-template-columns: 1fr;
       gap: 24px;
     }
     .custom-product-section__main-swiper {
-      height: 380px;
+      height: {{ section.settings.gallery_height_mobile | default: 380 }}px;
       border-radius: 7.109px;
       border: 0.444px solid #BBB;
       margin-bottom: 7px;
     }
     .custom-product-section__main-swiper .swiper-wrapper {
-      height: 380px;
+      height: {{ section.settings.gallery_height_mobile | default: 380 }}px;
     }
     .custom-product-section__main-swiper .swiper-slide {
-      height: 380px;
+      height: {{ section.settings.gallery_height_mobile | default: 380 }}px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -988,7 +995,7 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="20 6 9 17 4 12"/>
           </svg>
-          Added!
+          {{ section.settings.notification_added_text | default: 'Added!' }}
         </div>
         <div class="custom-product-section__notification-body">
           <img class="custom-product-section__notification-img" data-cps="notif-img" src="" alt="">
@@ -997,7 +1004,9 @@
             <span class="custom-product-section__notification-variant" data-cps="notif-variant"></span>
           </div>
         </div>
-        <a href="/cart" class="custom-product-section__notification-cart-btn">VIEW YOUR CART</a>
+        <a href="/cart" class="custom-product-section__notification-cart-btn">
+          {{ section.settings.view_cart_text | default: 'VIEW YOUR CART' }}
+        </a>
       </div>
 
       {%- for i in (1..3) -%}
@@ -1163,24 +1172,29 @@
       if (!chipMatch && chip.dataset.value === variant.option1) chipMatch = chip;
     });
     if (chipMatch && chipMatch.dataset.variantDescription) return chipMatch.dataset.variantDescription;
+
     var optionMatch = null;
     sectionEl.querySelectorAll('.custom-product-section__dropdown-select[data-option-index="0"] option').forEach(function(option) {
       if (!optionMatch && option.value === variant.option1) optionMatch = option;
     });
     if (optionMatch && optionMatch.dataset.variantDescription) return optionMatch.dataset.variantDescription;
+
     return {{ current_product.description | json }};
   }
 
   function getVariantFromImage(imageId, imageAlt) {
     imageAlt = (imageAlt || '').toLowerCase().trim();
+
     var byImage = product.variants.find(function(v) {
       return v.featured_image && parseInt(v.featured_image.id) === imageId;
     });
     if (byImage) return byImage;
+
     var byTitle = product.variants.find(function(v) {
       return imageAlt && imageAlt.indexOf((v.title || '').toLowerCase().trim()) !== -1;
     });
     if (byTitle) return byTitle;
+
     var byOption = product.variants.find(function(v) {
       return v.options.some(function(opt) {
         return imageAlt && imageAlt.indexOf((opt || '').toLowerCase().trim()) !== -1;
@@ -1197,15 +1211,19 @@
 
   function syncSelectorsFromVariant(variant) {
     if (!variant) return;
+
     selectedOptions = variant.options.slice();
+
     sectionEl.querySelectorAll('.custom-product-section__chip').forEach(function(chip) {
       var idx = parseInt(chip.dataset.optionIndex);
       chip.classList.toggle('custom-product-section__chip--active', selectedOptions[idx] === chip.dataset.value);
     });
+
     sectionEl.querySelectorAll('.custom-product-section__dropdown-select').forEach(function(select) {
       var idx = parseInt(select.dataset.optionIndex);
       select.value = selectedOptions[idx];
     });
+
     updateDropdownDot(variant.option1 || variant.title);
   }
 
@@ -1246,14 +1264,19 @@
 
   mainSwiper.on('slideChange', function() {
     if (isSyncingFromImage) return;
+
     var activeSlide = mainSwiper.slides[mainSwiper.activeIndex];
     if (!activeSlide) return;
+
     var img = activeSlide.querySelector('.custom-product-section__main-image');
     if (!img) return;
+
     var imageId = parseInt(img.dataset.imageId);
     var imageAlt = img.dataset.imageAlt || '';
     var matchedVariant = getVariantFromImage(imageId, imageAlt);
+
     if (!matchedVariant) return;
+
     isSyncingFromImage = true;
     syncSelectorsFromVariant(matchedVariant);
     updateUI(matchedVariant, true);
@@ -1265,11 +1288,14 @@
       var idx = parseInt(this.dataset.optionIndex);
       var val = this.dataset.value;
       selectedOptions[idx] = val;
+
       sectionEl.querySelectorAll('.custom-product-section__chip[data-option-index="' + idx + '"]')
         .forEach(function(c) { c.classList.remove('custom-product-section__chip--active'); });
       this.classList.add('custom-product-section__chip--active');
+
       var sel = sectionEl.querySelector('.custom-product-section__dropdown-select[data-option-index="' + idx + '"]');
       if (sel) sel.value = val;
+
       updateUI(findVariant(selectedOptions), false);
     });
   });
@@ -1279,10 +1305,12 @@
       var idx = parseInt(this.dataset.optionIndex);
       var val = this.value;
       selectedOptions[idx] = val;
+
       sectionEl.querySelectorAll('.custom-product-section__chip[data-option-index="' + idx + '"]')
         .forEach(function(c) {
           c.classList.toggle('custom-product-section__chip--active', c.dataset.value === val);
         });
+
       updateUI(findVariant(selectedOptions), false);
     });
   });
@@ -1297,7 +1325,10 @@
   }
 
   sectionEl.querySelector('[data-action="minus"]').addEventListener('click', function() {
-    if (qtyValue > 1) { qtyValue--; updateQtyDisplay(); }
+    if (qtyValue > 1) {
+      qtyValue--;
+      updateQtyDisplay();
+    }
   });
 
   sectionEl.querySelector('[data-action="plus"]').addEventListener('click', function() {
@@ -1309,6 +1340,7 @@
     var btn = this;
     var variantId = parseInt(btn.dataset.variantId);
     var qty = qtyValue;
+
     btn.disabled = true;
     btn.textContent = 'Adding...';
 
@@ -1319,18 +1351,23 @@
     })
     .then(function(res) {
       if (!res.ok) throw new Error('ATC failed');
+
       var notif        = sectionEl.querySelector('[data-cps="notification"]');
       var notifImg     = sectionEl.querySelector('[data-cps="notif-img"]');
       var notifTitle   = sectionEl.querySelector('[data-cps="notif-title"]');
       var notifVariant = sectionEl.querySelector('[data-cps="notif-variant"]');
+
       if (notifImg) notifImg.src = currentVariant.featured_image ? currentVariant.featured_image.src : product.featured_image;
       if (notifTitle) notifTitle.textContent = product.title;
       if (notifVariant) notifVariant.textContent = currentVariant.title;
+
       notif.style.display = 'block';
       if (notifTimer) clearTimeout(notifTimer);
       notifTimer = setTimeout(function() { notif.style.display = 'none'; }, 3000);
     })
-    .catch(function(err) { console.error('ATC error:', err); })
+    .catch(function(err) {
+      console.error('ATC error:', err);
+    })
     .finally(function() {
       btn.disabled = false;
       rebuildAtcBtn(btn);
@@ -1341,11 +1378,13 @@
     trigger.addEventListener('click', function() {
       var acc    = this.closest('.custom-product-section__accordion');
       var isOpen = acc.classList.contains('custom-product-section__accordion--open');
+
       sectionEl.querySelectorAll('.custom-product-section__accordion').forEach(function(a) {
         a.classList.remove('custom-product-section__accordion--open');
         a.querySelector('.cps-icon-plus').style.display = 'block';
         a.querySelector('.cps-icon-minus').style.display = 'none';
       });
+
       if (!isOpen) {
         acc.classList.add('custom-product-section__accordion--open');
         trigger.querySelector('.cps-icon-plus').style.display = 'none';
@@ -1364,39 +1403,378 @@
 {
   "name": "Custom Product Section",
   "settings": [
-    { "type": "product", "id": "product", "label": "Product" },
-    { "type": "color", "id": "accent_color", "label": "Accent Color", "default": "#5B4FE9" },
-    { "type": "color", "id": "title_color", "label": "Title Color", "default": "#373737" },
-    { "type": "text", "id": "flavor_label", "label": "Variants Label", "default": "Choose your flavor:" },
-    { "type": "text", "id": "atc_label", "label": "Add to Cart Button Label", "default": "ADD TO CART" },
-    { "type": "checkbox", "id": "show_guarantee", "label": "Show Money-Back Guarantee", "default": true },
-    { "type": "text", "id": "guarantee_text", "label": "Guarantee Text", "default": "30-Day Money-Back Guarantee" },
-    { "type": "checkbox", "id": "show_product_type", "label": "Show Product Type", "default": true },
-    { "type": "checkbox", "id": "show_badges", "label": "Show Badges", "default": true },
-    { "type": "text", "id": "badge_1_text", "label": "Badge 1 Text", "default": "3 bags (90 servings)" },
-    { "type": "text", "id": "badge_2_text", "label": "Badge 2 Text", "default": "No artificial flavors/sweeteners" },
-    { "type": "text", "id": "badge_3_icon", "label": "Badge 3 Icon" },
-    { "type": "text", "id": "badge_3_text", "label": "Badge 3 Text" },
-    { "type": "text", "id": "accordion_1_title", "label": "Accordion 1 Title", "default": "What is Rimo™" },
-    { "type": "richtext", "id": "accordion_1_content", "label": "Accordion 1 Content" },
-    { "type": "text", "id": "accordion_2_title", "label": "Accordion 2 Title", "default": "How to Use" },
-    { "type": "richtext", "id": "accordion_2_content", "label": "Accordion 2 Content" },
-    { "type": "text", "id": "accordion_3_title", "label": "Accordion 3 Title" },
-    { "type": "richtext", "id": "accordion_3_content", "label": "Accordion 3 Content" },
-    { "type": "checkbox", "id": "show_reviews", "label": "Show Reviews", "default": true },
-    { "type": "text", "id": "review_1_text", "label": "Review 1 Text", "default": "I love this product! Noticeable increased energy and post workout pain levels much lower." },
-    { "type": "text", "id": "review_1_author", "label": "Review 1 Author", "default": "Joanette D." },
-    { "type": "text", "id": "review_2_text", "label": "Review 2 Text", "default": "Have definitely felt a surge in my energy and overall well being since taking." },
-    { "type": "text", "id": "review_2_author", "label": "Review 2 Author", "default": "Joanette D." },
-    { "type": "text", "id": "review_3_text", "label": "Review 3 Text", "default": "Amazing product, I feel more focused and energized every single day." },
-    { "type": "text", "id": "review_3_author", "label": "Review 3 Author", "default": "Mike R." },
-    { "type": "text", "id": "review_4_text", "label": "Review 4 Text", "default": "Best supplement I have tried. Highly recommend to anyone looking for a natural boost." },
-    { "type": "text", "id": "review_4_author", "label": "Review 4 Author", "default": "Sarah K." },
-    { "type": "text", "id": "review_5_text", "label": "Review 5 Text", "default": "Incredible results within the first two weeks. My energy levels are through the roof." },
-    { "type": "text", "id": "review_5_author", "label": "Review 5 Author", "default": "Tom B." },
-    { "type": "text", "id": "review_6_text", "label": "Review 6 Text", "default": "I was skeptical at first but this product genuinely changed my daily routine." },
-    { "type": "text", "id": "review_6_author", "label": "Review 6 Author", "default": "Anna P." }
+    {
+      "type": "header",
+      "content": "Product"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_type",
+      "label": "Show product type",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "flavor_label",
+      "label": "Variants label",
+      "default": "Choose your flavor:"
+    },
+
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "default": "#5B4FE9"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#373737"
+    },
+
+    {
+      "type": "header",
+      "content": "Layout desktop"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Section max width",
+      "min": 1000,
+      "max": 1800,
+      "step": 20,
+      "default": 1440
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "section_padding_horizontal",
+      "label": "Horizontal padding",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "gallery_column_width",
+      "label": "Gallery column width",
+      "min": 500,
+      "max": 900,
+      "step": 10,
+      "default": 770
+    },
+    {
+      "type": "range",
+      "id": "info_column_width",
+      "label": "Info column width",
+      "min": 360,
+      "max": 700,
+      "step": 10,
+      "default": 500
+    },
+    {
+      "type": "range",
+      "id": "gallery_info_gap",
+      "label": "Column gap",
+      "min": 16,
+      "max": 120,
+      "step": 4,
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "gallery_height_desktop",
+      "label": "Gallery height desktop",
+      "min": 400,
+      "max": 900,
+      "step": 10,
+      "default": 770
+    },
+    {
+      "type": "range",
+      "id": "thumbnail_size_desktop",
+      "label": "Thumbnail size desktop",
+      "min": 60,
+      "max": 140,
+      "step": 1,
+      "default": 99
+    },
+    {
+      "type": "range",
+      "id": "thumbnail_gap",
+      "label": "Thumbnail gap",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "default": 8
+    },
+
+    {
+      "type": "header",
+      "content": "Layout mobile"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top_mobile",
+      "label": "Top padding mobile",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "section_padding_bottom_mobile",
+      "label": "Bottom padding mobile",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "section_padding_horizontal_mobile",
+      "label": "Horizontal padding mobile",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "gallery_height_mobile",
+      "label": "Gallery height mobile",
+      "min": 260,
+      "max": 500,
+      "step": 10,
+      "default": 380
+    },
+
+    {
+      "type": "header",
+      "content": "Add to cart"
+    },
+    {
+      "type": "text",
+      "id": "atc_label",
+      "label": "Add to cart button label",
+      "default": "ADD TO CART"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_guarantee",
+      "label": "Show guarantee",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "guarantee_text",
+      "label": "Guarantee text",
+      "default": "30-Day Money-Back Guarantee"
+    },
+
+    {
+      "type": "header",
+      "content": "Notification"
+    },
+    {
+      "type": "text",
+      "id": "notification_added_text",
+      "label": "Notification title",
+      "default": "Added!"
+    },
+    {
+      "type": "text",
+      "id": "view_cart_text",
+      "label": "View cart text",
+      "default": "VIEW YOUR CART"
+    },
+
+    {
+      "type": "header",
+      "content": "Badges"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badges",
+      "label": "Show badges",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "badge_1_text",
+      "label": "Badge 1 text",
+      "default": "3 bags (90 servings)"
+    },
+    {
+      "type": "text",
+      "id": "badge_2_text",
+      "label": "Badge 2 text",
+      "default": "No artificial flavors/sweeteners"
+    },
+    {
+      "type": "text",
+      "id": "badge_3_icon",
+      "label": "Badge 3 icon"
+    },
+    {
+      "type": "text",
+      "id": "badge_3_text",
+      "label": "Badge 3 text"
+    },
+
+    {
+      "type": "header",
+      "content": "Accordions"
+    },
+    {
+      "type": "text",
+      "id": "accordion_1_title",
+      "label": "Accordion 1 title",
+      "default": "What is Rimo™"
+    },
+    {
+      "type": "richtext",
+      "id": "accordion_1_content",
+      "label": "Accordion 1 content"
+    },
+    {
+      "type": "text",
+      "id": "accordion_2_title",
+      "label": "Accordion 2 title",
+      "default": "How to Use"
+    },
+    {
+      "type": "richtext",
+      "id": "accordion_2_content",
+      "label": "Accordion 2 content"
+    },
+    {
+      "type": "text",
+      "id": "accordion_3_title",
+      "label": "Accordion 3 title"
+    },
+    {
+      "type": "richtext",
+      "id": "accordion_3_content",
+      "label": "Accordion 3 content"
+    },
+
+    {
+      "type": "header",
+      "content": "Reviews"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_reviews",
+      "label": "Show reviews",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "review_1_text",
+      "label": "Review 1 text",
+      "default": "I love this product! Noticeable increased energy and post workout pain levels much lower."
+    },
+    {
+      "type": "text",
+      "id": "review_1_author",
+      "label": "Review 1 author",
+      "default": "Joanette D."
+    },
+    {
+      "type": "text",
+      "id": "review_2_text",
+      "label": "Review 2 text",
+      "default": "Have definitely felt a surge in my energy and overall well being since taking."
+    },
+    {
+      "type": "text",
+      "id": "review_2_author",
+      "label": "Review 2 author",
+      "default": "Joanette D."
+    },
+    {
+      "type": "text",
+      "id": "review_3_text",
+      "label": "Review 3 text",
+      "default": "Amazing product, I feel more focused and energized every single day."
+    },
+    {
+      "type": "text",
+      "id": "review_3_author",
+      "label": "Review 3 author",
+      "default": "Mike R."
+    },
+    {
+      "type": "text",
+      "id": "review_4_text",
+      "label": "Review 4 text",
+      "default": "Best supplement I have tried. Highly recommend to anyone looking for a natural boost."
+    },
+    {
+      "type": "text",
+      "id": "review_4_author",
+      "label": "Review 4 author",
+      "default": "Sarah K."
+    },
+    {
+      "type": "text",
+      "id": "review_5_text",
+      "label": "Review 5 text",
+      "default": "Incredible results within the first two weeks. My energy levels are through the roof."
+    },
+    {
+      "type": "text",
+      "id": "review_5_author",
+      "label": "Review 5 author",
+      "default": "Tom B."
+    },
+    {
+      "type": "text",
+      "id": "review_6_text",
+      "label": "Review 6 text",
+      "default": "I was skeptical at first but this product genuinely changed my daily routine."
+    },
+    {
+      "type": "text",
+      "id": "review_6_author",
+      "label": "Review 6 author",
+      "default": "Anna P."
+    }
   ],
-  "presets": [{ "name": "Custom Product Section" }]
+  "presets": [
+    {
+      "name": "Custom Product Section"
+    }
+  ]
 }
 {% endschema %}
