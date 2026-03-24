@@ -998,7 +998,6 @@
               <span class="custom-product-section__meta-separator"></span>
             {%- endunless -%}
           {%- endif -%}
-
           {%- unless current_product.has_only_default_variant -%}
             <span class="custom-product-section__variant-label">
               <span class="custom-product-section__dot" data-cps="dot"></span>
@@ -1049,7 +1048,6 @@
             {%- if section.settings.flavor_label != blank -%}
               <span class="custom-product-section__variants-label">{{ section.settings.flavor_label }}</span>
             {%- endif -%}
-
             {%- for option in current_product.options_with_values -%}
               {%- assign opt_idx = forloop.index0 -%}
               <div class="custom-product-section__chips" data-option-index="{{ opt_idx }}">
@@ -1073,7 +1071,6 @@
                   </button>
                 {%- endfor -%}
               </div>
-
               <div class="custom-product-section__dropdown" data-option-index="{{ opt_idx }}">
                 <div class="custom-product-section__dropdown-wrapper">
                   <span class="custom-product-section__dropdown-dot" data-cps="dropdown-dot"></span>
@@ -1159,7 +1156,7 @@
         {%- for i in (1..3) -%}
           {%- assign acc_title   = 'accordion_' | append: i | append: '_title' -%}
           {%- assign acc_content = 'accordion_' | append: i | append: '_content' -%}
-          {%- if section.settings[acc_title] != blank -%}
+          {%- if section.settings[acc_title] != blank and section.settings[acc_content] != blank -%}
             <div class="custom-product-section__accordion{% if i == 1 %} custom-product-section__accordion--open{% endif %}">
               <button class="custom-product-section__accordion-trigger" type="button">
                 {{ section.settings[acc_title] }}
@@ -1173,11 +1170,9 @@
                   </svg>
                 </span>
               </button>
-              {%- if section.settings[acc_content] != blank -%}
-                <div class="custom-product-section__accordion-content">
-                  {{ section.settings[acc_content] }}
-                </div>
-              {%- endif -%}
+              <div class="custom-product-section__accordion-content">
+                {{ section.settings[acc_content] }}
+              </div>
             </div>
           {%- endif -%}
         {%- endfor -%}
@@ -1736,12 +1731,14 @@
     {
       "type": "text",
       "id": "badge_1_text",
-      "label": "Badge 1 text"
+      "label": "Badge 1 text",
+      "default": "3 bags (90 servings)"
     },
     {
       "type": "text",
       "id": "badge_2_text",
-      "label": "Badge 2 text"
+      "label": "Badge 2 text",
+      "default": "No artificial flavors/sweeteners"
     },
     {
       "type": "header",
@@ -1750,7 +1747,8 @@
     {
       "type": "text",
       "id": "accordion_1_title",
-      "label": "Accordion 1 title"
+      "label": "Accordion 1 title",
+      "default": "What is Rimo™"
     },
     {
       "type": "richtext",
@@ -1760,7 +1758,8 @@
     {
       "type": "text",
       "id": "accordion_2_title",
-      "label": "Accordion 2 title"
+      "label": "Accordion 2 title",
+      "default": "How to Use"
     },
     {
       "type": "richtext",
