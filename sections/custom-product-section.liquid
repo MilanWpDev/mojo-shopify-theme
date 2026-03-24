@@ -69,8 +69,6 @@
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
   }
-
-  /* ── Swiper nav buttons ── */
   .custom-product-section__main-swiper .swiper-button-prev,
   .custom-product-section__main-swiper .swiper-button-next {
     width: 48px !important;
@@ -309,14 +307,32 @@
   .custom-product-section__chip--active[data-value="Tropical"] .custom-product-section__chip-dot::after {
     background: #373737;
   }
+
+  /* ── Dropdown ── */
   .custom-product-section__dropdown {
     display: none;
     margin-bottom: 32px;
   }
+  .custom-product-section__dropdown-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .custom-product-section__dropdown-dot {
+    position: absolute;
+    left: 16px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #f5a623;
+    flex-shrink: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
   .custom-product-section__dropdown-select {
     width: 100%;
     height: 54px;
-    padding: 16px;
+    padding: 16px 40px 16px 34px;
     border: 1px solid #B8B8B8;
     border-radius: 8px;
     font-size: 16px;
@@ -376,7 +392,8 @@
     font-weight: 400;
     line-height: 140%;
     letter-spacing: -0.48px;
-    color: #373737;
+    color: #373737 !important;
+    -webkit-text-fill-color: #373737 !important;
     outline: none;
     -moz-appearance: textfield;
     background: transparent;
@@ -693,6 +710,34 @@
     }
     .custom-product-section__chips { display: none; }
     .custom-product-section__dropdown { display: block; }
+
+    /* FIX 1: ATC dugme ne izlazi van ekrana */
+    .custom-product-section__atc-row {
+      flex-wrap: nowrap;
+      gap: 8px;
+    }
+    .custom-product-section__quantity {
+      flex-shrink: 0;
+      padding: 12px 10px;
+      gap: 4px;
+    }
+    .custom-product-section__qty-btn {
+      width: 20px;
+      font-size: 16px;
+    }
+    .custom-product-section__qty-input {
+      width: 24px;
+      font-size: 15px;
+    }
+    .custom-product-section__atc-btn {
+      flex: 1 1 0;
+      min-width: 0;
+      padding: 12px 10px;
+      font-size: 13px;
+      letter-spacing: 0.2px;
+      overflow: hidden;
+    }
+
     .custom-product-section__reviews-swiper .swiper-slide {
       width: 314px !important;
     }
@@ -834,24 +879,27 @@
               {%- endfor -%}
             </div>
             <div class="custom-product-section__dropdown" data-option-index="{{ opt_idx }}">
-              <select class="custom-product-section__dropdown-select" data-option-index="{{ opt_idx }}">
-                {%- for value in option.values -%}
-                  {%- assign matched_variant = nil -%}
-                  {%- for variant in current_product.variants -%}
-                    {%- if variant.option1 == value -%}
-                      {%- assign matched_variant = variant -%}
-                      {%- break -%}
-                    {%- endif -%}
+              <div class="custom-product-section__dropdown-wrapper">
+                <span class="custom-product-section__dropdown-dot" data-cps="dropdown-dot"></span>
+                <select class="custom-product-section__dropdown-select" data-option-index="{{ opt_idx }}">
+                  {%- for value in option.values -%}
+                    {%- assign matched_variant = nil -%}
+                    {%- for variant in current_product.variants -%}
+                      {%- if variant.option1 == value -%}
+                        {%- assign matched_variant = variant -%}
+                        {%- break -%}
+                      {%- endif -%}
+                    {%- endfor -%}
+                    <option
+                      value="{{ value }}"
+                      data-variant-description="{% if matched_variant and matched_variant.metafields.custom.description != blank %}{{ matched_variant.metafields.custom.description | metafield_tag | escape }}{% else %}{{ current_product.description | escape }}{% endif %}"
+                      {% if value == option.selected_value %}selected{% endif %}
+                    >
+                      {{ value }}
+                    </option>
                   {%- endfor -%}
-                  <option
-                    value="{{ value }}"
-                    data-variant-description="{% if matched_variant and matched_variant.metafields.custom.description != blank %}{{ matched_variant.metafields.custom.description | metafield_tag | escape }}{% else %}{{ current_product.description | escape }}{% endif %}"
-                    {% if value == option.selected_value %}selected{% endif %}
-                  >
-                    {{ value }}
-                  </option>
-                {%- endfor -%}
-              </select>
+                </select>
+              </div>
             </div>
           {%- endfor -%}
         </div>
@@ -1096,6 +1144,14 @@
     return byOption || null;
   }
 
+  /* FIX 2: update dropdown dot boja */
+  function updateDropdownDot(variantOption) {
+    var dot = sectionEl.querySelector('[data-cps="dropdown-dot"]');
+    if (!dot) return;
+    var color = variantColors[variantOption] || '#f5a623';
+    dot.style.background = color;
+  }
+
   function syncSelectorsFromVariant(variant) {
     if (!variant) return;
     selectedOptions = variant.options.slice();
@@ -1107,6 +1163,7 @@
       var idx = parseInt(select.dataset.optionIndex);
       select.value = selectedOptions[idx];
     });
+    updateDropdownDot(variant.option1 || variant.title);
   }
 
   function updateUI(variant, skipImageSync) {
@@ -1128,6 +1185,8 @@
       var col = variantColors[variant.title] || variantColors[variant.option1] || '#f5a623';
       metaDot.style.background = col;
     }
+
+    updateDropdownDot(variant.option1 || variant.title);
 
     var descEl = sectionEl.querySelector('[data-cps="description"]');
     if (descEl) descEl.innerHTML = findDescriptionSource(variant);
