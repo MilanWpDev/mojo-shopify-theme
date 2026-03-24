@@ -25,10 +25,8 @@
   }
   .custom-product-section__inner {
     display: grid;
-    grid-template-columns:
-      minmax(0, {{ section.settings.gallery_column_width | default: 770 }}px)
-      minmax(0, {{ section.settings.info_column_width | default: 500 }}px);
-    gap: {{ section.settings.gallery_info_gap | default: 56 }}px;
+    grid-template-columns: minmax(0, 770px) minmax(0, 500px);
+    gap: 56px;
     align-items: start;
   }
   .custom-product-section__gallery,
@@ -44,7 +42,7 @@
     overflow: hidden;
     background: white;
     width: 100%;
-    height: {{ section.settings.gallery_height_desktop | default: 770 }}px;
+    height: 770px;
     margin-bottom: 16px;
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
@@ -126,16 +124,16 @@
     display: flex;
     flex-wrap: nowrap;
     justify-content: center;
-    gap: {{ section.settings.thumbnail_gap | default: 8 }}px;
+    gap: 8px;
     transform: none;
     width: 100%;
   }
   .custom-product-section__thumb-swiper .swiper-slide {
-    flex: 0 0 {{ section.settings.thumbnail_size_desktop | default: 99 }}px;
-    width: {{ section.settings.thumbnail_size_desktop | default: 99 }}px;
-    height: {{ section.settings.thumbnail_size_desktop | default: 99 }}px;
-    min-width: {{ section.settings.thumbnail_size_desktop | default: 99 }}px;
-    max-width: {{ section.settings.thumbnail_size_desktop | default: 99 }}px;
+    flex: 0 0 99px;
+    width: 99px;
+    height: 99px;
+    min-width: 99px;
+    max-width: 99px;
     border-radius: 8px;
     border: 1px solid #EBEBEB;
     background: #FEFEFE;
@@ -684,16 +682,16 @@
       gap: 24px;
     }
     .custom-product-section__main-swiper {
-      height: {{ section.settings.gallery_height_mobile | default: 380 }}px;
+      height: 380px;
       border-radius: 7.109px;
       border: 0.444px solid #BBB;
       margin-bottom: 7px;
     }
     .custom-product-section__main-swiper .swiper-wrapper {
-      height: {{ section.settings.gallery_height_mobile | default: 380 }}px;
+      height: 380px;
     }
     .custom-product-section__main-swiper .swiper-slide {
-      height: {{ section.settings.gallery_height_mobile | default: 380 }}px;
+      height: 380px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -814,7 +812,6 @@
 
   <div class="custom-product-section__inner">
 
-    <!-- Gallery -->
     <div class="custom-product-section__gallery">
       <div class="swiper custom-product-section__main-swiper" id="mainSwiper-{{ section.id }}">
         <div class="swiper-wrapper">
@@ -845,7 +842,6 @@
       </div>
     </div>
 
-    <!-- Info -->
     <div class="custom-product-section__info">
 
       <h1 class="custom-product-section__title">{{ current_product.title }}</h1>
@@ -863,30 +859,27 @@
 
       {%- if section.settings.show_badges -%}
         <div class="custom-product-section__badges">
-          {%- for i in (1..3) -%}
-            {%- assign badge_text = 'badge_' | append: i | append: '_text' -%}
-            {%- assign badge_icon = 'badge_' | append: i | append: '_icon' -%}
-            {%- if section.settings[badge_text] != blank -%}
-              <div class="custom-product-section__badge">
-                {%- if i == 1 -%}
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M4.50977 2.89999H11.4404C11.6005 2.90021 11.7318 3.02616 11.7393 3.18613L12.2129 13.5865C12.2206 13.7573 12.084 13.9 11.9131 13.9H4.03613C3.86529 13.8998 3.72866 13.7572 3.73633 13.5865L4.20996 3.18613C4.21737 3.02602 4.34946 2.89999 4.50977 2.89999Z" stroke="#373737"/>
-                    <line x1="4" y1="5.10001" x2="12" y2="5.10001" stroke="#373737"/>
-                  </svg>
-                {%- elsif i == 2 -%}
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M10.1004 13.6999C10.1004 13.6999 6.19968 14 4.09932 11.5996C1.99896 9.19918 1.99896 1.99794 1.99896 1.99794C1.99896 1.99794 9.2002 1.69789 11.6006 3.4982C14.001 5.29851 13.4009 10.3994 13.4009 10.3994" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M14.001 14C14.001 14 10.6466 11.465 8.60006 9.19917C6.5535 6.93333 5.59955 4.69839 5.59955 4.69839" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M8.6001 9.19916L8.90015 5.29849" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M8.60006 9.19916L5.59955 8.89911" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                {%- elsif section.settings[badge_icon] != blank -%}
-                  <span>{{ section.settings[badge_icon] }}</span>
-                {%- endif -%}
-                <span>{{ section.settings[badge_text] }}</span>
-              </div>
-            {%- endif -%}
-          {%- endfor -%}
+          {%- if section.settings.badge_1_text != blank -%}
+            <div class="custom-product-section__badge">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M4.50977 2.89999H11.4404C11.6005 2.90021 11.7318 3.02616 11.7393 3.18613L12.2129 13.5865C12.2206 13.7573 12.084 13.9 11.9131 13.9H4.03613C3.86529 13.8998 3.72866 13.7572 3.73633 13.5865L4.20996 3.18613C4.21737 3.02602 4.34946 2.89999 4.50977 2.89999Z" stroke="#373737"/>
+                <line x1="4" y1="5.10001" x2="12" y2="5.10001" stroke="#373737"/>
+              </svg>
+              <span>{{ section.settings.badge_1_text }}</span>
+            </div>
+          {%- endif -%}
+
+          {%- if section.settings.badge_2_text != blank -%}
+            <div class="custom-product-section__badge">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M10.1004 13.6999C10.1004 13.6999 6.19968 14 4.09932 11.5996C1.99896 9.19918 1.99896 1.99794 1.99896 1.99794C1.99896 1.99794 9.2002 1.69789 11.6006 3.4982C14.001 5.29851 13.4009 10.3994 13.4009 10.3994" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M14.001 14C14.001 14 10.6466 11.465 8.60006 9.19917C6.5535 6.93333 5.59955 4.69839 5.59955 4.69839" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8.6001 9.19916L8.90015 5.29849" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8.60006 9.19916L5.59955 8.89911" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>{{ section.settings.badge_2_text }}</span>
+            </div>
+          {%- endif -%}
         </div>
       {%- endif -%}
 
@@ -1050,17 +1043,15 @@
           <div class="custom-product-section__reviews-clip">
             <div class="swiper custom-product-section__reviews-swiper" id="reviewsSwiper-{{ section.id }}">
               <div class="swiper-wrapper">
-                {%- for i in (1..6) -%}
-                  {%- assign rev_text   = 'review_' | append: i | append: '_text' -%}
-                  {%- assign rev_author = 'review_' | append: i | append: '_author' -%}
-                  {%- if section.settings[rev_text] != blank -%}
-                    <div class="swiper-slide">
+                {%- for block in section.blocks -%}
+                  {%- if block.type == 'review' -%}
+                    <div class="swiper-slide" {{ block.shopify_attributes }}>
                       <div class="custom-product-section__review-card">
-                        <div class="custom-product-section__review-stars">★★★★★</div>
-                        <p class="custom-product-section__review-text">{{ section.settings[rev_text] }}</p>
+                        <div class="custom-product-section__review-stars">{{ block.settings.stars | default: '★★★★★' }}</div>
+                        <p class="custom-product-section__review-text">{{ block.settings.text }}</p>
                         <div class="custom-product-section__review-author">
-                          {{ section.settings[rev_author] }}
-                          <span>✓ Verified customer</span>
+                          {{ block.settings.author }}
+                          <span>{{ block.settings.subtitle | default: '✓ Verified customer' }}</span>
                         </div>
                       </div>
                     </div>
@@ -1088,12 +1079,12 @@
   if (!product) return;
 
   var variantColors = {
-    'Mighty Mango':      '#F47B06',
-    'Pineapple':         '#E8E41D',
-    'Black Currant':     '#782077',
-    'Tropical':          '#90E6E5',
+    'Mighty Mango': '#F47B06',
+    'Pineapple': '#E8E41D',
+    'Black Currant': '#782077',
+    'Tropical': '#90E6E5',
     'Blueberry Vanilla': '#7637FF',
-    'Chocolate':         '#834936'
+    'Chocolate': '#834936'
   };
 
   sectionEl.querySelectorAll('.custom-product-section__chip').forEach(function(chip) {
@@ -1444,7 +1435,7 @@
 
     {
       "type": "header",
-      "content": "Layout desktop"
+      "content": "Layout"
     },
     {
       "type": "range",
@@ -1484,65 +1475,6 @@
     },
     {
       "type": "range",
-      "id": "gallery_column_width",
-      "label": "Gallery column width",
-      "min": 500,
-      "max": 900,
-      "step": 10,
-      "default": 770
-    },
-    {
-      "type": "range",
-      "id": "info_column_width",
-      "label": "Info column width",
-      "min": 360,
-      "max": 700,
-      "step": 10,
-      "default": 500
-    },
-    {
-      "type": "range",
-      "id": "gallery_info_gap",
-      "label": "Column gap",
-      "min": 16,
-      "max": 120,
-      "step": 4,
-      "default": 56
-    },
-    {
-      "type": "range",
-      "id": "gallery_height_desktop",
-      "label": "Gallery height desktop",
-      "min": 400,
-      "max": 900,
-      "step": 10,
-      "default": 770
-    },
-    {
-      "type": "range",
-      "id": "thumbnail_size_desktop",
-      "label": "Thumbnail size desktop",
-      "min": 60,
-      "max": 140,
-      "step": 1,
-      "default": 99
-    },
-    {
-      "type": "range",
-      "id": "thumbnail_gap",
-      "label": "Thumbnail gap",
-      "min": 0,
-      "max": 20,
-      "step": 1,
-      "default": 8
-    },
-
-    {
-      "type": "header",
-      "content": "Layout mobile"
-    },
-    {
-      "type": "range",
       "id": "section_padding_top_mobile",
       "label": "Top padding mobile",
       "min": 0,
@@ -1567,15 +1499,6 @@
       "max": 40,
       "step": 2,
       "default": 16
-    },
-    {
-      "type": "range",
-      "id": "gallery_height_mobile",
-      "label": "Gallery height mobile",
-      "min": 260,
-      "max": 500,
-      "step": 10,
-      "default": 380
     },
 
     {
@@ -1631,24 +1554,14 @@
     {
       "type": "text",
       "id": "badge_1_text",
-      "label": "Badge 1 text",
+      "label": "Servings text",
       "default": "3 bags (90 servings)"
     },
     {
       "type": "text",
       "id": "badge_2_text",
-      "label": "Badge 2 text",
+      "label": "Flavors text",
       "default": "No artificial flavors/sweeteners"
-    },
-    {
-      "type": "text",
-      "id": "badge_3_icon",
-      "label": "Badge 3 icon"
-    },
-    {
-      "type": "text",
-      "id": "badge_3_text",
-      "label": "Badge 3 text"
     },
 
     {
@@ -1697,83 +1610,73 @@
       "id": "show_reviews",
       "label": "Show reviews",
       "default": true
-    },
+    }
+  ],
+  "blocks": [
     {
-      "type": "text",
-      "id": "review_1_text",
-      "label": "Review 1 text",
-      "default": "I love this product! Noticeable increased energy and post workout pain levels much lower."
-    },
-    {
-      "type": "text",
-      "id": "review_1_author",
-      "label": "Review 1 author",
-      "default": "Joanette D."
-    },
-    {
-      "type": "text",
-      "id": "review_2_text",
-      "label": "Review 2 text",
-      "default": "Have definitely felt a surge in my energy and overall well being since taking."
-    },
-    {
-      "type": "text",
-      "id": "review_2_author",
-      "label": "Review 2 author",
-      "default": "Joanette D."
-    },
-    {
-      "type": "text",
-      "id": "review_3_text",
-      "label": "Review 3 text",
-      "default": "Amazing product, I feel more focused and energized every single day."
-    },
-    {
-      "type": "text",
-      "id": "review_3_author",
-      "label": "Review 3 author",
-      "default": "Mike R."
-    },
-    {
-      "type": "text",
-      "id": "review_4_text",
-      "label": "Review 4 text",
-      "default": "Best supplement I have tried. Highly recommend to anyone looking for a natural boost."
-    },
-    {
-      "type": "text",
-      "id": "review_4_author",
-      "label": "Review 4 author",
-      "default": "Sarah K."
-    },
-    {
-      "type": "text",
-      "id": "review_5_text",
-      "label": "Review 5 text",
-      "default": "Incredible results within the first two weeks. My energy levels are through the roof."
-    },
-    {
-      "type": "text",
-      "id": "review_5_author",
-      "label": "Review 5 author",
-      "default": "Tom B."
-    },
-    {
-      "type": "text",
-      "id": "review_6_text",
-      "label": "Review 6 text",
-      "default": "I was skeptical at first but this product genuinely changed my daily routine."
-    },
-    {
-      "type": "text",
-      "id": "review_6_author",
-      "label": "Review 6 author",
-      "default": "Anna P."
+      "type": "review",
+      "name": "Review",
+      "limit": 50,
+      "settings": [
+        {
+          "type": "text",
+          "id": "stars",
+          "label": "Stars",
+          "default": "★★★★★"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Review text",
+          "default": "I love this product! Noticeable increased energy and post workout pain levels much lower."
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Author",
+          "default": "Joanette D."
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle",
+          "default": "✓ Verified customer"
+        }
+      ]
     }
   ],
   "presets": [
     {
-      "name": "Custom Product Section"
+      "name": "Custom Product Section",
+      "blocks": [
+        {
+          "type": "review",
+          "settings": {
+            "stars": "★★★★★",
+            "text": "I love this product! Noticeable increased energy and post workout pain levels much lower.",
+            "author": "Joanette D.",
+            "subtitle": "✓ Verified customer"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "stars": "★★★★★",
+            "text": "Have definitely felt a surge in my energy and overall well being since taking.",
+            "author": "Joanette D.",
+            "subtitle": "✓ Verified customer"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "stars": "★★★★★",
+            "text": "Amazing product, I feel more focused and energized every single day.",
+            "author": "Mike R.",
+            "subtitle": "✓ Verified customer"
+          }
+        }
+      ]
     }
   ]
 }
