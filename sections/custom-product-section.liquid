@@ -1131,15 +1131,15 @@
           {%- assign acc_title = 'accordion_' | append: i | append: '_title' -%}
           {%- assign acc_content = 'accordion_' | append: i | append: '_content' -%}
           {%- if section.settings[acc_title] != blank -%}
-            <div class="custom-product-section__accordion">
+            <div class="custom-product-section__accordion{% if i == 1 %} custom-product-section__accordion--open{% endif %}">
               <button class="custom-product-section__accordion-trigger" type="button">
                 {{ section.settings[acc_title] }}
                 <span class="custom-product-section__accordion-icon">
-                  <svg class="cps-icon-plus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <svg class="cps-icon-plus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"{% if i == 1 %} style="display:none;"{% endif %}>
                     <path d="M5 12H19" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M12 5V19" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
-                  <svg class="cps-icon-minus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" style="display:none;">
+                  <svg class="cps-icon-minus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"{% unless i == 1 %} style="display:none;"{% endunless %}>
                     <path d="M5 12H19" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </span>
@@ -1517,17 +1517,17 @@
     trigger.addEventListener('click', function() {
       var acc = this.closest('.custom-product-section__accordion');
       var isOpen = acc.classList.contains('custom-product-section__accordion--open');
+      var plusIcon = trigger.querySelector('.cps-icon-plus');
+      var minusIcon = trigger.querySelector('.cps-icon-minus');
 
-      sectionEl.querySelectorAll('.custom-product-section__accordion').forEach(function(a) {
-        a.classList.remove('custom-product-section__accordion--open');
-        a.querySelector('.cps-icon-plus').style.display = 'block';
-        a.querySelector('.cps-icon-minus').style.display = 'none';
-      });
-
-      if (!isOpen) {
+      if (isOpen) {
+        acc.classList.remove('custom-product-section__accordion--open');
+        if (plusIcon) plusIcon.style.display = 'block';
+        if (minusIcon) minusIcon.style.display = 'none';
+      } else {
         acc.classList.add('custom-product-section__accordion--open');
-        trigger.querySelector('.cps-icon-plus').style.display = 'none';
-        trigger.querySelector('.cps-icon-minus').style.display = 'block';
+        if (plusIcon) plusIcon.style.display = 'none';
+        if (minusIcon) minusIcon.style.display = 'block';
       }
     });
   });
