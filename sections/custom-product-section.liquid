@@ -76,7 +76,7 @@
     width: 48px !important;
     height: 48px !important;
     border-radius: 118.8px !important;
-    background: #BBB !important;
+    background: #373737 !important;
     backdrop-filter: blur(2px);
     -webkit-backdrop-filter: blur(2px);
     display: flex !important;
@@ -85,9 +85,7 @@
     margin-top: -24px !important;
     box-shadow: none !important;
     border: none !important;
-  }
-  .custom-product-section__main-swiper .swiper-button-next {
-    background: #373737 !important;
+    transition: background 0.2s;
   }
   .custom-product-section__main-swiper .swiper-button-prev::after,
   .custom-product-section__main-swiper .swiper-button-next::after {
@@ -100,16 +98,22 @@
     display: block;
     flex-shrink: 0;
   }
+  .custom-product-section__main-swiper .swiper-button-prev .cps-arrow-icon path,
+  .custom-product-section__main-swiper .swiper-button-next .cps-arrow-icon path {
+    fill: white;
+  }
   .custom-product-section__main-swiper .swiper-button-next .cps-arrow-icon {
     transform: rotate(180deg);
   }
-  /* prev arrow color */
-  .custom-product-section__main-swiper .swiper-button-prev .cps-arrow-icon path {
-    fill: #787878;
+  /* Disabled state */
+  .custom-product-section__main-swiper .swiper-button-prev.swiper-button-disabled,
+  .custom-product-section__main-swiper .swiper-button-next.swiper-button-disabled {
+    background: #BBB !important;
+    opacity: 1 !important;
   }
-  /* next arrow color */
-  .custom-product-section__main-swiper .swiper-button-next .cps-arrow-icon path {
-    fill: white;
+  .custom-product-section__main-swiper .swiper-button-prev.swiper-button-disabled .cps-arrow-icon path,
+  .custom-product-section__main-swiper .swiper-button-next.swiper-button-disabled .cps-arrow-icon path {
+    fill: #787878;
   }
 
   /* Thumbnails — uvek svi vidljivi, centrirani, 99x99 */
@@ -480,7 +484,7 @@
     width: 48px;
     height: 48px;
     border-radius: 118.8px;
-    background: #BBB;
+    background: #373737;
     backdrop-filter: blur(2px);
     -webkit-backdrop-filter: blur(2px);
     border: none;
@@ -500,20 +504,18 @@
     flex-shrink: 0;
   }
   .custom-product-section__reviews-nav svg path {
-    fill: #787878;
-  }
-  .custom-product-section__reviews-nav--next {
-    background: #373737;
-  }
-  .custom-product-section__reviews-nav--next svg {
-    transform: rotate(180deg);
-  }
-  .custom-product-section__reviews-nav--next svg path {
     fill: white;
   }
+  .custom-product-section__reviews-nav:last-child svg {
+    transform: rotate(180deg);
+  }
   .custom-product-section__reviews-nav.swiper-button-disabled {
-    opacity: 0.35;
+    background: #BBB !important;
+    opacity: 1 !important;
     cursor: default;
+  }
+  .custom-product-section__reviews-nav.swiper-button-disabled svg path {
+    fill: #787878;
   }
   .custom-product-section__reviews-clip {
     overflow: hidden;
@@ -588,20 +590,17 @@
       max-width: 85%;
       object-fit: contain;
     }
-    /* Mobile nav buttons — manje */
     .custom-product-section__main-swiper .swiper-button-prev,
     .custom-product-section__main-swiper .swiper-button-next {
       width: 32px !important;
       height: 32px !important;
       margin-top: -16px !important;
-      padding: 0 !important;
     }
     .custom-product-section__main-swiper .swiper-button-prev .cps-arrow-icon,
     .custom-product-section__main-swiper .swiper-button-next .cps-arrow-icon {
       width: 14px;
       height: 14px;
     }
-    /* Mobile reviews nav */
     .custom-product-section__reviews-nav {
       width: 32px;
       height: 32px;
@@ -849,11 +848,11 @@
           <div class="custom-product-section__reviews-header">
             <button class="custom-product-section__reviews-nav" id="reviewsPrev-{{ section.id }}" type="button">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M8.42417 4.175C8.65848 4.40932 8.65848 4.78922 8.42417 5.02353L4.44843 8.99927H16.1999C16.5313 8.99927 16.7999 9.2679 16.7999 9.59927C16.7999 9.93064 16.5313 10.1993 16.1999 10.1993H4.44843L8.42417 14.175C8.65848 14.4093 8.65848 14.7892 8.42417 15.0235C8.18985 15.2578 7.80995 15.2578 7.57564 15.0235L2.57564 10.0235C2.34132 9.78922 2.34132 9.40932 2.57564 9.175L7.57564 4.175C7.80995 3.94069 8.18985 3.94069 8.42417 4.175Z" fill="#787878"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M8.42417 4.175C8.65848 4.40932 8.65848 4.78922 8.42417 5.02353L4.44843 8.99927H16.1999C16.5313 8.99927 16.7999 9.2679 16.7999 9.59927C16.7999 9.93064 16.5313 10.1993 16.1999 10.1993H4.44843L8.42417 14.175C8.65848 14.4093 8.65848 14.7892 8.42417 15.0235C8.18985 15.2578 7.80995 15.2578 7.57564 15.0235L2.57564 10.0235C2.34132 9.78922 2.34132 9.40932 2.57564 9.175L7.57564 4.175C7.80995 3.94069 8.18985 3.94069 8.42417 4.175Z" fill="white"/>
               </svg>
             </button>
-            <button class="custom-product-section__reviews-nav custom-product-section__reviews-nav--next" id="reviewsNext-{{ section.id }}" type="button">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <button class="custom-product-section__reviews-nav" id="reviewsNext-{{ section.id }}" type="button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" style="transform: rotate(180deg);">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M8.42417 4.175C8.65848 4.40932 8.65848 4.78922 8.42417 5.02353L4.44843 8.99927H16.1999C16.5313 8.99927 16.7999 9.2679 16.7999 9.59927C16.7999 9.93064 16.5313 10.1993 16.1999 10.1993H4.44843L8.42417 14.175C8.65848 14.4093 8.65848 14.7892 8.42417 15.0235C8.18985 15.2578 7.80995 15.2578 7.57564 15.0235L2.57564 10.0235C2.34132 9.78922 2.34132 9.40932 2.57564 9.175L7.57564 4.175C7.80995 3.94069 8.18985 3.94069 8.42417 4.175Z" fill="white"/>
               </svg>
             </button>
