@@ -43,6 +43,7 @@
     margin-bottom: 16px;
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
+    position: relative;
   }
   .custom-product-section__main-swiper .swiper-wrapper {
     height: 100%;
@@ -67,6 +68,48 @@
     display: block;
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
+  }
+
+  /* ── Swiper nav buttons — glavna galerija desktop ── */
+  .custom-product-section__main-swiper .swiper-button-prev,
+  .custom-product-section__main-swiper .swiper-button-next {
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 118.8px !important;
+    background: #BBB !important;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-top: -24px !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+  .custom-product-section__main-swiper .swiper-button-next {
+    background: #373737 !important;
+  }
+  .custom-product-section__main-swiper .swiper-button-prev::after,
+  .custom-product-section__main-swiper .swiper-button-next::after {
+    display: none !important;
+  }
+  .custom-product-section__main-swiper .swiper-button-prev .cps-arrow-icon,
+  .custom-product-section__main-swiper .swiper-button-next .cps-arrow-icon {
+    width: 19.2px;
+    height: 19.2px;
+    display: block;
+    flex-shrink: 0;
+  }
+  .custom-product-section__main-swiper .swiper-button-next .cps-arrow-icon {
+    transform: rotate(180deg);
+  }
+  /* prev arrow color */
+  .custom-product-section__main-swiper .swiper-button-prev .cps-arrow-icon path {
+    fill: #787878;
+  }
+  /* next arrow color */
+  .custom-product-section__main-swiper .swiper-button-next .cps-arrow-icon path {
+    fill: white;
   }
 
   /* Thumbnails — uvek svi vidljivi, centrirani, 99x99 */
@@ -109,21 +152,6 @@
   .custom-product-section__thumb-swiper .swiper-slide-thumb-active {
     border: 1px solid #373737;
     opacity: 1 !important;
-  }
-
-  .custom-product-section__main-swiper .swiper-button-prev,
-  .custom-product-section__main-swiper .swiper-button-next {
-    color: {{ section.settings.accent_color | default: '#5B4FE9' }} !important;
-    background: white;
-    width: 36px !important;
-    height: 36px !important;
-    border-radius: 50%;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  }
-  .custom-product-section__main-swiper .swiper-button-prev::after,
-  .custom-product-section__main-swiper .swiper-button-next::after {
-    font-size: 14px !important;
-    font-weight: bold;
   }
 
   /* ── Info ── */
@@ -449,21 +477,40 @@
     margin-bottom: 16px;
   }
   .custom-product-section__reviews-nav {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: white;
-    border: 1.5px solid #ddd;
+    width: 48px;
+    height: 48px;
+    border-radius: 118.8px;
+    background: #BBB;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    border: none;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s;
-    font-size: 16px;
-    color: #333;
-    line-height: 1;
+    transition: background 0.2s;
+    flex-shrink: 0;
+    padding: 14.4px 19.2px;
+    box-sizing: border-box;
   }
-  .custom-product-section__reviews-nav:hover { background: #f5f5f5; }
+  .custom-product-section__reviews-nav svg {
+    width: 19.2px;
+    height: 19.2px;
+    display: block;
+    flex-shrink: 0;
+  }
+  .custom-product-section__reviews-nav svg path {
+    fill: #787878;
+  }
+  .custom-product-section__reviews-nav--next {
+    background: #373737;
+  }
+  .custom-product-section__reviews-nav--next svg {
+    transform: rotate(180deg);
+  }
+  .custom-product-section__reviews-nav--next svg path {
+    fill: white;
+  }
   .custom-product-section__reviews-nav.swiper-button-disabled {
     opacity: 0.35;
     cursor: default;
@@ -541,6 +588,29 @@
       max-width: 85%;
       object-fit: contain;
     }
+    /* Mobile nav buttons — manje */
+    .custom-product-section__main-swiper .swiper-button-prev,
+    .custom-product-section__main-swiper .swiper-button-next {
+      width: 32px !important;
+      height: 32px !important;
+      margin-top: -16px !important;
+      padding: 0 !important;
+    }
+    .custom-product-section__main-swiper .swiper-button-prev .cps-arrow-icon,
+    .custom-product-section__main-swiper .swiper-button-next .cps-arrow-icon {
+      width: 14px;
+      height: 14px;
+    }
+    /* Mobile reviews nav */
+    .custom-product-section__reviews-nav {
+      width: 32px;
+      height: 32px;
+      padding: 9.6px 12.8px;
+    }
+    .custom-product-section__reviews-nav svg {
+      width: 14px;
+      height: 14px;
+    }
     .custom-product-section__thumb-swiper .swiper-slide {
       flex: 0 0 calc((100% - 40px) / 6) !important;
       width: calc((100% - 40px) / 6) !important;
@@ -568,6 +638,12 @@
     }
   }
 </style>
+
+{%- capture arrow_svg -%}
+<svg class="cps-arrow-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M8.42417 4.175C8.65848 4.40932 8.65848 4.78922 8.42417 5.02353L4.44843 8.99927H16.1999C16.5313 8.99927 16.7999 9.2679 16.7999 9.59927C16.7999 9.93064 16.5313 10.1993 16.1999 10.1993H4.44843L8.42417 14.175C8.65848 14.4093 8.65848 14.7892 8.42417 15.0235C8.18985 15.2578 7.80995 15.2578 7.57564 15.0235L2.57564 10.0235C2.34132 9.78922 2.34132 9.40932 2.57564 9.175L7.57564 4.175C7.80995 3.94069 8.18985 3.94069 8.42417 4.175Z" fill="#787878"/>
+</svg>
+{%- endcapture -%}
 
 <div
   class="custom-product-section"
@@ -602,8 +678,8 @@
             </div>
           {%- endfor -%}
         </div>
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev">{{ arrow_svg }}</div>
+        <div class="swiper-button-next">{{ arrow_svg }}</div>
       </div>
 
       <div class="custom-product-section__thumb-swiper" id="thumbSwiper-{{ section.id }}">
@@ -771,8 +847,16 @@
       {%- if section.settings.show_reviews -%}
         <div class="custom-product-section__reviews">
           <div class="custom-product-section__reviews-header">
-            <button class="custom-product-section__reviews-nav" id="reviewsPrev-{{ section.id }}" type="button">&#8592;</button>
-            <button class="custom-product-section__reviews-nav" id="reviewsNext-{{ section.id }}" type="button">&#8594;</button>
+            <button class="custom-product-section__reviews-nav" id="reviewsPrev-{{ section.id }}" type="button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M8.42417 4.175C8.65848 4.40932 8.65848 4.78922 8.42417 5.02353L4.44843 8.99927H16.1999C16.5313 8.99927 16.7999 9.2679 16.7999 9.59927C16.7999 9.93064 16.5313 10.1993 16.1999 10.1993H4.44843L8.42417 14.175C8.65848 14.4093 8.65848 14.7892 8.42417 15.0235C8.18985 15.2578 7.80995 15.2578 7.57564 15.0235L2.57564 10.0235C2.34132 9.78922 2.34132 9.40932 2.57564 9.175L7.57564 4.175C7.80995 3.94069 8.18985 3.94069 8.42417 4.175Z" fill="#787878"/>
+              </svg>
+            </button>
+            <button class="custom-product-section__reviews-nav custom-product-section__reviews-nav--next" id="reviewsNext-{{ section.id }}" type="button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M8.42417 4.175C8.65848 4.40932 8.65848 4.78922 8.42417 5.02353L4.44843 8.99927H16.1999C16.5313 8.99927 16.7999 9.2679 16.7999 9.59927C16.7999 9.93064 16.5313 10.1993 16.1999 10.1993H4.44843L8.42417 14.175C8.65848 14.4093 8.65848 14.7892 8.42417 15.0235C8.18985 15.2578 7.80995 15.2578 7.57564 15.0235L2.57564 10.0235C2.34132 9.78922 2.34132 9.40932 2.57564 9.175L7.57564 4.175C7.80995 3.94069 8.18985 3.94069 8.42417 4.175Z" fill="white"/>
+              </svg>
+            </button>
           </div>
           <div class="custom-product-section__reviews-clip">
             <div class="swiper custom-product-section__reviews-swiper" id="reviewsSwiper-{{ section.id }}">
@@ -836,7 +920,6 @@
   var thumbEl = document.getElementById('thumbSwiper-' + sectionId);
   var mainEl  = document.getElementById('mainSwiper-' + sectionId);
 
-  /* Thumbnails — bez Swipera, direktni klik */
   var thumbSlides = thumbEl.querySelectorAll('.swiper-slide');
   thumbSlides.forEach(function(slide, idx) {
     slide.addEventListener('click', function() {
