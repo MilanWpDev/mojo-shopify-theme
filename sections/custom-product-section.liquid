@@ -41,6 +41,8 @@
     width: 100%;
     height: 773px;
     margin-bottom: 16px;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
   }
   .custom-product-section__main-swiper .swiper-wrapper {
     height: 100%;
@@ -52,6 +54,10 @@
     background: white;
     height: 100%;
     overflow: hidden;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
   .custom-product-section__main-image {
     width: auto;
@@ -59,6 +65,8 @@
     max-width: 85%;
     object-fit: contain;
     display: block;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
   }
 
   /* Thumbnails — uvek svi vidljivi, jednake sirine */
@@ -830,6 +838,7 @@
 
   var mainSwiper = new Swiper(mainEl, {
     spaceBetween: 10,
+    roundLengths: true,
     navigation: {
       nextEl: mainEl.querySelector('.swiper-button-next'),
       prevEl: mainEl.querySelector('.swiper-button-prev')
