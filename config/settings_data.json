@@ -394,6 +394,20 @@
       },
       "custom_product_section_YdMTXe": {
         "type": "custom-product-section",
+        "blocks": {
+          "review_adDerE": {
+            "type": "review",
+            "settings": {
+              "stars": "★★★★★",
+              "text": "I love this product! Noticeable increased energy and post workout pain levels much lower.",
+              "author": "Joanette D.",
+              "subtitle": "✓ Verified customer"
+            }
+          }
+        },
+        "block_order": [
+          "review_adDerE"
+        ],
         "name": "Custom Product Section",
         "settings": {
           "product": "longevity-gummies",
