@@ -392,81 +392,13 @@
           "borderRadius": 10
         }
       },
-      "custom_product_section_YdMTXe": {
+      "custom_product_section_Y8FwFU": {
         "type": "custom-product-section",
-        "blocks": {
-          "review_8yYfWe": {
-            "type": "review",
-            "settings": {
-              "stars": "★★★★★",
-              "text": "I love this product! Noticeable increased energy and post workout pain levels much lower.",
-              "author": "Joanette D.",
-              "subtitle": "✓ Verified customer"
-            }
-          },
-          "review_rDRGET": {
-            "type": "review",
-            "settings": {
-              "stars": "★★★★★",
-              "text": "I love this product! Noticeable increased energy and post workout pain levels much lower.",
-              "author": "Joanette D.",
-              "subtitle": "✓ Verified customer"
-            }
-          },
-          "review_wrGHCb": {
-            "type": "review",
-            "settings": {
-              "stars": "★★★★★",
-              "text": "I love this product! Noticeable increased energy and post workout pain levels much lower.",
-              "author": "Joanette D.",
-              "subtitle": "✓ Verified customer"
-            }
-          },
-          "review_adDerE": {
-            "type": "review",
-            "settings": {
-              "stars": "★★★★★",
-              "text": "I love this product! Noticeable increased energy and post workout pain levels much lower.",
-              "author": "Joanette D.",
-              "subtitle": "✓ Verified customer"
-            }
-          }
-        },
-        "block_order": [
-          "review_8yYfWe",
-          "review_rDRGET",
-          "review_wrGHCb",
-          "review_adDerE"
-        ],
         "name": "Custom Product Section",
         "settings": {
           "product": "longevity-gummies",
-          "show_product_type": true,
-          "flavor_label": "Choose your flavor:",
-          "accent_color": "#5b4fe9",
-          "title_color": "#1a1a1a",
-          "max_width": 1440,
-          "section_padding_top": 64,
-          "section_padding_bottom": 64,
-          "section_padding_horizontal": 56,
-          "section_padding_top_mobile": 48,
-          "section_padding_bottom_mobile": 48,
-          "section_padding_horizontal_mobile": 16,
-          "atc_label": "ADD TO CART",
-          "show_guarantee": true,
-          "guarantee_text": "30-Day Money-Back Guarantee",
-          "notification_added_text": "Added!",
-          "view_cart_text": "VIEW YOUR CART",
-          "show_badges": true,
-          "badge_1_text": "3 bags (90 servings)",
-          "badge_2_text": "No artificial flavors/sweeteners",
-          "accordion_1_title": "What is Rimo™",
-          "accordion_1_content": "<p>Following over 15 years of research, groundbreaking discoveries and numerous clinical trials, we have developed a powerful ingredient that’s clinically validated and proven to target the root causes of aging.</p>",
-          "accordion_2_title": "How to Use",
-          "accordion_2_content": "<p>Following over 15 years of research, groundbreaking discoveries and numerous clinical trials, we have developed a powerful ingredient that’s clinically validated and proven to target the root causes of aging.</p>",
-          "accordion_3_title": "",
-          "accordion_3_content": "",
-          "show_reviews": true
+          "max_width": 1200,
+          "view_cart_text": "View Your Cart"
         }
       }
     },
@@ -480,7 +412,7 @@
       "sofia_simple_review_20260309_TcfB4j",
       "sofia_other_products_20260310_c4qNJm",
       "sofia_simple_notice_20260316_Lyxq4A",
-      "custom_product_section_YdMTXe"
+      "custom_product_section_Y8FwFU"
     ]
   },
   "presets": {
