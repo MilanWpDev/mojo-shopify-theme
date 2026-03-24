@@ -331,7 +331,6 @@
     background: #fff;
   }
 
-  /* Light chip override — driven by data-light attribute set in JS */
   .custom-product-section__chip--active[data-light="true"] {
     color: #373737;
   }
@@ -1205,7 +1204,13 @@
                       {%- if block.type == 'review' -%}
                         <div class="swiper-slide" {{ block.shopify_attributes }}>
                           <div class="custom-product-section__review-card">
-                            {%- assign star_count = block.settings.stars | default: 5 | plus: 0 -%}
+                            {%- assign star_val = block.settings.stars | default: '★★★★★' -%}
+                            {%- assign star_count = 5 -%}
+                            {%- if star_val == '★' or star_val == '1' -%}{%- assign star_count = 1 -%}
+                            {%- elsif star_val == '★★' or star_val == '2' -%}{%- assign star_count = 2 -%}
+                            {%- elsif star_val == '★★★' or star_val == '3' -%}{%- assign star_count = 3 -%}
+                            {%- elsif star_val == '★★★★' or star_val == '4' -%}{%- assign star_count = 4 -%}
+                            {%- endif -%}
                             <div class="custom-product-section__review-stars">
                               {%- for s in (1..star_count) -%}{{ star_svg }}{%- endfor -%}
                             </div>
@@ -1233,7 +1238,13 @@
                 {%- for block in section.blocks -%}
                   {%- if block.type == 'review' -%}
                     <div class="custom-product-section__review-card" {{ block.shopify_attributes }}>
-                      {%- assign star_count = block.settings.stars | default: 5 | plus: 0 -%}
+                      {%- assign star_val = block.settings.stars | default: '★★★★★' -%}
+                      {%- assign star_count = 5 -%}
+                      {%- if star_val == '★' or star_val == '1' -%}{%- assign star_count = 1 -%}
+                      {%- elsif star_val == '★★' or star_val == '2' -%}{%- assign star_count = 2 -%}
+                      {%- elsif star_val == '★★★' or star_val == '3' -%}{%- assign star_count = 3 -%}
+                      {%- elsif star_val == '★★★★' or star_val == '4' -%}{%- assign star_count = 4 -%}
+                      {%- endif -%}
                       <div class="custom-product-section__review-stars">
                         {%- for s in (1..star_count) -%}{{ star_svg }}{%- endfor -%}
                       </div>
@@ -1271,9 +1282,6 @@
   var product = window['cpsProduct_' + sectionId];
   if (!product) return;
 
-  // ── Variant colour map ──────────────────────────────────────────────────────
-  // Keys are variant option values; values are hex colours.
-  // Light colours get dark text (data-light="true") — driven by luminance check.
   var variantColors = {
     'Mighty Mango':      '#F47B06',
     'Pineapple':         '#E8E41D',
@@ -1283,18 +1291,14 @@
     'Chocolate':         '#834936'
   };
 
-  // Returns true if the hex colour is light enough to need dark text
   function isLightColor(hex) {
     hex = hex.replace('#', '');
     var r = parseInt(hex.substring(0, 2), 16);
     var g = parseInt(hex.substring(2, 4), 16);
     var b = parseInt(hex.substring(4, 6), 16);
-    // Perceived luminance formula
-    var luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-    return luminance > 0.65;
+    return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.65;
   }
 
-  // Apply chip colours and light-text flag from variantColors map
   sectionEl.querySelectorAll('.custom-product-section__chip').forEach(function(chip) {
     var color = variantColors[chip.dataset.value];
     if (color) {
@@ -1303,16 +1307,14 @@
     }
   });
 
-  // ── State ───────────────────────────────────────────────────────────────────
   var selectedOptions = product.variants[0].options.slice();
   var currentVariant  = product.variants[0];
   var currentPriceText = '';
   var notifTimer = null;
   var isSyncingFromImage = false;
 
-  // ── Swiper: main gallery ────────────────────────────────────────────────────
-  var mainEl   = document.getElementById('mainSwiper-' + sectionId);
-  var thumbEl  = document.getElementById('thumbSwiper-' + sectionId);
+  var mainEl  = document.getElementById('mainSwiper-' + sectionId);
+  var thumbEl = document.getElementById('thumbSwiper-' + sectionId);
   var thumbSlides = thumbEl ? thumbEl.querySelectorAll('.swiper-slide') : [];
 
   var mainSwiper = new Swiper(mainEl, {
@@ -1324,13 +1326,10 @@
     },
     on: {
       slideChange: function() {
-        // Sync thumb active state
         thumbSlides.forEach(function(s) { s.classList.remove('swiper-slide-thumb-active'); });
         if (thumbSlides[mainSwiper.activeIndex]) {
           thumbSlides[mainSwiper.activeIndex].classList.add('swiper-slide-thumb-active');
         }
-
-        // Sync variant selectors from image
         if (isSyncingFromImage) return;
         var activeSlide = mainSwiper.slides[mainSwiper.activeIndex];
         if (!activeSlide) return;
@@ -1346,7 +1345,6 @@
     }
   });
 
-  // Thumb clicks — use Swiper's slideTo for reliable sync
   thumbSlides.forEach(function(slide, idx) {
     slide.addEventListener('click', function() {
       mainSwiper.slideTo(idx);
@@ -1354,7 +1352,6 @@
   });
   if (thumbSlides.length > 0) thumbSlides[0].classList.add('swiper-slide-thumb-active');
 
-  // ── Swiper: reviews ─────────────────────────────────────────────────────────
   var reviewsEl = document.getElementById('reviewsSwiper-' + sectionId);
   if (reviewsEl) {
     new Swiper(reviewsEl, {
@@ -1367,7 +1364,6 @@
     });
   }
 
-  // ── Helpers ─────────────────────────────────────────────────────────────────
   function findVariant(options) {
     return product.variants.find(function(v) {
       return options.every(function(val, i) {
@@ -1380,15 +1376,12 @@
     return '$' + (cents / 100).toFixed(2);
   }
 
-  // Match a variant by image id first, then by alt text containing option value
   function getVariantFromImage(imageId, imageAlt) {
     imageAlt = (imageAlt || '').toLowerCase().trim();
-
     var byImage = product.variants.find(function(v) {
       return v.featured_image && parseInt(v.featured_image.id) === imageId;
     });
     if (byImage) return byImage;
-
     return product.variants.find(function(v) {
       return v.options.some(function(opt) {
         return imageAlt && imageAlt.indexOf((opt || '').toLowerCase().trim()) !== -1;
@@ -1397,18 +1390,14 @@
   }
 
   function getDescriptionForVariant(variant) {
-    // Try chip data-attribute first (desktop)
     var chip = sectionEl.querySelector(
       '.custom-product-section__chip[data-option-index="0"][data-value="' + CSS.escape(variant.option1) + '"]'
     );
     if (chip && chip.dataset.variantDescription) return chip.dataset.variantDescription;
-
-    // Try select option (mobile)
     var opt = sectionEl.querySelector(
       '.custom-product-section__dropdown-select[data-option-index="0"] option[value="' + CSS.escape(variant.option1) + '"]'
     );
     if (opt && opt.dataset.variantDescription) return opt.dataset.variantDescription;
-
     return '';
   }
 
@@ -1418,40 +1407,32 @@
     dot.style.background = variantColors[optionValue] || '#f5a623';
   }
 
-  // ── Sync selectors to a variant (without triggering updateUI again) ──────────
   function syncSelectorsFromVariant(variant) {
     if (!variant) return;
     selectedOptions = variant.options.slice();
-
     sectionEl.querySelectorAll('.custom-product-section__chip').forEach(function(chip) {
       var idx = parseInt(chip.dataset.optionIndex);
       chip.classList.toggle('custom-product-section__chip--active', selectedOptions[idx] === chip.dataset.value);
     });
-
     sectionEl.querySelectorAll('.custom-product-section__dropdown-select').forEach(function(select) {
       var idx = parseInt(select.dataset.optionIndex);
       select.value = selectedOptions[idx];
     });
-
     updateDropdownDot(variant.option1 || variant.title);
   }
 
-  // ── Update all UI elements for a given variant ───────────────────────────────
   function updateUI(variant, skipImageSync) {
     if (!variant) return;
     currentVariant   = variant;
     currentPriceText = formatMoney(variant.price);
 
-    // Price
     sectionEl.querySelectorAll('[data-cps="price"]').forEach(function(el) {
       el.textContent = currentPriceText;
     });
 
-    // ATC variant id
     var atcBtn = sectionEl.querySelector('[data-cps="atc"]');
     if (atcBtn) atcBtn.dataset.variantId = variant.id;
 
-    // Meta dot + label (only present for multi-variant products)
     var labelText = sectionEl.querySelector('[data-cps="variant-label-text"]');
     if (labelText) labelText.textContent = variant.title;
 
@@ -1462,14 +1443,12 @@
 
     updateDropdownDot(variant.option1 || variant.title);
 
-    // Description
     var descEl = sectionEl.querySelector('[data-cps="description"]');
     if (descEl) {
       var desc = getDescriptionForVariant(variant);
       if (desc) descEl.innerHTML = desc;
     }
 
-    // Slide to variant image
     if (!skipImageSync && variant.featured_image) {
       var imgId = parseInt(variant.featured_image.id);
       sectionEl.querySelectorAll('.custom-product-section__main-image').forEach(function(img, idx) {
@@ -1482,41 +1461,33 @@
     }
   }
 
-  // ── Chip clicks ──────────────────────────────────────────────────────────────
   sectionEl.querySelectorAll('.custom-product-section__chip').forEach(function(chip) {
     chip.addEventListener('click', function() {
       var idx = parseInt(this.dataset.optionIndex);
       var val = this.dataset.value;
       selectedOptions[idx] = val;
-
       sectionEl.querySelectorAll('.custom-product-section__chip[data-option-index="' + idx + '"]').forEach(function(c) {
         c.classList.remove('custom-product-section__chip--active');
       });
       this.classList.add('custom-product-section__chip--active');
-
       var sel = sectionEl.querySelector('.custom-product-section__dropdown-select[data-option-index="' + idx + '"]');
       if (sel) sel.value = val;
-
       updateUI(findVariant(selectedOptions), false);
     });
   });
 
-  // ── Dropdown change ──────────────────────────────────────────────────────────
   sectionEl.querySelectorAll('.custom-product-section__dropdown-select').forEach(function(select) {
     select.addEventListener('change', function() {
       var idx = parseInt(this.dataset.optionIndex);
       var val = this.value;
       selectedOptions[idx] = val;
-
       sectionEl.querySelectorAll('.custom-product-section__chip[data-option-index="' + idx + '"]').forEach(function(c) {
         c.classList.toggle('custom-product-section__chip--active', c.dataset.value === val);
       });
-
       updateUI(findVariant(selectedOptions), false);
     });
   });
 
-  // ── Quantity ─────────────────────────────────────────────────────────────────
   var qtyValue = 1;
   var qtyInput = sectionEl.querySelector('.custom-product-section__qty-input');
 
@@ -1534,7 +1505,6 @@
     qtyValue++; updateQtyDisplay();
   });
 
-  // ── Add to cart ──────────────────────────────────────────────────────────────
   sectionEl.querySelector('[data-cps="atc"]').addEventListener('click', function() {
     var btn       = this;
     var variantId = parseInt(btn.dataset.variantId);
@@ -1553,10 +1523,9 @@
     })
       .then(function(res) {
         if (!res.ok) throw new Error('ATC failed');
-
-        var notif       = sectionEl.querySelector('[data-cps="notification"]');
-        var notifImg    = sectionEl.querySelector('[data-cps="notif-img"]');
-        var notifTitle  = sectionEl.querySelector('[data-cps="notif-title"]');
+        var notif        = sectionEl.querySelector('[data-cps="notification"]');
+        var notifImg     = sectionEl.querySelector('[data-cps="notif-img"]');
+        var notifTitle   = sectionEl.querySelector('[data-cps="notif-title"]');
         var notifVariant = sectionEl.querySelector('[data-cps="notif-variant"]');
 
         var imgSrc = '';
@@ -1566,8 +1535,8 @@
           imgSrc = product.featured_image;
         }
 
-        if (notifImg)    { notifImg.src = imgSrc; notifImg.alt = product.title; }
-        if (notifTitle)  notifTitle.textContent  = product.title;
+        if (notifImg)     { notifImg.src = imgSrc; notifImg.alt = product.title; }
+        if (notifTitle)   notifTitle.textContent   = product.title;
         if (notifVariant) notifVariant.textContent = currentVariant.title !== 'Default Title' ? currentVariant.title : '';
 
         notif.style.display = 'block';
@@ -1584,14 +1553,12 @@
       });
   });
 
-  // ── Accordions ───────────────────────────────────────────────────────────────
   sectionEl.querySelectorAll('.custom-product-section__accordion-trigger').forEach(function(trigger) {
     trigger.addEventListener('click', function() {
-      var acc      = this.closest('.custom-product-section__accordion');
-      var isOpen   = acc.classList.contains('custom-product-section__accordion--open');
-      var plusIcon = trigger.querySelector('.cps-icon-plus');
+      var acc       = this.closest('.custom-product-section__accordion');
+      var isOpen    = acc.classList.contains('custom-product-section__accordion--open');
+      var plusIcon  = trigger.querySelector('.cps-icon-plus');
       var minusIcon = trigger.querySelector('.cps-icon-minus');
-
       if (isOpen) {
         acc.classList.remove('custom-product-section__accordion--open');
         if (plusIcon)  plusIcon.style.display  = 'block';
@@ -1604,7 +1571,6 @@
     });
   });
 
-  // ── Init ─────────────────────────────────────────────────────────────────────
   syncSelectorsFromVariant(currentVariant);
   updateUI(currentVariant, false);
   updateQtyDisplay();
@@ -1770,14 +1736,12 @@
     {
       "type": "text",
       "id": "badge_1_text",
-      "label": "Badge 1 text",
-      "default": "3 bags (90 servings)"
+      "label": "Badge 1 text"
     },
     {
       "type": "text",
       "id": "badge_2_text",
-      "label": "Badge 2 text",
-      "default": "No artificial flavors/sweeteners"
+      "label": "Badge 2 text"
     },
     {
       "type": "header",
@@ -1786,8 +1750,7 @@
     {
       "type": "text",
       "id": "accordion_1_title",
-      "label": "Accordion 1 title",
-      "default": "What is Rimo™"
+      "label": "Accordion 1 title"
     },
     {
       "type": "richtext",
@@ -1797,8 +1760,7 @@
     {
       "type": "text",
       "id": "accordion_2_title",
-      "label": "Accordion 2 title",
-      "default": "How to Use"
+      "label": "Accordion 2 title"
     },
     {
       "type": "richtext",
@@ -1832,58 +1794,27 @@
       "name": "Customer review",
       "settings": [
         {
-          "type": "range",
+          "type": "text",
           "id": "stars",
           "label": "Stars",
-          "min": 1,
-          "max": 5,
-          "step": 1,
-          "default": 5
+          "default": "★★★★★"
         },
         {
           "type": "textarea",
           "id": "text",
-          "label": "Review text",
-          "default": "I love this product! Noticeable increased energy and post workout pain levels much lower."
+          "label": "Review text"
         },
         {
           "type": "text",
           "id": "author",
-          "label": "Author name",
-          "default": "Joanette D."
+          "label": "Author name"
         }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Custom Product Section",
-      "blocks": [
-        {
-          "type": "review",
-          "settings": {
-            "stars": 5,
-            "text": "I love this product! Noticeable increased energy and post workout pain levels much lower.",
-            "author": "Joanette D."
-          }
-        },
-        {
-          "type": "review",
-          "settings": {
-            "stars": 5,
-            "text": "Have definitely felt a surge in my energy and overall well being since taking.",
-            "author": "Michael R."
-          }
-        },
-        {
-          "type": "review",
-          "settings": {
-            "stars": 5,
-            "text": "Amazing product, I feel more focused and energized every single day.",
-            "author": "Sarah K."
-          }
-        }
-      ]
+      "name": "Custom Product Section"
     }
   ]
 }
