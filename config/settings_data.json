@@ -394,6 +394,60 @@
       },
       "custom_product_section_YdMTXe": {
         "type": "custom-product-section",
+        "blocks": {
+          "review_86e4ha": {
+            "type": "review",
+            "settings": {
+              "stars": "★★★★★",
+              "text": "I love this product! Noticeable increased energy and post workout pain levels much lower.",
+              "author": "Joanette D.",
+              "subtitle": "✓ Verified customer"
+            }
+          },
+          "review_hH8QAe": {
+            "type": "review",
+            "settings": {
+              "stars": "★★★★★",
+              "text": "I love this product! Noticeable increased energy and post workout pain levels much lower.",
+              "author": "Joanette D.",
+              "subtitle": "✓ Verified customer"
+            }
+          },
+          "review_gwx68X": {
+            "type": "review",
+            "settings": {
+              "stars": "★★★★★",
+              "text": "I love this product! Noticeable increased energy and post workout pain levels much lower.",
+              "author": "Joanette D.",
+              "subtitle": "✓ Verified customer"
+            }
+          },
+          "review_DMHYt3": {
+            "type": "review",
+            "settings": {
+              "stars": "★★★★★",
+              "text": "I love this product! Noticeable increased energy and post workout pain levels much lower.",
+              "author": "Joanette D.",
+              "subtitle": "✓ Verified customer"
+            }
+          },
+          "review_L9dqMw": {
+            "type": "review",
+            "settings": {
+              "stars": "★★★★★",
+              "text": "I love this product! Noticeable increased energy and post workout pain levels much lower.",
+              "author": "Joanette D.",
+              "subtitle": "✓ Verified customer"
+            }
+          }
+        },
+        "block_order": [
+          "review_86e4ha",
+          "review_hH8QAe",
+          "review_gwx68X",
+          "review_DMHYt3",
+          "review_L9dqMw"
+        ],
         "name": "Custom Product Section",
         "settings": {
           "product": "longevity-gummies",
@@ -405,16 +459,9 @@
           "section_padding_top": 64,
           "section_padding_bottom": 64,
           "section_padding_horizontal": 56,
-          "gallery_column_width": 770,
-          "info_column_width": 500,
-          "gallery_info_gap": 56,
-          "gallery_height_desktop": 770,
-          "thumbnail_size_desktop": 99,
-          "thumbnail_gap": 8,
           "section_padding_top_mobile": 48,
           "section_padding_bottom_mobile": 48,
           "section_padding_horizontal_mobile": 16,
-          "gallery_height_mobile": 380,
           "atc_label": "ADD TO CART",
           "show_guarantee": true,
           "guarantee_text": "30-Day Money-Back Guarantee",
@@ -423,27 +470,13 @@
           "show_badges": true,
           "badge_1_text": "3 bags (90 servings)",
           "badge_2_text": "No artificial flavors/sweeteners",
-          "badge_3_icon": "",
-          "badge_3_text": "",
           "accordion_1_title": "What is Rimo™",
           "accordion_1_content": "",
           "accordion_2_title": "How to Use",
           "accordion_2_content": "",
           "accordion_3_title": "",
           "accordion_3_content": "",
-          "show_reviews": true,
-          "review_1_text": "I love this product! Noticeable increased energy and post workout pain levels much lower.",
-          "review_1_author": "Joanette D.",
-          "review_2_text": "Have definitely felt a surge in my energy and overall well being since taking.",
-          "review_2_author": "Joanette D.",
-          "review_3_text": "Amazing product, I feel more focused and energized every single day.",
-          "review_3_author": "Mike R.",
-          "review_4_text": "Best supplement I have tried. Highly recommend to anyone looking for a natural boost.",
-          "review_4_author": "Sarah K.",
-          "review_5_text": "Incredible results within the first two weeks. My energy levels are through the roof.",
-          "review_5_author": "Tom B.",
-          "review_6_text": "I was skeptical at first but this product genuinely changed my daily routine.",
-          "review_6_author": "Anna P."
+          "show_reviews": true
         }
       }
     },
