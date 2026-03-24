@@ -22,7 +22,7 @@
   }
   .custom-product-section__inner {
     display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
+    grid-template-columns: 772px 500px !important;
     gap: 56px;
     align-items: start;
   }
@@ -531,7 +531,6 @@
       max-width: 85%;
       object-fit: contain;
     }
-    /* Thumbnails mob — svi vidljivi, jednake sirine */
     .custom-product-section__thumb-swiper .swiper-slide {
       border-radius: 4.071px;
       padding: 6px;
@@ -766,7 +765,7 @@
                     <div class="swiper-slide">
                       <div class="custom-product-section__review-card">
                         <div class="custom-product-section__review-stars">★★★★★</div>
-                        <p class="custom-product-section__review-text">{{ section.settings[rev_text] }}</p>
+                        <p class="custom-product-section__review-text">{{ settings[rev_text] }}</p>
                         <div class="custom-product-section__review-author">
                           {{ section.settings[rev_author] }}
                           <span>✓ Verified customer</span>
@@ -827,7 +826,6 @@
       slide.classList.add('swiper-slide-thumb-active');
     });
   });
-  /* Postavi prvi kao aktivan */
   if (thumbSlides.length > 0) thumbSlides[0].classList.add('swiper-slide-thumb-active');
 
   var mainSwiper = new Swiper(mainEl, {
