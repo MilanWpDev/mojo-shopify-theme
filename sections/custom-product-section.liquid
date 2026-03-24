@@ -331,18 +331,16 @@
     background: #fff;
   }
 
-  .custom-product-section__chip--active[data-value="Pineapple"],
-  .custom-product-section__chip--active[data-value="Tropical"] {
+  /* Light chip override — driven by data-light attribute set in JS */
+  .custom-product-section__chip--active[data-light="true"] {
     color: #373737;
   }
 
-  .custom-product-section__chip--active[data-value="Pineapple"] .custom-product-section__chip-dot,
-  .custom-product-section__chip--active[data-value="Tropical"] .custom-product-section__chip-dot {
+  .custom-product-section__chip--active[data-light="true"] .custom-product-section__chip-dot {
     border-color: #373737;
   }
 
-  .custom-product-section__chip--active[data-value="Pineapple"] .custom-product-section__chip-dot::after,
-  .custom-product-section__chip--active[data-value="Tropical"] .custom-product-section__chip-dot::after {
+  .custom-product-section__chip--active[data-light="true"] .custom-product-section__chip-dot::after {
     background: #373737;
   }
 
@@ -521,14 +519,8 @@
   }
 
   @keyframes cpsSlideIn {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
   .custom-product-section__notification-header {
@@ -725,8 +717,9 @@
   }
 
   .custom-product-section__review-stars {
-    color: #f5a623;
-    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
     margin-bottom: 12px;
   }
 
@@ -742,13 +735,22 @@
     font-size: 14px;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 4px;
   }
 
-  .custom-product-section__review-author span {
+  .custom-product-section__review-verified {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     font-weight: 400;
     font-size: 12px;
     color: #888;
+  }
+
+  .custom-product-section__review-verified svg {
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
   }
 
   @media (max-width: 768px) {
@@ -777,11 +779,6 @@
 
     .custom-product-section__main-swiper .swiper-slide {
       height: 380px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #fff;
-      overflow: hidden;
     }
 
     .custom-product-section__main-image {
@@ -921,6 +918,26 @@
 </svg>
 {%- endcapture -%}
 
+{%- capture star_svg -%}
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+  <path d="M9.20741 1.6059C9.45687 0.838136 10.543 0.838137 10.7925 1.6059L12.2451 6.07652C12.3567 6.41987 12.6766 6.65234 13.0376 6.65234H17.7383C18.5456 6.65234 18.8813 7.68535 18.2282 8.15985L14.4252 10.9228C14.1331 11.135 14.0109 11.5112 14.1225 11.8545L15.5751 16.3252C15.8245 17.0929 14.9458 17.7314 14.2927 17.2569L10.4898 14.4939C10.1977 14.2817 9.80221 14.2817 9.51014 14.4939L5.7072 17.2569C5.0541 17.7314 4.17537 17.0929 4.42483 16.3252L5.87743 11.8545C5.98899 11.5112 5.86677 11.135 5.5747 10.9228L1.77176 8.15985C1.11867 7.68535 1.45431 6.65234 2.26158 6.65234H6.96227C7.32329 6.65234 7.64326 6.41987 7.75482 6.07652L9.20741 1.6059Z" fill="#FFA51D"/>
+</svg>
+{%- endcapture -%}
+
+{%- capture verified_svg -%}
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+  <g clip-path="url(#clip0_1_2673)">
+    <path d="M6.875 10.625L8.75 12.5L13.125 8.125" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M10 17.5C14.1421 17.5 17.5 14.1421 17.5 10C17.5 5.85786 14.1421 2.5 10 2.5C5.85786 2.5 2.5 5.85786 2.5 10C2.5 14.1421 5.85786 17.5 10 17.5Z" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <defs>
+    <clipPath id="clip0_1_2673">
+      <rect width="20" height="20" fill="white"/>
+    </clipPath>
+  </defs>
+</svg>
+{%- endcapture -%}
+
 <div
   class="custom-product-section"
   data-section-id="{{ section.id }}"
@@ -937,6 +954,8 @@
     </script>
 
     <div class="custom-product-section__inner">
+
+      {%- comment %} GALLERY {%- endcomment %}
       <div class="custom-product-section__gallery">
         <div class="swiper custom-product-section__main-swiper" id="mainSwiper-{{ section.id }}">
           <div class="swiper-wrapper">
@@ -956,70 +975,82 @@
           <div class="swiper-button-next">{{ arrow_svg }}</div>
         </div>
 
-        <div class="custom-product-section__thumb-swiper" id="thumbSwiper-{{ section.id }}">
-          <div class="swiper-wrapper">
-            {%- for image in current_product.images -%}
-              <div class="swiper-slide">
-                <img src="{{ image | image_url: width: 120 }}" alt="{{ image.alt | escape }}">
-              </div>
-            {%- endfor -%}
+        {%- if current_product.images.size > 1 -%}
+          <div class="custom-product-section__thumb-swiper" id="thumbSwiper-{{ section.id }}">
+            <div class="swiper-wrapper">
+              {%- for image in current_product.images -%}
+                <div class="swiper-slide">
+                  <img src="{{ image | image_url: width: 120 }}" alt="{{ image.alt | escape }}">
+                </div>
+              {%- endfor -%}
+            </div>
           </div>
-        </div>
+        {%- endif -%}
       </div>
 
+      {%- comment %} INFO {%- endcomment %}
       <div class="custom-product-section__info">
         <h1 class="custom-product-section__title">{{ current_product.title }}</h1>
 
         <div class="custom-product-section__meta">
           {%- if section.settings.show_product_type and current_product.type != blank -%}
             <span class="custom-product-section__type">{{ current_product.type }}</span>
-            <span class="custom-product-section__meta-separator"></span>
+            {%- unless current_product.has_only_default_variant -%}
+              <span class="custom-product-section__meta-separator"></span>
+            {%- endunless -%}
           {%- endif -%}
-          <span class="custom-product-section__variant-label">
-            <span class="custom-product-section__dot" data-cps="dot"></span>
-            <span data-cps="variant-label-text">{{ first_variant.title }}</span>
-          </span>
+
+          {%- unless current_product.has_only_default_variant -%}
+            <span class="custom-product-section__variant-label">
+              <span class="custom-product-section__dot" data-cps="dot"></span>
+              <span data-cps="variant-label-text">{{ first_variant.title }}</span>
+            </span>
+          {%- endunless -%}
         </div>
 
         {%- if section.settings.show_badges -%}
-          <div class="custom-product-section__badges">
-            {%- if section.settings.badge_1_text != blank -%}
-              <div class="custom-product-section__badge">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path d="M4.50977 2.89999H11.4404C11.6005 2.90021 11.7318 3.02616 11.7393 3.18613L12.2129 13.5865C12.2206 13.7573 12.084 13.9 11.9131 13.9H4.03613C3.86529 13.8998 3.72866 13.7572 3.73633 13.5865L4.20996 3.18613C4.21737 3.02602 4.34946 2.89999 4.50977 2.89999Z" stroke="#373737"/>
-                  <line x1="4" y1="5.10001" x2="12" y2="5.10001" stroke="#373737"/>
-                </svg>
-                <span>{{ section.settings.badge_1_text }}</span>
-              </div>
-            {%- endif -%}
+          {%- if section.settings.badge_1_text != blank or section.settings.badge_2_text != blank -%}
+            <div class="custom-product-section__badges">
+              {%- if section.settings.badge_1_text != blank -%}
+                <div class="custom-product-section__badge">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M4.50977 2.89999H11.4404C11.6005 2.90021 11.7318 3.02616 11.7393 3.18613L12.2129 13.5865C12.2206 13.7573 12.084 13.9 11.9131 13.9H4.03613C3.86529 13.8998 3.72866 13.7572 3.73633 13.5865L4.20996 3.18613C4.21737 3.02602 4.34946 2.89999 4.50977 2.89999Z" stroke="#373737"/>
+                    <line x1="4" y1="5.10001" x2="12" y2="5.10001" stroke="#373737"/>
+                  </svg>
+                  <span>{{ section.settings.badge_1_text }}</span>
+                </div>
+              {%- endif -%}
+              {%- if section.settings.badge_2_text != blank -%}
+                <div class="custom-product-section__badge">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M10.1004 13.6999C10.1004 13.6999 6.19968 14 4.09932 11.5996C1.99896 9.19918 1.99896 1.99794 1.99896 1.99794C1.99896 1.99794 9.2002 1.69789 11.6006 3.4982C14.001 5.29851 13.4009 10.3994 13.4009 10.3994" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M14.001 14C14.001 14 10.6466 11.465 8.60006 9.19917C6.5535 6.93333 5.59955 4.69839 5.59955 4.69839" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8.6001 9.19916L8.90015 5.29849" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M8.60006 9.19916L5.59955 8.89911" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span>{{ section.settings.badge_2_text }}</span>
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        {%- endif -%}
 
-            {%- if section.settings.badge_2_text != blank -%}
-              <div class="custom-product-section__badge">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path d="M10.1004 13.6999C10.1004 13.6999 6.19968 14 4.09932 11.5996C1.99896 9.19918 1.99896 1.99794 1.99896 1.99794C1.99896 1.99794 9.2002 1.69789 11.6006 3.4982C14.001 5.29851 13.4009 10.3994 13.4009 10.3994" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M14.001 14C14.001 14 10.6466 11.465 8.60006 9.19917C6.5535 6.93333 5.59955 4.69839 5.59955 4.69839" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M8.6001 9.19916L8.90015 5.29849" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M8.60006 9.19916L5.59955 8.89911" stroke="#373737" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <span>{{ section.settings.badge_2_text }}</span>
-              </div>
+        {%- if current_product.description != blank or first_variant.metafields.custom.description != blank -%}
+          <div class="custom-product-section__description" data-cps="description">
+            {%- if first_variant.metafields.custom.description != blank -%}
+              {{ first_variant.metafields.custom.description | metafield_tag }}
+            {%- else -%}
+              {{ current_product.description }}
             {%- endif -%}
           </div>
         {%- endif -%}
 
-        <div class="custom-product-section__description" data-cps="description">
-          {%- if first_variant.metafields.custom.description != blank -%}
-            {{ first_variant.metafields.custom.description | metafield_tag }}
-          {%- else -%}
-            {{ current_product.description }}
-          {%- endif -%}
-        </div>
-
         {%- unless current_product.has_only_default_variant -%}
           <div class="custom-product-section__variants">
-            <span class="custom-product-section__variants-label">
-              {{ section.settings.flavor_label | default: 'Choose your flavor:' }}
-            </span>
+            {%- if section.settings.flavor_label != blank -%}
+              <span class="custom-product-section__variants-label">{{ section.settings.flavor_label }}</span>
+            {%- endif -%}
+
             {%- for option in current_product.options_with_values -%}
               {%- assign opt_idx = forloop.index0 -%}
               <div class="custom-product-section__chips" data-option-index="{{ opt_idx }}">
@@ -1033,9 +1064,9 @@
                   {%- endfor -%}
                   <button
                     class="custom-product-section__chip{% if value == option.selected_value %} custom-product-section__chip--active{% endif %}"
-                    data-value="{{ value }}"
+                    data-value="{{ value | escape }}"
                     data-option-index="{{ opt_idx }}"
-                    data-variant-description="{% if matched_variant and matched_variant.metafields.custom.description != blank %}{{ matched_variant.metafields.custom.description | metafield_tag | escape }}{% else %}{{ current_product.description | escape }}{% endif %}"
+                    data-variant-description="{% if matched_variant != blank and matched_variant.metafields.custom.description != blank %}{{ matched_variant.metafields.custom.description | metafield_tag | escape }}{% elsif current_product.description != blank %}{{ current_product.description | escape }}{% endif %}"
                     type="button"
                   >
                     <span class="custom-product-section__chip-dot"></span>
@@ -1057,12 +1088,10 @@
                         {%- endif -%}
                       {%- endfor -%}
                       <option
-                        value="{{ value }}"
-                        data-variant-description="{% if matched_variant and matched_variant.metafields.custom.description != blank %}{{ matched_variant.metafields.custom.description | metafield_tag | escape }}{% else %}{{ current_product.description | escape }}{% endif %}"
+                        value="{{ value | escape }}"
+                        data-variant-description="{% if matched_variant != blank and matched_variant.metafields.custom.description != blank %}{{ matched_variant.metafields.custom.description | metafield_tag | escape }}{% elsif current_product.description != blank %}{{ current_product.description | escape }}{% endif %}"
                         {% if value == option.selected_value %}selected{% endif %}
-                      >
-                        {{ value }}
-                      </option>
+                      >{{ value }}</option>
                     {%- endfor -%}
                   </select>
                 </div>
@@ -1083,12 +1112,13 @@
             data-cps="atc"
             type="button"
           >
-            {{ section.settings.atc_label | default: 'ADD TO CART' }} —
+            <span data-cps="atc-label">{{ section.settings.atc_label | default: 'ADD TO CART' }}</span>
+            &nbsp;—&nbsp;
             <span data-cps="price">{{ first_variant.price | money }}</span>
           </button>
         </div>
 
-        {%- if section.settings.show_guarantee -%}
+        {%- if section.settings.show_guarantee and section.settings.guarantee_text != blank -%}
           <p class="custom-product-section__guarantee">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
               <g clip-path="url(#clip0_8_298)">
@@ -1104,7 +1134,7 @@
                 </clipPath>
               </defs>
             </svg>
-            {{ section.settings.guarantee_text | default: '30-Day Money-Back Guarantee' }}
+            {{ section.settings.guarantee_text }}
           </p>
         {%- endif -%}
 
@@ -1128,7 +1158,7 @@
         </div>
 
         {%- for i in (1..3) -%}
-          {%- assign acc_title = 'accordion_' | append: i | append: '_title' -%}
+          {%- assign acc_title   = 'accordion_' | append: i | append: '_title' -%}
           {%- assign acc_content = 'accordion_' | append: i | append: '_content' -%}
           {%- if section.settings[acc_title] != blank -%}
             <div class="custom-product-section__accordion{% if i == 1 %} custom-product-section__accordion--open{% endif %}">
@@ -1144,9 +1174,11 @@
                   </svg>
                 </span>
               </button>
-              <div class="custom-product-section__accordion-content">
-                {{ section.settings[acc_content] }}
-              </div>
+              {%- if section.settings[acc_content] != blank -%}
+                <div class="custom-product-section__accordion-content">
+                  {{ section.settings[acc_content] }}
+                </div>
+              {%- endif -%}
             </div>
           {%- endif -%}
         {%- endfor -%}
@@ -1166,7 +1198,6 @@
                   </svg>
                 </button>
               </div>
-
               <div class="custom-product-section__reviews-clip">
                 <div class="swiper custom-product-section__reviews-swiper" id="reviewsSwiper-{{ section.id }}">
                   <div class="swiper-wrapper">
@@ -1174,12 +1205,22 @@
                       {%- if block.type == 'review' -%}
                         <div class="swiper-slide" {{ block.shopify_attributes }}>
                           <div class="custom-product-section__review-card">
-                            <div class="custom-product-section__review-stars">{{ block.settings.stars | default: '★★★★★' }}</div>
-                            <p class="custom-product-section__review-text">{{ block.settings.text }}</p>
-                            <div class="custom-product-section__review-author">
-                              {{ block.settings.author }}
-                              <span>{{ block.settings.subtitle | default: '✓ Verified customer' }}</span>
+                            {%- assign star_count = block.settings.stars | default: 5 | plus: 0 -%}
+                            <div class="custom-product-section__review-stars">
+                              {%- for s in (1..star_count) -%}{{ star_svg }}{%- endfor -%}
                             </div>
+                            {%- if block.settings.text != blank -%}
+                              <p class="custom-product-section__review-text">{{ block.settings.text }}</p>
+                            {%- endif -%}
+                            {%- if block.settings.author != blank -%}
+                              <div class="custom-product-section__review-author">
+                                {{ block.settings.author }}
+                                <span class="custom-product-section__review-verified">
+                                  {{ verified_svg }}
+                                  Verified customer
+                                </span>
+                              </div>
+                            {%- endif -%}
                           </div>
                         </div>
                       {%- endif -%}
@@ -1192,12 +1233,22 @@
                 {%- for block in section.blocks -%}
                   {%- if block.type == 'review' -%}
                     <div class="custom-product-section__review-card" {{ block.shopify_attributes }}>
-                      <div class="custom-product-section__review-stars">{{ block.settings.stars | default: '★★★★★' }}</div>
-                      <p class="custom-product-section__review-text">{{ block.settings.text }}</p>
-                      <div class="custom-product-section__review-author">
-                        {{ block.settings.author }}
-                        <span>{{ block.settings.subtitle | default: '✓ Verified customer' }}</span>
+                      {%- assign star_count = block.settings.stars | default: 5 | plus: 0 -%}
+                      <div class="custom-product-section__review-stars">
+                        {%- for s in (1..star_count) -%}{{ star_svg }}{%- endfor -%}
                       </div>
+                      {%- if block.settings.text != blank -%}
+                        <p class="custom-product-section__review-text">{{ block.settings.text }}</p>
+                      {%- endif -%}
+                      {%- if block.settings.author != blank -%}
+                        <div class="custom-product-section__review-author">
+                          {{ block.settings.author }}
+                          <span class="custom-product-section__review-verified">
+                            {{ verified_svg }}
+                            Verified customer
+                          </span>
+                        </div>
+                      {%- endif -%}
                     </div>
                   {%- endif -%}
                 {%- endfor -%}
@@ -1205,6 +1256,7 @@
             {%- endif -%}
           </div>
         {%- endif -%}
+
       </div>
     </div>
   {%- endif -%}
@@ -1219,38 +1271,49 @@
   var product = window['cpsProduct_' + sectionId];
   if (!product) return;
 
+  // ── Variant colour map ──────────────────────────────────────────────────────
+  // Keys are variant option values; values are hex colours.
+  // Light colours get dark text (data-light="true") — driven by luminance check.
   var variantColors = {
-    'Mighty Mango': '#F47B06',
-    'Pineapple': '#E8E41D',
-    'Black Currant': '#782077',
-    'Tropical': '#90E6E5',
+    'Mighty Mango':      '#F47B06',
+    'Pineapple':         '#E8E41D',
+    'Black Currant':     '#782077',
+    'Tropical':          '#90E6E5',
     'Blueberry Vanilla': '#7637FF',
-    'Chocolate': '#834936'
+    'Chocolate':         '#834936'
   };
 
+  // Returns true if the hex colour is light enough to need dark text
+  function isLightColor(hex) {
+    hex = hex.replace('#', '');
+    var r = parseInt(hex.substring(0, 2), 16);
+    var g = parseInt(hex.substring(2, 4), 16);
+    var b = parseInt(hex.substring(4, 6), 16);
+    // Perceived luminance formula
+    var luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    return luminance > 0.65;
+  }
+
+  // Apply chip colours and light-text flag from variantColors map
   sectionEl.querySelectorAll('.custom-product-section__chip').forEach(function(chip) {
     var color = variantColors[chip.dataset.value];
-    if (color) chip.style.setProperty('--chip-color', color);
+    if (color) {
+      chip.style.setProperty('--chip-color', color);
+      if (isLightColor(color)) chip.setAttribute('data-light', 'true');
+    }
   });
 
+  // ── State ───────────────────────────────────────────────────────────────────
   var selectedOptions = product.variants[0].options.slice();
-  var currentVariant = product.variants[0];
+  var currentVariant  = product.variants[0];
   var currentPriceText = '';
   var notifTimer = null;
   var isSyncingFromImage = false;
 
-  var thumbEl = document.getElementById('thumbSwiper-' + sectionId);
-  var mainEl = document.getElementById('mainSwiper-' + sectionId);
-
-  var thumbSlides = thumbEl.querySelectorAll('.swiper-slide');
-  thumbSlides.forEach(function(slide, idx) {
-    slide.addEventListener('click', function() {
-      mainSwiper.slideTo(idx);
-      thumbSlides.forEach(function(s) { s.classList.remove('swiper-slide-thumb-active'); });
-      slide.classList.add('swiper-slide-thumb-active');
-    });
-  });
-  if (thumbSlides.length > 0) thumbSlides[0].classList.add('swiper-slide-thumb-active');
+  // ── Swiper: main gallery ────────────────────────────────────────────────────
+  var mainEl   = document.getElementById('mainSwiper-' + sectionId);
+  var thumbEl  = document.getElementById('thumbSwiper-' + sectionId);
+  var thumbSlides = thumbEl ? thumbEl.querySelectorAll('.swiper-slide') : [];
 
   var mainSwiper = new Swiper(mainEl, {
     spaceBetween: 10,
@@ -1261,14 +1324,37 @@
     },
     on: {
       slideChange: function() {
+        // Sync thumb active state
         thumbSlides.forEach(function(s) { s.classList.remove('swiper-slide-thumb-active'); });
         if (thumbSlides[mainSwiper.activeIndex]) {
           thumbSlides[mainSwiper.activeIndex].classList.add('swiper-slide-thumb-active');
         }
+
+        // Sync variant selectors from image
+        if (isSyncingFromImage) return;
+        var activeSlide = mainSwiper.slides[mainSwiper.activeIndex];
+        if (!activeSlide) return;
+        var img = activeSlide.querySelector('.custom-product-section__main-image');
+        if (!img) return;
+        var matched = getVariantFromImage(parseInt(img.dataset.imageId), img.dataset.imageAlt || '');
+        if (!matched) return;
+        isSyncingFromImage = true;
+        syncSelectorsFromVariant(matched);
+        updateUI(matched, true);
+        setTimeout(function() { isSyncingFromImage = false; }, 0);
       }
     }
   });
 
+  // Thumb clicks — use Swiper's slideTo for reliable sync
+  thumbSlides.forEach(function(slide, idx) {
+    slide.addEventListener('click', function() {
+      mainSwiper.slideTo(idx);
+    });
+  });
+  if (thumbSlides.length > 0) thumbSlides[0].classList.add('swiper-slide-thumb-active');
+
+  // ── Swiper: reviews ─────────────────────────────────────────────────────────
   var reviewsEl = document.getElementById('reviewsSwiper-' + sectionId);
   if (reviewsEl) {
     new Swiper(reviewsEl, {
@@ -1281,6 +1367,7 @@
     });
   }
 
+  // ── Helpers ─────────────────────────────────────────────────────────────────
   function findVariant(options) {
     return product.variants.find(function(v) {
       return options.every(function(val, i) {
@@ -1293,27 +1380,7 @@
     return '$' + (cents / 100).toFixed(2);
   }
 
-  function rebuildAtcBtn(btn) {
-    var atcLabel = '{{ section.settings.atc_label | default: "ADD TO CART" }}';
-    btn.innerHTML = atcLabel + ' — <span data-cps="price">' + currentPriceText + '</span>';
-  }
-
-  function findDescriptionSource(variant) {
-    var chipMatch = null;
-    sectionEl.querySelectorAll('.custom-product-section__chip[data-option-index="0"]').forEach(function(chip) {
-      if (!chipMatch && chip.dataset.value === variant.option1) chipMatch = chip;
-    });
-    if (chipMatch && chipMatch.dataset.variantDescription) return chipMatch.dataset.variantDescription;
-
-    var optionMatch = null;
-    sectionEl.querySelectorAll('.custom-product-section__dropdown-select[data-option-index="0"] option').forEach(function(option) {
-      if (!optionMatch && option.value === variant.option1) optionMatch = option;
-    });
-    if (optionMatch && optionMatch.dataset.variantDescription) return optionMatch.dataset.variantDescription;
-
-    return {{ current_product.description | json }};
-  }
-
+  // Match a variant by image id first, then by alt text containing option value
   function getVariantFromImage(imageId, imageAlt) {
     imageAlt = (imageAlt || '').toLowerCase().trim();
 
@@ -1322,29 +1389,38 @@
     });
     if (byImage) return byImage;
 
-    var byTitle = product.variants.find(function(v) {
-      return imageAlt && imageAlt.indexOf((v.title || '').toLowerCase().trim()) !== -1;
-    });
-    if (byTitle) return byTitle;
-
-    var byOption = product.variants.find(function(v) {
+    return product.variants.find(function(v) {
       return v.options.some(function(opt) {
         return imageAlt && imageAlt.indexOf((opt || '').toLowerCase().trim()) !== -1;
       });
-    });
-
-    return byOption || null;
+    }) || null;
   }
 
-  function updateDropdownDot(variantOption) {
+  function getDescriptionForVariant(variant) {
+    // Try chip data-attribute first (desktop)
+    var chip = sectionEl.querySelector(
+      '.custom-product-section__chip[data-option-index="0"][data-value="' + CSS.escape(variant.option1) + '"]'
+    );
+    if (chip && chip.dataset.variantDescription) return chip.dataset.variantDescription;
+
+    // Try select option (mobile)
+    var opt = sectionEl.querySelector(
+      '.custom-product-section__dropdown-select[data-option-index="0"] option[value="' + CSS.escape(variant.option1) + '"]'
+    );
+    if (opt && opt.dataset.variantDescription) return opt.dataset.variantDescription;
+
+    return '';
+  }
+
+  function updateDropdownDot(optionValue) {
     var dot = sectionEl.querySelector('[data-cps="dropdown-dot"]');
     if (!dot) return;
-    dot.style.background = variantColors[variantOption] || '#f5a623';
+    dot.style.background = variantColors[optionValue] || '#f5a623';
   }
 
+  // ── Sync selectors to a variant (without triggering updateUI again) ──────────
   function syncSelectorsFromVariant(variant) {
     if (!variant) return;
-
     selectedOptions = variant.options.slice();
 
     sectionEl.querySelectorAll('.custom-product-section__chip').forEach(function(chip) {
@@ -1360,65 +1436,53 @@
     updateDropdownDot(variant.option1 || variant.title);
   }
 
+  // ── Update all UI elements for a given variant ───────────────────────────────
   function updateUI(variant, skipImageSync) {
     if (!variant) return;
-
-    currentVariant = variant;
+    currentVariant   = variant;
     currentPriceText = formatMoney(variant.price);
 
+    // Price
     sectionEl.querySelectorAll('[data-cps="price"]').forEach(function(el) {
       el.textContent = currentPriceText;
     });
 
+    // ATC variant id
     var atcBtn = sectionEl.querySelector('[data-cps="atc"]');
     if (atcBtn) atcBtn.dataset.variantId = variant.id;
 
+    // Meta dot + label (only present for multi-variant products)
     var labelText = sectionEl.querySelector('[data-cps="variant-label-text"]');
     if (labelText) labelText.textContent = variant.title;
 
     var metaDot = sectionEl.querySelector('[data-cps="dot"]');
     if (metaDot) {
-      metaDot.style.background = variantColors[variant.title] || variantColors[variant.option1] || '#f5a623';
+      metaDot.style.background = variantColors[variant.option1] || variantColors[variant.title] || '#f5a623';
     }
 
     updateDropdownDot(variant.option1 || variant.title);
 
+    // Description
     var descEl = sectionEl.querySelector('[data-cps="description"]');
-    if (descEl) descEl.innerHTML = findDescriptionSource(variant);
+    if (descEl) {
+      var desc = getDescriptionForVariant(variant);
+      if (desc) descEl.innerHTML = desc;
+    }
 
+    // Slide to variant image
     if (!skipImageSync && variant.featured_image) {
       var imgId = parseInt(variant.featured_image.id);
       sectionEl.querySelectorAll('.custom-product-section__main-image').forEach(function(img, idx) {
         if (parseInt(img.dataset.imageId) === imgId && mainSwiper.activeIndex !== idx) {
+          isSyncingFromImage = true;
           mainSwiper.slideTo(idx);
+          setTimeout(function() { isSyncingFromImage = false; }, 0);
         }
       });
     }
   }
 
-  mainSwiper.on('slideChange', function() {
-    if (isSyncingFromImage) return;
-
-    var activeSlide = mainSwiper.slides[mainSwiper.activeIndex];
-    if (!activeSlide) return;
-
-    var img = activeSlide.querySelector('.custom-product-section__main-image');
-    if (!img) return;
-
-    var imageId = parseInt(img.dataset.imageId);
-    var imageAlt = img.dataset.imageAlt || '';
-    var matchedVariant = getVariantFromImage(imageId, imageAlt);
-
-    if (!matchedVariant) return;
-
-    isSyncingFromImage = true;
-    syncSelectorsFromVariant(matchedVariant);
-    updateUI(matchedVariant, true);
-    setTimeout(function() {
-      isSyncingFromImage = false;
-    }, 0);
-  });
-
+  // ── Chip clicks ──────────────────────────────────────────────────────────────
   sectionEl.querySelectorAll('.custom-product-section__chip').forEach(function(chip) {
     chip.addEventListener('click', function() {
       var idx = parseInt(this.dataset.optionIndex);
@@ -1428,7 +1492,6 @@
       sectionEl.querySelectorAll('.custom-product-section__chip[data-option-index="' + idx + '"]').forEach(function(c) {
         c.classList.remove('custom-product-section__chip--active');
       });
-
       this.classList.add('custom-product-section__chip--active');
 
       var sel = sectionEl.querySelector('.custom-product-section__dropdown-select[data-option-index="' + idx + '"]');
@@ -1438,6 +1501,7 @@
     });
   });
 
+  // ── Dropdown change ──────────────────────────────────────────────────────────
   sectionEl.querySelectorAll('.custom-product-section__dropdown-select').forEach(function(select) {
     select.addEventListener('change', function() {
       var idx = parseInt(this.dataset.optionIndex);
@@ -1452,6 +1516,7 @@
     });
   });
 
+  // ── Quantity ─────────────────────────────────────────────────────────────────
   var qtyValue = 1;
   var qtyInput = sectionEl.querySelector('.custom-product-section__qty-input');
 
@@ -1462,24 +1527,24 @@
   }
 
   sectionEl.querySelector('[data-action="minus"]').addEventListener('click', function() {
-    if (qtyValue > 1) {
-      qtyValue--;
-      updateQtyDisplay();
-    }
+    if (qtyValue > 1) { qtyValue--; updateQtyDisplay(); }
   });
 
   sectionEl.querySelector('[data-action="plus"]').addEventListener('click', function() {
-    qtyValue++;
-    updateQtyDisplay();
+    qtyValue++; updateQtyDisplay();
   });
 
+  // ── Add to cart ──────────────────────────────────────────────────────────────
   sectionEl.querySelector('[data-cps="atc"]').addEventListener('click', function() {
-    var btn = this;
+    var btn       = this;
     var variantId = parseInt(btn.dataset.variantId);
-    var qty = qtyValue;
+    var qty       = qtyValue;
+    var labelEl   = btn.querySelector('[data-cps="atc-label"]');
+    var priceEl   = btn.querySelector('[data-cps="price"]');
 
     btn.disabled = true;
-    btn.textContent = 'Adding...';
+    if (labelEl) labelEl.textContent = 'Adding...';
+    if (priceEl) priceEl.textContent = '';
 
     fetch('/cart/add.js', {
       method: 'POST',
@@ -1489,49 +1554,57 @@
       .then(function(res) {
         if (!res.ok) throw new Error('ATC failed');
 
-        var notif = sectionEl.querySelector('[data-cps="notification"]');
-        var notifImg = sectionEl.querySelector('[data-cps="notif-img"]');
-        var notifTitle = sectionEl.querySelector('[data-cps="notif-title"]');
+        var notif       = sectionEl.querySelector('[data-cps="notification"]');
+        var notifImg    = sectionEl.querySelector('[data-cps="notif-img"]');
+        var notifTitle  = sectionEl.querySelector('[data-cps="notif-title"]');
         var notifVariant = sectionEl.querySelector('[data-cps="notif-variant"]');
 
-        if (notifImg) notifImg.src = currentVariant.featured_image ? currentVariant.featured_image.src : product.featured_image;
-        if (notifTitle) notifTitle.textContent = product.title;
-        if (notifVariant) notifVariant.textContent = currentVariant.title;
+        var imgSrc = '';
+        if (currentVariant.featured_image && currentVariant.featured_image.src) {
+          imgSrc = currentVariant.featured_image.src;
+        } else if (product.featured_image) {
+          imgSrc = product.featured_image;
+        }
+
+        if (notifImg)    { notifImg.src = imgSrc; notifImg.alt = product.title; }
+        if (notifTitle)  notifTitle.textContent  = product.title;
+        if (notifVariant) notifVariant.textContent = currentVariant.title !== 'Default Title' ? currentVariant.title : '';
 
         notif.style.display = 'block';
         if (notifTimer) clearTimeout(notifTimer);
-        notifTimer = setTimeout(function() {
-          notif.style.display = 'none';
-        }, 3000);
+        notifTimer = setTimeout(function() { notif.style.display = 'none'; }, 3000);
       })
       .catch(function(err) {
         console.error('ATC error:', err);
       })
       .finally(function() {
         btn.disabled = false;
-        rebuildAtcBtn(btn);
+        if (labelEl) labelEl.textContent = '{{ section.settings.atc_label | default: "ADD TO CART" | escape }}';
+        if (priceEl) priceEl.textContent = currentPriceText;
       });
   });
 
+  // ── Accordions ───────────────────────────────────────────────────────────────
   sectionEl.querySelectorAll('.custom-product-section__accordion-trigger').forEach(function(trigger) {
     trigger.addEventListener('click', function() {
-      var acc = this.closest('.custom-product-section__accordion');
-      var isOpen = acc.classList.contains('custom-product-section__accordion--open');
+      var acc      = this.closest('.custom-product-section__accordion');
+      var isOpen   = acc.classList.contains('custom-product-section__accordion--open');
       var plusIcon = trigger.querySelector('.cps-icon-plus');
       var minusIcon = trigger.querySelector('.cps-icon-minus');
 
       if (isOpen) {
         acc.classList.remove('custom-product-section__accordion--open');
-        if (plusIcon) plusIcon.style.display = 'block';
+        if (plusIcon)  plusIcon.style.display  = 'block';
         if (minusIcon) minusIcon.style.display = 'none';
       } else {
         acc.classList.add('custom-product-section__accordion--open');
-        if (plusIcon) plusIcon.style.display = 'none';
+        if (plusIcon)  plusIcon.style.display  = 'none';
         if (minusIcon) minusIcon.style.display = 'block';
       }
     });
   });
 
+  // ── Init ─────────────────────────────────────────────────────────────────────
   syncSelectorsFromVariant(currentVariant);
   updateUI(currentVariant, false);
   updateQtyDisplay();
@@ -1697,13 +1770,13 @@
     {
       "type": "text",
       "id": "badge_1_text",
-      "label": "Servings text",
+      "label": "Badge 1 text",
       "default": "3 bags (90 servings)"
     },
     {
       "type": "text",
       "id": "badge_2_text",
-      "label": "Flavors text",
+      "label": "Badge 2 text",
       "default": "No artificial flavors/sweeteners"
     },
     {
@@ -1759,10 +1832,13 @@
       "name": "Customer review",
       "settings": [
         {
-          "type": "text",
+          "type": "range",
           "id": "stars",
           "label": "Stars",
-          "default": "★★★★★"
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "default": 5
         },
         {
           "type": "textarea",
@@ -1773,14 +1849,8 @@
         {
           "type": "text",
           "id": "author",
-          "label": "Author",
+          "label": "Author name",
           "default": "Joanette D."
-        },
-        {
-          "type": "text",
-          "id": "subtitle",
-          "label": "Subtitle",
-          "default": "✓ Verified customer"
         }
       ]
     }
@@ -1792,28 +1862,25 @@
         {
           "type": "review",
           "settings": {
-            "stars": "★★★★★",
+            "stars": 5,
             "text": "I love this product! Noticeable increased energy and post workout pain levels much lower.",
-            "author": "Joanette D.",
-            "subtitle": "✓ Verified customer"
+            "author": "Joanette D."
           }
         },
         {
           "type": "review",
           "settings": {
-            "stars": "★★★★★",
+            "stars": 5,
             "text": "Have definitely felt a surge in my energy and overall well being since taking.",
-            "author": "Joanette D.",
-            "subtitle": "✓ Verified customer"
+            "author": "Michael R."
           }
         },
         {
           "type": "review",
           "settings": {
-            "stars": "★★★★★",
+            "stars": 5,
             "text": "Amazing product, I feel more focused and energized every single day.",
-            "author": "Mike R.",
-            "subtitle": "✓ Verified customer"
+            "author": "Sarah K."
           }
         }
       ]
