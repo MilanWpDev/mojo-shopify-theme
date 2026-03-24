@@ -395,6 +395,33 @@
       "custom_product_section_YdMTXe": {
         "type": "custom-product-section",
         "blocks": {
+          "review_8yYfWe": {
+            "type": "review",
+            "settings": {
+              "stars": "★★★★★",
+              "text": "I love this product! Noticeable increased energy and post workout pain levels much lower.",
+              "author": "Joanette D.",
+              "subtitle": "✓ Verified customer"
+            }
+          },
+          "review_rDRGET": {
+            "type": "review",
+            "settings": {
+              "stars": "★★★★★",
+              "text": "I love this product! Noticeable increased energy and post workout pain levels much lower.",
+              "author": "Joanette D.",
+              "subtitle": "✓ Verified customer"
+            }
+          },
+          "review_wrGHCb": {
+            "type": "review",
+            "settings": {
+              "stars": "★★★★★",
+              "text": "I love this product! Noticeable increased energy and post workout pain levels much lower.",
+              "author": "Joanette D.",
+              "subtitle": "✓ Verified customer"
+            }
+          },
           "review_adDerE": {
             "type": "review",
             "settings": {
@@ -406,6 +433,9 @@
           }
         },
         "block_order": [
+          "review_8yYfWe",
+          "review_rDRGET",
+          "review_wrGHCb",
           "review_adDerE"
         ],
         "name": "Custom Product Section",
@@ -431,9 +461,9 @@
           "badge_1_text": "3 bags (90 servings)",
           "badge_2_text": "No artificial flavors/sweeteners",
           "accordion_1_title": "What is Rimo™",
-          "accordion_1_content": "",
+          "accordion_1_content": "<p>Following over 15 years of research, groundbreaking discoveries and numerous clinical trials, we have developed a powerful ingredient that’s clinically validated and proven to target the root causes of aging.</p>",
           "accordion_2_title": "How to Use",
-          "accordion_2_content": "",
+          "accordion_2_content": "<p>Following over 15 years of research, groundbreaking discoveries and numerous clinical trials, we have developed a powerful ingredient that’s clinically validated and proven to target the root causes of aging.</p>",
           "accordion_3_title": "",
           "accordion_3_content": "",
           "show_reviews": true
